@@ -1,0 +1,8 @@
+{
+  "name": "question-bank-system",
+  "version": "1.0.0",
+  "description": "题库管理系统 - Vercel Serverless",
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  }
+}
