@@ -169,7 +169,16 @@ function renderKeys(){
     let h='';
     ks.forEach((k,i)=>{
         let rm=k.remark?`<span style="color:#667eea;font-weight:500;">[${k.remark}]</span> `:'';
-        h+=`<div class="key-item"><div><div class="key-val">${rm}${k.key.substring(0,8)}...(${k.key.split('.')[0]})</div><div class="key-meta">创建: ${k.createdAt}</div></div><div class="key-acts"><button class="btn-xs" style="background:#667eea;color:#fff;" onclick="editKey(${i})">编辑</button><button class="btn-xs btn-r" onclick="delKey(${i})">删除</button></div></div>`;
+        let shortKey=k.key.split('.')[0] || k.key;
+        h+=`<div class="key-item">
+            <div>
+                <div class="key-val" style="cursor:pointer" title="点击复制完整密钥" onclick="copyKey('${k.key.replace(/'/g,"\\'")}')">${rm}${shortKey} <span style="font-size:11px;color:#999;">📋复制</span></div>
+                <div class="key-meta">创建: ${k.createdAt}</div>
+            </div>
+            <div class="key-acts">
+                <button class="btn-xs" style="background:#667eea;color:#fff;" onclick="editKey(${i})">编辑</button>
+                <button class="btn-xs btn-r" onclick="delKey(${i})">删除</button>
+            </div></div>`;
     });
     c.innerHTML=h;
 }
@@ -186,6 +195,11 @@ function saveEdit(){
     let ks=getKeys();ks[i].remark=rm;saveKeys(ks);
     document.getElementById('edit-modal').classList.remove('active');
     renderKeys();t('密钥已更新');
+}
+function copyKey(key){
+    navigator.clipboard.writeText(key).then(()=>t('密钥已复制到剪贴板！')).catch(()=>{
+        let ta=document.createElement('textarea');ta.value=key;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);t('密钥已复制！');
+    });
 }
 function delKey(i){
     if(!confirm('确定删除此密钥？'))return;
