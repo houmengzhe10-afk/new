@@ -1,4 +1,4 @@
-// api/verify-key.js - 用户验证密钥，绑定浏览器
+// api/verify-key.js - 验证密钥（纯算法验证，无需数据库）
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -7,41 +7,53 @@ export default async function handler(req, res) {
   const { key, fingerprint } = req.body || {};
 
   if (!key || !fingerprint) {
-    return res.status(400).json({ error: '参数不完整' });
+    return res.status(400).json({ error: '参数不完整', verified: false });
   }
 
   try {
-    const { kv } = await import('@vercel/kv');
+    // 从密钥中解码 bankId
+    const decoded = decodeKey(key);
 
-    const keyData = await kv.get(`key:${key}`);
-
-    if (!keyData) {
-      return res.status(404).json({ error: '密钥无效或不存在', verified: false });
+    if (!decoded) {
+      return res.json({ error: '密钥无效或不存在', verified: false });
     }
 
-    const data = typeof keyData === 'string' ? JSON.parse(keyData) : keyData;
-
-    // 如果已绑定，验证是否匹配当前浏览器
-    if (data.bound && data.fingerprint) {
-      const isMatch = crypto.timingSafeEqual
-        ? crypto.timingSafeEqual(Buffer.from(data.fingerprint), Buffer.from(fingerprint))
-        : data.fingerprint === fingerprint;
-
-      if (!isMatch) {
-        return res.json({ error: '密钥已绑定其他浏览器', verified: false });
-      }
-    }
-
-    // 绑定当前浏览器
-    await kv.set(`key:${key}`, JSON.stringify({
-      ...data,
-      bound: true,
-      fingerprint,
-      boundAt: new Date().toISOString()
-    }));
-
-    return res.json({ verified: true, bankId: data.bankId, remark: data.remark || '' });
+    return res.json({
+      verified: true,
+      bankId: decoded.bankId,
+      key: key
+    });
   } catch (e) {
-    return res.status(500).json({ error: '服务器错误: ' + e.message, verified: false });
+    return res.json({ error: '密钥验证失败', verified: false });
   }
+}
+
+// 从自包含密钥中解码信息
+function decodeKey(key) {
+  try {
+    const parts = key.split('.');
+    if (parts.length !== 3) return null;
+
+    const [rawKey, encoded, checksum] = parts;
+
+    // 验证校验和
+    const expected = simpleHash(rawKey + encoded).substring(0, 4);
+    if (checksum !== expected) return null;
+
+    // 解码 bankId
+    const bankId = decodeURIComponent(escape(atob(encoded)));
+
+    return { bankId, rawKey };
+  } catch (e) {
+    return null;
+  }
+}
+
+function simpleHash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h) + str.charCodeAt(i);
+    h = h & h;
+  }
+  return Math.abs(h).toString(16);
 }

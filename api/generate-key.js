@@ -1,4 +1,4 @@
-// api/generate-key.js - 管理员生成密钥
+// api/generate-key.js - 管理员生成密钥（纯算法，无需数据库）
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -6,7 +6,6 @@ export default async function handler(req, res) {
 
   const { bankId, customKey, adminToken, remark } = req.body || {};
 
-  // 管理员验证
   if (adminToken !== 'HM78Z') {
     return res.status(403).json({ error: '无权限' });
   }
@@ -15,39 +14,16 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: '请选择题库' });
   }
 
-  const key = customKey || generateRandomKey();
+  // 生成随机密钥
+  const rawKey = customKey || generateRandomKey();
+  
+  // 将 bankId 编码到密钥中，自包含，无需数据库
+  // 格式: rawKey + "." + base64(bankId) + "." + checksum
+  const encoded = btoa(unescape(encodeURIComponent(bankId)));
+  const checksum = simpleHash(rawKey + encoded).substring(0, 4);
+  const key = `${rawKey}.${encoded}.${checksum}`;
 
-  try {
-    const { kv } = await import('@vercel/kv');
-
-    // 检查密钥是否已存在
-    const existing = await kv.get(`key:${key}`);
-    if (existing) {
-      return res.status(400).json({ error: '密钥已存在' });
-    }
-
-    // 存储密钥信息
-    await kv.set(`key:${key}`, JSON.stringify({
-      bankId,
-      createdAt: new Date().toISOString(),
-      bound: false,
-      fingerprint: null,
-      remark: remark || ''
-    }));
-
-    // 更新密钥索引，方便 check-session 扫描
-    let keyIndex = await kv.get('key:index') || '';
-    if (keyIndex) {
-      keyIndex += ',' + key;
-    } else {
-      keyIndex = key;
-    }
-    await kv.set('key:index', keyIndex);
-
-    return res.json({ success: true, key });
-  } catch (e) {
-    return res.status(500).json({ error: '服务器错误: ' + e.message });
-  }
+  return res.json({ success: true, key, remark: remark || '' });
 }
 
 function generateRandomKey() {
@@ -57,4 +33,13 @@ function generateRandomKey() {
     key += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return key;
+}
+
+function simpleHash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h) + str.charCodeAt(i);
+    h = h & h;
+  }
+  return Math.abs(h).toString(16);
 }

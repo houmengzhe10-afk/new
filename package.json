@@ -1,8 +1,5 @@
 {
   "name": "question-bank-system",
-  "version": "1.0.0",
-  "description": "题库管理系统 - Vercel Serverless",
-  "dependencies": {
-    "@vercel/kv": "^1.0.0"
-  }
+  "version": "2.0.0",
+  "description": "题库管理系统 - 纯前端 + Vercel Serverless（无需数据库）"
 }

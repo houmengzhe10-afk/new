@@ -1,9 +1,5 @@
 // api/delete-key.js - 管理员删除密钥
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
   const { key, adminToken } = req.body || {};
 
   if (adminToken !== 'HM78Z') {
@@ -14,18 +10,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: '缺少密钥' });
   }
 
-  try {
-    const { kv } = await import('@vercel/kv');
-
-    await kv.del(`key:${key}`);
-
-    // 更新索引
-    const keyIndex = await kv.get('key:index') || '';
-    const newIndex = keyIndex.split(',').filter(k => k !== key && k !== '').join(',');
-    await kv.set('key:index', newIndex);
-
-    return res.json({ success: true });
-  } catch (e) {
-    return res.status(500).json({ error: '服务器错误: ' + e.message });
-  }
+  // 纯前端方案：前端自行管理删除
+  return res.json({ success: true, note: '请在前端本地删除此密钥' });
 }

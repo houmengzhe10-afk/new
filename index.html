@@ -5,602 +5,308 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>题库管理系统</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
-        }
-        .panel {
-            background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px; width: 100%; max-width: 480px; text-align: center;
-        }
-        .panel.wide { max-width: 1000px; }
-        .panel h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
-        .panel .subtitle { color: #999; margin-bottom: 30px; font-size: 14px; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; font-size: 14px; }
-        .form-group select, .form-group input {
-            width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; transition: all 0.3s;
-        }
-        .form-group select:focus, .form-group input:focus { outline: none; border-color: #667eea; }
-        .btn {
-            width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;
-        }
-        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.4); }
-        .btn-success { background: #52c41a; color: white; margin-top: 15px; }
-        .btn-danger { background: #ff4d4f; color: white; }
-        .btn-secondary { background: #8c8c8c; color: white; margin-top: 10px; }
-        .btn-small { padding: 6px 12px; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; }
-        .msg { margin-top: 15px; font-size: 14px; min-height: 20px; }
-        .error { color: #ff4d4f; }
-        .success { color: #52c41a; }
-        .hidden { display: none !important; }
-        .admin-section {
-            margin-bottom: 35px; padding: 25px; background: #f8f9fa; border-radius: 12px;
-        }
-        .admin-section h3 { color: #333; margin-bottom: 20px; font-size: 18px; }
-        .admin-section h3::before {
-            content: ''; display: inline-block; width: 4px; height: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 2px; margin-right: 10px;
-        }
-        .key-item {
-            padding: 15px; background: white; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e0e0e0;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        .key-value { font-family: 'Consolas', monospace; font-size: 16px; color: #667eea; font-weight: 600; margin-bottom: 5px; }
-        .key-meta { font-size: 12px; color: #999; }
-        .key-actions { display: flex; gap: 10px; justify-content: flex-end; }
-        .toast {
-            position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 8px;
-            color: white; z-index: 10001; animation: slideInRight 0.3s ease; font-weight: 500;
-        }
-        .toast.success { background: #52c41a; }
-        .toast.error { background: #ff4d4f; }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
-        .question {
-            margin-bottom: 25px; padding: 20px; background: #f8f9fa; border-radius: 10px; border: 1px solid #e0e0e0;
-        }
-        .q-num {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 28px; height: 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; border-radius: 50%; margin-right: 10px; font-size: 14px;
-        }
-        .q-text { font-size: 16px; color: #333; line-height: 1.7; margin-bottom: 15px; }
-        .options { margin-left: 38px; }
-        .option {
-            padding: 10px 15px; margin-bottom: 8px; background: white; border-radius: 6px; border: 1px solid #e0e0e0;
-        }
-        .option-label { font-weight: 600; color: #667eea; margin-right: 8px; }
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center;
-        }
-        .modal.active { display: flex; }
-        .modal-box {
-            background: white; padding: 40px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        .exam-header {
-            border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 25px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .exam-header h2 { color: #333; font-size: 22px; }
-        .exit-btn {
-            padding: 8px 20px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; color: #666; font-size: 14px;
-        }
-        .exit-btn:hover { background: #e0e0e0; color: #333; }
-        .current-bank {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;
-            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; text-align: left;
-        }
-        .current-bank strong { font-size: 16px; }
-        .loading {
-            display: inline-block; width: 20px; height: 20px; border: 3px solid #f0f0f0;
-            border-top-color: #667eea; border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 8px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+        .panel{background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:40px;width:100%;max-width:480px;text-align:center}
+        .panel.wide{max-width:1000px}
+        .panel h1{color:#333;margin-bottom:10px;font-size:28px}
+        .subtitle{color:#999;margin-bottom:30px;font-size:14px}
+        .fg{margin-bottom:20px;text-align:left}
+        .fg label{display:block;margin-bottom:8px;color:#555;font-weight:500;font-size:14px}
+        .fg select,.fg input{width:100%;padding:12px 16px;border:2px solid #e0e0e0;border-radius:8px;font-size:15px;transition:.3s}
+        .fg select:focus,.fg input:focus{outline:none;border-color:#667eea}
+        .btn{width:100%;padding:14px;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;transition:.3s}
+        .btn-p{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff}
+        .btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(102,126,234,.4)}
+        .btn-g{background:#52c41a;color:#fff;margin-top:15px}
+        .btn-r{background:#ff4d4f;color:#fff}
+        .btn-s{background:#8c8c8c;color:#fff;margin-top:10px}
+        .btn-xs{padding:6px 12px;font-size:13px;border:none;border-radius:4px;cursor:pointer}
+        .msg{margin-top:15px;font-size:14px;min-height:20px}
+        .err{color:#ff4d4f}.ok{color:#52c41a}
+        .hidden{display:none!important}
+        .sec{margin-bottom:35px;padding:25px;background:#f8f9fa;border-radius:12px}
+        .sec h3{color:#333;margin-bottom:20px;font-size:18px}
+        .sec h3::before{content:'';display:inline-block;width:4px;height:20px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:2px;margin-right:10px;vertical-align:middle}
+        .key-item{padding:15px;background:#fff;border-radius:8px;margin-bottom:10px;border:1px solid #e0e0e0;display:flex;flex-direction:column;gap:10px}
+        .key-val{font-family:'Consolas',monospace;font-size:16px;color:#667eea;font-weight:600;margin-bottom:5px;word-break:break-all}
+        .key-meta{font-size:12px;color:#999}
+        .key-acts{display:flex;gap:10px;justify-content:flex-end}
+        .toast{position:fixed;top:20px;right:20px;padding:15px 25px;border-radius:8px;color:#fff;z-index:10001;animation:slideR .3s;font-weight:500}
+        .toast.ok{background:#52c41a}.toast.err{background:#ff4d4f}
+        @keyframes slideR{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
+        .q{margin-bottom:25px;padding:20px;background:#f8f9fa;border-radius:10px;border:1px solid #e0e0e0}
+        .qn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border-radius:50%;margin-right:10px;font-size:14px}
+        .qt{font-size:16px;color:#333;line-height:1.7;margin-bottom:15px}
+        .ops{margin-left:38px}
+        .op{padding:10px 15px;margin-bottom:8px;background:#fff;border-radius:6px;border:1px solid #e0e0e0}
+        .ol{font-weight:600;color:#667eea;margin-right:8px}
+        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:10000;justify-content:center;align-items:center}
+        .modal.active{display:flex}
+        .modal-box{background:#fff;padding:40px;border-radius:16px;width:90%;max-width:400px;text-align:center;animation:slideIn .3s}
+        @keyframes slideIn{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+        .eh{border-bottom:2px solid #f0f0f0;padding-bottom:20px;margin-bottom:25px;display:flex;justify-content:space-between;align-items:center}
+        .eh h2{color:#333;font-size:22px}
+        .xbtn{padding:8px 20px;background:#f0f0f0;border:none;border-radius:6px;cursor:pointer;color:#666;font-size:14px}
+        .xbtn:hover{background:#e0e0e0;color:#333}
+        .cbank{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:15px 20px;border-radius:8px;margin-bottom:20px;text-align:left}
+        .cbank strong{font-size:16px}
+        .spin{display:inline-block;width:20px;height:20px;border:3px solid #f0f0f0;border-top-color:#667eea;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px}
+        @keyframes spin{to{transform:rotate(360deg)}}
     </style>
 </head>
 <body>
-    <!-- 用户解锁界面 -->
-    <div class="panel" id="user-panel">
-        <h1>题库解锁</h1>
-        <p class="subtitle">请输入密钥查看试题内容</p>
-        <div class="form-group">
-            <label>输入密钥</label>
-            <input type="text" id="user-key" placeholder="请输入您的专属密钥" autocomplete="off">
-        </div>
-        <button class="btn btn-primary" onclick="unlockBank()">解锁题库</button>
-        <p class="msg error" id="user-error"></p>
+<div class="panel" id="user-panel">
+    <h1>题库解锁</h1>
+    <p class="subtitle">请输入密钥查看试题内容</p>
+    <div class="fg">
+        <label>输入密钥</label>
+        <input type="text" id="user-key" placeholder="请输入您的专属密钥" autocomplete="off">
+    </div>
+    <button class="btn btn-p" onclick="unlock()">解锁题库</button>
+    <p class="msg err" id="user-err"></p>
+    <div id="auto-msg" style="display:none;margin-top:15px;padding:12px;background:#f6ffed;border:1px solid #b7eb8f;border-radius:8px;color:#52c41a;font-size:13px;">
+        <span class="spin"></span>检测登录状态...
+    </div>
+</div>
 
-        <div id="session-info" style="display:none; margin-top:20px; padding:15px; background:#f6ffed; border:1px solid #b7eb8f; border-radius:8px; font-size:13px; color:#52c41a; text-align:center;">
-            <strong>正在验证您的身份...</strong>
+<div class="panel wide hidden" id="exam-panel">
+    <div class="eh"><h2>试题内容</h2><button class="xbtn" onclick="logout()">退出</button></div>
+    <div class="cbank"><strong>当前题库：</strong><span id="bank-name"></span></div>
+    <div id="qlist"></div>
+</div>
+
+<div class="panel wide hidden" id="admin-panel">
+    <div class="eh"><h1 style="color:#667eea;font-size:26px;">管理员后台</h1><span style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;">管理员模式</span></div>
+    <div class="sec">
+        <h3>用户密钥管理</h3>
+        <div class="fg"><label>自定义密钥（留空自动生成）</label><input type="text" id="ckey" placeholder="留空自动生成8位随机密钥"></div>
+        <div class="fg"><label>备注（可选）</label><input type="text" id="kremark" placeholder="如：张三的密钥"></div>
+        <button class="btn btn-g" onclick="genKey()">生成密钥</button>
+        <div style="margin-top:30px;"><h4 style="margin-bottom:15px;color:#555;">已生成密钥列表</h4><div id="klist"><p style="color:#999;text-align:center;padding:20px;">暂无密钥</p></div></div>
+    </div>
+    <div class="sec" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;text-align:center;">
+        <h3 style="color:#fff;">题库练习</h3><p style="margin-bottom:20px;opacity:.9;">管理员可在此进行题库练习和测试</p>
+        <button class="btn" onclick="enterPractice()" style="background:#fff;color:#667eea;max-width:200px;margin:0 auto;">进入刷题模式</button>
+    </div>
+    <button class="btn btn-r" onclick="adminLogout()" style="margin-top:20px;">退出管理后台</button>
+</div>
+
+<div class="panel wide hidden" id="practice-page">
+    <div class="eh"><h2 style="color:#667eea;font-size:24px;">题库练习</h2><button class="xbtn" onclick="exitPractice()">返回后台</button></div>
+    <div id="psel" style="text-align:center;padding:40px 20px;">
+        <h3 style="color:#333;margin-bottom:20px;">选择题库开始练习</h3>
+        <select id="pbank" style="width:100%;max-width:400px;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:15px;margin-bottom:20px;"><option value="">-- 请选择题库 --</option></select>
+        <button class="btn btn-p" onclick="startPractice()" style="max-width:400px;">开始练习</button>
+    </div>
+    <div id="parea" style="display:none;">
+        <div style="margin-bottom:20px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#666;font-size:14px;">答题进度</span><span id="ptxt" style="color:#667eea;font-weight:600;">1/10</span></div><div style="height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;"><div id="pbar" style="height:100%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);width:10%;transition:width .3s;"></div></div></div>
+        <div id="pq"></div>
+        <div id="po" style="margin:20px 0;"></div>
+        <div id="pa" style="display:none;padding:20px;border-radius:12px;margin-bottom:20px;"><div id="pat" style="font-weight:600;font-size:18px;margin-bottom:10px;"></div><div id="pac" style="line-height:1.6;"></div></div>
+    </div>
+    <div id="pres" style="display:none;text-align:center;padding:40px 20px;">
+        <div id="rem" style="font-size:80px;margin-bottom:20px;"></div><div id="rsc" style="font-size:48px;font-weight:700;margin-bottom:15px;"></div><div id="rdt" style="color:#666;font-size:16px;margin-bottom:30px;"></div>
+        <div style="display:flex;gap:15px;justify-content:center;">
+            <button class="btn btn-p" onclick="restartPractice()" style="max-width:200px">重新练习</button>
+            <button class="btn btn-s" onclick="changeBank()" style="max-width:200px">切换题库</button>
         </div>
     </div>
+</div>
 
-    <!-- 试题展示界面 -->
-    <div class="panel wide hidden" id="exam-panel">
-        <div class="exam-header">
-            <h2>试题内容</h2>
-            <button class="exit-btn" onclick="logout()">退出</button>
-        </div>
-        <div class="current-bank"><strong>当前题库：</strong><span id="current-bank-name">--</span></div>
-        <div id="questions-list"></div>
-    </div>
+<div class="modal" id="edit-modal"><div class="modal-box"><h3 style="margin-bottom:20px;color:#333;">编辑密钥</h3><input type="hidden" id="ekey"><div class="fg"><label>备注</label><input type="text" id="eremark" placeholder="输入备注"></div><div style="display:flex;gap:10px;"><button class="btn btn-s" onclick="document.getElementById('edit-modal').classList.remove('active')">取消</button><button class="btn btn-p" onclick="saveEdit()">保存</button></div></div></div>
 
-    <!-- 管理员后台 -->
-    <div class="panel wide hidden" id="admin-panel">
-        <div class="exam-header">
-            <h1 style="color:#667eea; font-size:26px;">管理员后台</h1>
-            <span style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;">管理员模式</span>
-        </div>
+<div class="modal" id="login-modal"><div class="modal-box"><h2>管理员验证</h2><p style="color:#999;margin-bottom:25px;font-size:14px;">请输入管理员密码</p><div class="fg" style="text-align:left;"><label>管理员密码</label><input type="password" id="apwd" placeholder="请输入密码" onkeypress="if(event.key==='Enter')checkPwd()"></div><button class="btn btn-p" onclick="checkPwd()">验证进入</button><button class="btn btn-s" onclick="document.getElementById('login-modal').classList.remove('active')">取消</button><p class="msg err" id="aerr"></p></div></div>
 
-        <div class="admin-section">
-            <h3>用户密钥管理</h3>
-            <div class="form-group">
-                <label>自定义密钥（留空自动生成）</label>
-                <input type="text" id="custom-key" placeholder="留空自动生成8位随机密钥">
-            </div>
-            <div class="form-group">
-                <label>备注（可选）</label>
-                <input type="text" id="key-remark" placeholder="如：张三的密钥">
-            </div>
-            <button class="btn btn-success" onclick="generateKeyRemote()">生成密钥</button>
-            <div class="key-list" style="margin-top:30px;">
-                <h4 style="margin-bottom:15px;color:#555;">已生成密钥列表</h4>
-                <div id="keys-container"><p style="color:#999;text-align:center;padding:20px;">加载中...</p></div>
-            </div>
-        </div>
+<script>
+const ADM='HM78Z';
+const API='/api';
 
-        <div class="admin-section" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;text-align:center;">
-            <h3 style="color:white;">题库练习</h3>
-            <p style="margin-bottom:20px;opacity:0.9;">管理员可在此进行题库练习和测试</p>
-            <button class="btn" onclick="enterPracticeMode()" style="background:white;color:#667eea;max-width:200px;margin:0 auto;">进入刷题模式</button>
-        </div>
+// ===== 题库数据 =====
+const BANKS={
+    default:{name:'示例题库',questions:[
+        {question:'以下哪个是HTML5的新特性？',options:['<canvas>','<div>','<span>','<table>'],answer:0},
+        {question:'CSS中哪个属性用于设置背景颜色？',options:['color','background-color','font-color','border-color'],answer:1},
+        {question:'JavaScript中声明变量用什么关键字？',options:['var','variable','int','string'],answer:0},
+        {question:'以下哪种不是CSS选择器？',options:['类选择器','ID选择器','标签选择器','文本选择器'],answer:3,analysis:'CSS中没有"文本选择器"这个概念。常见的选择器包括类选择器、ID选择器、标签选择器、属性选择器等。'}
+    ]}
+};
 
-        <button class="btn btn-danger" onclick="adminLogout()" style="margin-top:20px;">退出管理后台</button>
-    </div>
+// ===== 工具函数 =====
+function fp(){let s=[navigator.userAgent,navigator.language,screen.colorDepth,screen.width+'x'+screen.height,new Date().getTimezoneOffset()].join('|');let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h=h&h;}return'fp_'+Math.abs(h).toString(16)}
+function t(m,e){let d=document.createElement('div');d.className='toast '+(e?'err':'ok');d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}
+function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
-    <!-- 刷题页面 -->
-    <div class="panel wide hidden" id="practice-page">
-        <div class="exam-header"><h2 style="color:#667eea;font-size:24px;">题库练习</h2><button class="exit-btn" onclick="exitPractice()">返回后台</button></div>
-        <div id="practice-select" style="text-align:center;padding:40px 20px;">
-            <h3 style="color:#333;margin-bottom:20px;">选择题库开始练习</h3>
-            <select id="practice-bank" style="width:100%;max-width:400px;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:15px;margin-bottom:20px;">
-                <option value="">-- 请选择题库 --</option>
-            </select>
-            <button class="btn btn-primary" onclick="startPractice()" style="max-width:400px;">开始练习</button>
-        </div>
-        <div id="practice-area" style="display:none;">
-            <div style="margin-bottom:20px;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-                    <span style="color:#666;font-size:14px;">答题进度</span>
-                    <span id="progress-text" style="color:#667eea;font-weight:600;">1/10</span>
-                </div>
-                <div style="height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;"><div id="progress-bar" style="height:100%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);width:10%;transition:width 0.3s;"></div></div>
-            </div>
-            <div id="q-display"></div>
-            <div id="opt-display" style="margin:20px 0;"></div>
-            <div id="analysis-display" style="display:none;padding:20px;border-radius:12px;margin-bottom:20px;">
-                <div id="analysis-title" style="font-weight:600;font-size:18px;margin-bottom:10px;"></div>
-                <div id="analysis-content" style="line-height:1.6;"></div>
-            </div>
-        </div>
-        <div id="practice-result" style="display:none;text-align:center;padding:40px 20px;">
-            <div id="result-emoji" style="font-size:80px;margin-bottom:20px;"></div>
-            <div id="final-score" style="font-size:48px;font-weight:700;margin-bottom:15px;"></div>
-            <div id="result-detail" style="color:#666;font-size:16px;margin-bottom:30px;"></div>
-            <div style="display:flex;gap:15px;justify-content:center;">
-                <button class="btn" onclick="restartPractice()" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;max-width:200px;font-size:16px;font-weight:600;">重新练习</button>
-                <button class="btn btn-secondary" onclick="changePracticeBank()" style="max-width:200px;font-size:16px;font-weight:600;">切换题库</button>
-            </div>
-        </div>
-    </div>
+// ===== 管理员唤醒 =====
+document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='@'){document.getElementById('login-modal').classList.add('active');document.getElementById('apwd').focus()}});
+function checkPwd(){if(document.getElementById('apwd').value.trim()!==ADM){document.getElementById('aerr').textContent='密码错误';return}document.getElementById('login-modal').classList.remove('active');enterAdmin()}
+function enterAdmin(){document.getElementById('user-panel').classList.add('hidden');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden');renderKeys()}
+function adminLogout(){document.getElementById('admin-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');t('已退出管理后台')}
 
-    <!-- 编辑密钥模态框 -->
-    <div class="modal" id="edit-key-modal">
-        <div class="modal-box" style="max-width:500px;">
-            <h3 style="margin-bottom:20px;color:#333;">编辑密钥</h3>
-            <input type="hidden" id="edit-key-value">
-            <div class="form-group"><label>备注</label><input type="text" id="edit-key-remark" placeholder="输入备注信息"></div>
-            <div style="display:flex;gap:10px;">
-                <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
-                <button class="btn btn-primary" onclick="saveKeyEditRemote()">保存</button>
-            </div>
-        </div>
-    </div>
+// ===== 密钥管理（localStorage） =====
+function getKeys(){try{return JSON.parse(localStorage.getItem('qbank_keys')||'[]')}catch(e){return[]}}
+function saveKeys(ks){localStorage.setItem('qbank_keys',JSON.stringify(ks))}
 
-    <!-- 管理员登录弹窗 -->
-    <div class="modal" id="admin-login-modal">
-        <div class="modal-box">
-            <h2>管理员验证</h2><p style="color:#999;margin-bottom:25px;font-size:14px;">请输入管理员密码进入后台</p>
-            <div class="form-group" style="text-align:left;">
-                <label>管理员密码</label>
-                <input type="password" id="admin-password" placeholder="请输入密码" onkeypress="if(event.key==='Enter')checkAdminPwd()">
-            </div>
-            <button class="btn btn-primary" onclick="checkAdminPwd()">验证进入</button>
-            <button class="btn btn-secondary" onclick="document.getElementById('admin-login-modal').classList.remove('active')">取消</button>
-            <p class="msg error" id="admin-error"></p>
-        </div>
-    </div>
+async function genKey(){
+    let ck=document.getElementById('ckey').value.trim();
+    let rm=document.getElementById('kremark').value.trim();
+    try{
+        let r=await fetch(API+'/generate-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bankId:'default',customKey:ck||null,adminToken:ADM,remark:rm})});
+        let d=await r.json();
+        if(d.success){
+            let ks=getKeys();
+            ks.push({key:d.key,remark:rm||'',createdAt:new Date().toLocaleString()});
+            saveKeys(ks);
+            document.getElementById('ckey').value='';document.getElementById('kremark').value='';
+            renderKeys();t('密钥生成成功');
+        }else{t(d.error,true)}
+    }catch(e){t('生成失败，请检查网络',true)}
+}
 
-    <script>
-        // ==================== 配置 ====================
-        const ADMIN_KEY = 'HM78Z';
-        const API = '/api';
+function renderKeys(){
+    let ks=getKeys(),c=document.getElementById('klist');
+    if(ks.length===0){c.innerHTML='<p style="color:#999;text-align:center;padding:20px;">暂无密钥</p>';return}
+    let h='';
+    ks.forEach((k,i)=>{
+        let rm=k.remark?`<span style="color:#667eea;font-weight:500;">[${k.remark}]</span> `:'';
+        h+=`<div class="key-item"><div><div class="key-val">${rm}${k.key.substring(0,8)}...(${k.key.split('.')[0]})</div><div class="key-meta">创建: ${k.createdAt}</div></div><div class="key-acts"><button class="btn-xs" style="background:#667eea;color:#fff;" onclick="editKey(${i})">编辑</button><button class="btn-xs btn-r" onclick="delKey(${i})">删除</button></div></div>`;
+    });
+    c.innerHTML=h;
+}
 
-        // 题库数据（内嵌在前端）
-        const BANKS = {
-            'default': {
-                name: '示例题库',
-                questions: [
-                    { question: '以下哪个是HTML5的新特性？', options: ['<canvas>', '<div>', '<span>', '<table>'], answer: 0 },
-                    { question: 'CSS中哪个属性用于设置背景颜色？', options: ['color', 'background-color', 'font-color', 'border-color'], answer: 1 },
-                    { question: 'JavaScript中声明变量用什么关键字？', options: ['var', 'variable', 'int', 'string'], answer: 0 },
-                    { question: '以下哪种不是CSS选择器？', options: ['类选择器', 'ID选择器', '标签选择器', '文本选择器'], answer: 3, analysis: 'CSS中没有"文本选择器"这个概念，常见的是类选择器、ID选择器、标签选择器、属性选择器等。' }
-                ]
-            }
-        };
+function editKey(i){
+    let ks=getKeys();
+    document.getElementById('ekey').value=i;
+    document.getElementById('eremark').value=ks[i].remark||'';
+    document.getElementById('edit-modal').classList.add('active');
+}
+function saveEdit(){
+    let i=parseInt(document.getElementById('ekey').value);
+    let rm=document.getElementById('eremark').value.trim();
+    let ks=getKeys();ks[i].remark=rm;saveKeys(ks);
+    document.getElementById('edit-modal').classList.remove('active');
+    renderKeys();t('密钥已更新');
+}
+function delKey(i){
+    if(!confirm('确定删除此密钥？'))return;
+    let ks=getKeys();ks.splice(i,1);saveKeys(ks);renderKeys();t('密钥已删除');
+}
 
-        // ==================== 全局状态 ====================
-        let currentBankId = null;
-        let practiceState = { bankId: null, questions: [], currentIndex: 0, answers: [], correctCount: 0 };
+// ===== 用户解锁 =====
+async function unlock(){
+    let k=document.getElementById('user-key').value.trim();
+    let e=document.getElementById('user-err');e.textContent='';
+    if(!k){e.textContent='请输入密钥';return}
+    try{
+        let r=await fetch(API+'/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,fingerprint:fp()})});
+        let d=await r.json();
+        if(d.verified){
+            // 保存浏览器绑定
+            localStorage.setItem('qbank_bind','1');
+            localStorage.setItem('qbank_key',k);
+            showExam(d.bankId);
+        }else{e.textContent=d.error||'密钥无效'}
+    }catch(e){e.textContent='网络错误'}
+}
 
-        // ==================== 浏览器指纹 ====================
-        function fingerprint() {
-            let s = [navigator.userAgent, navigator.language, screen.colorDepth, screen.width+'x'+screen.height, new Date().getTimezoneOffset()].join('|');
-            let h = 0; for (let i=0;i<s.length;i++){ h = ((h<<5)-h)+s.charCodeAt(i); h=h&h; }
-            return 'fp_'+Math.abs(h).toString(16);
-        }
+function showExam(bid){
+    document.getElementById('user-panel').classList.add('hidden');
+    document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('exam-panel').classList.remove('hidden');
+    let bank=BANKS[bid]||BANKS['default'];
+    document.getElementById('bank-name').textContent=bank.name;
+    let h='';
+    bank.questions.forEach((q,i)=>{
+        h+=`<div class="q"><div class="qt"><span class="qn">${i+1}</span>${q.question}</div><div class="ops">`;
+        let lbs=['A','B','C','D','E','F'];
+        q.options.forEach((o,oi)=>{h+=`<div class="op"><span class="ol">${lbs[oi]}.</span>${o}</div>`});
+        h+='</div></div>';
+    });
+    document.getElementById('qlist').innerHTML=h;
+}
 
-        // ==================== Toast ====================
-        function toast(msg, err) {
-            let t = document.createElement('div'); t.className='toast '+(err?'error':'success'); t.textContent=msg;
-            document.body.appendChild(t); setTimeout(()=>t.remove(),3000);
-        }
+function logout(){localStorage.removeItem('qbank_bind');localStorage.removeItem('qbank_key');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');document.getElementById('user-key').value=''}
 
-        // ==================== 管理员唤醒 ====================
-        document.addEventListener('keydown', function(e){
-            if (e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
-            if (e.key==='@') { document.getElementById('admin-login-modal').classList.add('active'); document.getElementById('admin-password').focus(); }
-        });
+// ===== 自动登录 =====
+async function checkSession(){
+    let bound=localStorage.getItem('qbank_bind');
+    if(!bound)return;
+    let k=localStorage.getItem('qbank_key');
+    if(!k)return;
+    try{
+        let r=await fetch(API+'/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,fingerprint:fp()})});
+        let d=await r.json();
+        if(d.verified){showExam(d.bankId);t('欢迎回来！已自动登录')}
+    }catch(e){}
+}
 
-        function checkAdminPwd() {
-            if (document.getElementById('admin-password').value.trim()!==ADMIN_KEY) {
-                document.getElementById('admin-error').textContent='密码错误'; return;
-            }
-            document.getElementById('admin-login-modal').classList.remove('active');
-            enterAdmin();
-        }
+// ===== 刷题功能 =====
+let ps={bankId:null,questions:[],currentIndex:0,answers:[],correctCount:0};
 
-        // ==================== 管理员功能 ====================
-        function enterAdmin() {
-            document.getElementById('user-panel').classList.add('hidden');
-            document.getElementById('exam-panel').classList.add('hidden');
-            document.getElementById('admin-panel').classList.remove('hidden');
-            loadKeysListRemote();
-        }
+function enterPractice(){
+    document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('practice-page').classList.remove('hidden');
+    let s=document.getElementById('pbank');s.innerHTML='<option value="">-- 请选择题库 --</option>';
+    Object.entries(BANKS).forEach(([id,b])=>{s.innerHTML+=`<option value="${id}">${b.name}</option>`});
+    resetUI();
+}
+function exitPractice(){document.getElementById('practice-page').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden')}
+function resetUI(){document.getElementById('psel').style.display='block';document.getElementById('parea').style.display='none';document.getElementById('pres').style.display='none'}
 
-        function adminLogout() {
-            document.getElementById('admin-panel').classList.add('hidden');
-            document.getElementById('user-panel').classList.remove('hidden');
-            toast('已退出管理后台');
-        }
+function startPractice(){
+    let id=document.getElementById('pbank').value;
+    if(!id){t('请选择题库',true);return}
+    let bank=BANKS[id];
+    if(!bank||!bank.questions||bank.questions.length===0){t('题库无题目',true);return}
+    ps={bankId:id,questions:bank.questions,currentIndex:0,answers:new Array(bank.questions.length).fill(null),correctCount:0};
+    document.getElementById('psel').style.display='none';document.getElementById('parea').style.display='block';showQ();
+}
 
-        // 生成密钥
-        async function generateKeyRemote() {
-            let customKey = document.getElementById('custom-key').value.trim();
-            let remark = document.getElementById('key-remark').value.trim();
-            try {
-                let res = await fetch(API+'/generate-key', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ bankId: 'default', customKey: customKey||null, adminToken: ADMIN_KEY, remark })
-                });
-                let data = await res.json();
-                if (data.success) {
-                    toast('密钥生成成功: '+data.key);
-                    document.getElementById('custom-key').value='';
-                    document.getElementById('key-remark').value='';
-                    loadKeysListRemote();
-                } else {
-                    toast(data.error, true);
-                }
-            } catch(e) { toast('网络错误', true); }
-        }
+function showQ(){
+    let q=ps.questions[ps.currentIndex],cur=ps.currentIndex+1,total=ps.questions.length;
+    document.getElementById('ptxt').textContent=`${cur}/${total}`;
+    document.getElementById('pbar').style.width=`${(cur/total)*100}%`;
+    let nav='';
+    if(ps.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevQ()" style="padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;color:#666;font-weight:500;">← 上一题</button></div>`;
+    document.getElementById('pq').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${esc(q.question)}</div></div>`;
+    let o='',lbs=['A','B','C','D','E','F'];
+    q.options.forEach((opt,i)=>{o+=`<div class="oi" onclick="sel(${i})" style="display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;cursor:pointer;border:2px solid #e0e0e0;" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span></div>`});
+    document.getElementById('po').innerHTML=o;
+    document.getElementById('pa').style.display='none';
+}
 
-        // 加载密钥列表
-        async function loadKeysListRemote() {
-            let c = document.getElementById('keys-container');
-            c.innerHTML = '<p style="color:#999;text-align:center;padding:20px;"><span class="loading"></span>加载中...</p>';
-            try {
-                let res = await fetch(API+'/list-keys', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ adminToken: ADMIN_KEY })
-                });
-                let data = await res.json();
-                if (!data.keys || data.keys.length===0) { c.innerHTML='<p style="color:#999;text-align:center;padding:20px;">暂无密钥</p>'; return; }
-                let h='';
-                data.keys.forEach(k => {
-                    let status = k.bound ? '<span style="color:#52c41a;">已激活</span>' : '<span style="color:#faad14;">未激活</span>';
-                    let remark = k.remark ? `<span style="color:#667eea;font-weight:500;">[${k.remark}]</span> ` : '';
-                    h+=`<div class="key-item">
-                        <div><div class="key-value">${remark}${k.key}</div>
-                        <div class="key-meta">状态: ${status} | 绑定时间: ${k.boundAt||'未绑定'} | 创建: ${formatDate(k.createdAt)}</div></div>
-                        <div class="key-actions">
-                            <button class="btn-small" style="background:#667eea;color:white;" onclick="editKeyRemote('${k.key}','${(k.remark||'').replace(/'/g,"\\'")}')">编辑</button>
-                            <button class="btn-small btn-danger" onclick="deleteKeyRemote('${k.key}')">删除</button>
-                        </div></div>`;
-                });
-                c.innerHTML=h;
-            } catch(e) { c.innerHTML='<p style="color:#ff4d4f;text-align:center;">加载失败</p>'; }
-        }
+function sel(idx){
+    let q=ps.questions[ps.currentIndex],ok=idx===q.answer;
+    ps.answers[ps.currentIndex]=idx;if(ok)ps.correctCount++;
+    let os=document.querySelectorAll('.oi'),lbs=['A','B','C','D','E','F'];
+    os.forEach((o,i)=>{o.style.pointerEvents='none';if(i===q.answer){o.style.borderColor='#52c41a';o.style.background='#f6ffed';o.innerHTML+=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓ 正确</span>`}else if(i===idx&&!ok){o.style.borderColor='#ff4d4f';o.style.background='#fff2f0';o.innerHTML+=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗ 错误</span>`}else o.style.opacity='0.6'});
+    let ad=document.getElementById('pa'),at=document.getElementById('pat'),ac=document.getElementById('pac');
+    if(ok){ad.style.background='#f6ffed';ad.style.borderColor='#52c41a';at.textContent='🎉 回答正确！';at.style.color='#52c41a'}else{ad.style.background='#fff2f0';ad.style.borderColor='#ff4d4f';at.textContent='❌ 回答错误';at.style.color='#ff4d4f'}
+    let txt=`正确答案是 <strong style="color:#52c41a;">${lbs[q.answer]}</strong>。<br>`;
+    if(q.analysis)txt+=`<br><strong>解析：</strong>${q.analysis}`;else txt+=`<br>${esc(q.options[q.answer])}`;
+    ac.innerHTML=txt;ad.style.display='block';
+    if(ok){if(ps.currentIndex<ps.questions.length-1){setTimeout(()=>{ps.currentIndex++;showQ()},500)}else{setTimeout(()=>showResult(),500)}}
+    else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
+}
 
-        function editKeyRemote(key, remark) {
-            document.getElementById('edit-key-value').value=key;
-            document.getElementById('edit-key-remark').value=remark;
-            document.getElementById('edit-key-modal').classList.add('active');
-        }
+function nextQ(){ps.currentIndex++;showQ()}
+function prevQ(){if(ps.currentIndex>0){ps.currentIndex--;showQ()}}
+function showResult(){
+    document.getElementById('parea').style.display='none';document.getElementById('pres').style.display='block';
+    let total=ps.questions.length,correct=ps.correctCount,pct=Math.round((correct/total)*100);
+    document.getElementById('rem').textContent=pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪';
+    let s=document.getElementById('rsc');s.textContent=pct+'%';s.style.color=pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f';
+    document.getElementById('rdt').textContent=`共 ${total} 题 | 正确 ${correct} 题 | 错误 ${total-correct} 题`;
+}
+function restartPractice(){let bank=BANKS[ps.bankId];ps={bankId:ps.bankId,questions:bank.questions,currentIndex:0,answers:new Array(bank.questions.length).fill(null),correctCount:0};document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='block';showQ()}
+function changeBank(){document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='none';document.getElementById('psel').style.display='block';document.getElementById('pbank').value=''}
 
-        function closeEditModal() { document.getElementById('edit-key-modal').classList.remove('active'); }
-
-        async function saveKeyEditRemote() {
-            let key = document.getElementById('edit-key-value').value;
-            let remark = document.getElementById('edit-key-remark').value.trim();
-            try {
-                let res = await fetch(API+'/edit-key', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ key, bankId:'default', remark, adminToken: ADMIN_KEY })
-                });
-                let d = await res.json();
-                if (d.success) { closeEditModal(); loadKeysListRemote(); toast('密钥已更新'); }
-                else toast(d.error, true);
-            } catch(e) { toast('网络错误', true); }
-        }
-
-        async function deleteKeyRemote(key) {
-            if (!confirm('确定要删除密钥 '+key+' 吗？')) return;
-            try {
-                await fetch(API+'/delete-key', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ key, adminToken: ADMIN_KEY })
-                });
-                loadKeysListRemote(); toast('密钥已删除');
-            } catch(e) { toast('网络错误', true); }
-        }
-
-        function formatDate(s) {
-            if (!s) return '--';
-            try { return new Date(s).toLocaleString(); } catch(e) { return s; }
-        }
-
-        // ==================== 用户功能 ====================
-        async function unlockBank() {
-            let key = document.getElementById('user-key').value.trim();
-            let err = document.getElementById('user-error');
-            err.textContent='';
-            if (!key) { err.textContent='请输入密钥'; return; }
-
-            try {
-                let res = await fetch(API+'/verify-key', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ key, fingerprint: fingerprint() })
-                });
-                let d = await res.json();
-                if (d.verified) {
-                    currentBankId = d.bankId;
-                    localStorage.setItem('qbank_bind', fingerprint());
-                    showExam();
-                } else {
-                    err.textContent = d.error || '密钥无效';
-                }
-            } catch(e) { err.textContent='网络错误，请重试'; }
-        }
-
-        function showExam() {
-            document.getElementById('user-panel').classList.add('hidden');
-            document.getElementById('admin-panel').classList.add('hidden');
-            document.getElementById('exam-panel').classList.remove('hidden');
-
-            let bank = BANKS[currentBankId] || BANKS['default'];
-            document.getElementById('current-bank-name').textContent = bank.name;
-
-            let h = '';
-            bank.questions.forEach((q,i)=>{
-                h+=`<div class="question"><div class="q-text"><span class="q-num">${i+1}</span>${q.question}</div><div class="options">`;
-                let labels=['A','B','C','D','E','F'];
-                q.options.forEach((o,oi)=>{ h+=`<div class="option"><span class="option-label">${labels[oi]}.</span>${o}</div>`; });
-                h+='</div></div>';
-            });
-            document.getElementById('questions-list').innerHTML=h;
-        }
-
-        function logout() {
-            localStorage.removeItem('qbank_bind');
-            document.getElementById('exam-panel').classList.add('hidden');
-            document.getElementById('user-panel').classList.remove('hidden');
-            document.getElementById('user-key').value='';
-        }
-
-        // ==================== 自动登录检查 ====================
-        async function checkSession() {
-            let fp = fingerprint();
-            let bound = localStorage.getItem('qbank_bind');
-            if (!bound) return;
-
-            try {
-                let res = await fetch(API+'/check-session', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ fingerprint: fp })
-                });
-                let d = await res.json();
-                if (d.active) {
-                    currentBankId = d.bankId;
-                    showExam();
-                    toast('欢迎回来！已自动恢复');
-                }
-            } catch(e) {}
-        }
-
-        // ==================== 刷题功能 ====================
-        function enterPracticeMode() {
-            document.getElementById('admin-panel').classList.add('hidden');
-            document.getElementById('practice-page').classList.remove('hidden');
-            let s = document.getElementById('practice-bank');
-            s.innerHTML='<option value="">-- 请选择题库 --</option>';
-            Object.entries(BANKS).forEach(([id,b])=>{ s.innerHTML+=`<option value="${id}">${b.name}</option>`; });
-            resetPracticeUI();
-        }
-
-        function exitPractice() {
-            document.getElementById('practice-page').classList.add('hidden');
-            document.getElementById('admin-panel').classList.remove('hidden');
-        }
-
-        function resetPracticeUI() {
-            document.getElementById('practice-select').style.display='block';
-            document.getElementById('practice-area').style.display='none';
-            document.getElementById('practice-result').style.display='none';
-        }
-
-        function startPractice() {
-            let id = document.getElementById('practice-bank').value;
-            if (!id) { toast('请选择题库', true); return; }
-            let bank = BANKS[id];
-            if (!bank||!bank.questions||bank.questions.length===0) { toast('该题库暂无题目', true); return; }
-            practiceState = { bankId:id, questions:bank.questions, currentIndex:0, answers:new Array(bank.questions.length).fill(null), correctCount:0 };
-            document.getElementById('practice-select').style.display='none';
-            document.getElementById('practice-area').style.display='block';
-            showQuestion();
-        }
-
-        function showQuestion() {
-            let q = practiceState.questions[practiceState.currentIndex];
-            let cur = practiceState.currentIndex+1, total = practiceState.questions.length;
-            document.getElementById('progress-text').textContent=`${cur}/${total}`;
-            document.getElementById('progress-bar').style.width=`${(cur/total)*100}%`;
-
-            let nav = '';
-            if (practiceState.currentIndex > 0) {
-                nav = `<div style="margin-bottom:15px;"><button onclick="prevQuestion()" style="padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;color:#666;font-weight:500;">← 上一题</button></div>`;
-            }
-            document.getElementById('q-display').innerHTML = nav +
-                `<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;">
-                    <div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;">
-                        <span class="q-num" style="width:32px;height:32px;font-size:16px;">${cur}</span>${q.question}
-                    </div></div>`;
-
-            let opts='', labels=['A','B','C','D','E','F'];
-            q.options.forEach((o,i)=>{
-                opts+=`<div class="option-item" onclick="selectAnswer(${i})"
-                    style="display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:white;border-radius:10px;cursor:pointer;border:2px solid #e0e0e0;"
-                    onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'">
-                    <span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${labels[i]}</span>
-                    <span style="color:#333;font-size:16px;flex:1;">${o}</span></div>`;
-            });
-            document.getElementById('opt-display').innerHTML=opts;
-            document.getElementById('analysis-display').style.display='none';
-        }
-
-        function selectAnswer(idx) {
-            let q = practiceState.questions[practiceState.currentIndex];
-            let correct = idx === q.answer;
-            practiceState.answers[practiceState.currentIndex] = idx;
-            if (correct) practiceState.correctCount++;
-
-            let opts = document.querySelectorAll('.option-item');
-            let labels=['A','B','C','D','E','F'];
-            opts.forEach((o, i) => {
-                o.style.pointerEvents='none';
-                if (i===q.answer) {
-                    o.style.borderColor='#52c41a'; o.style.background='#f6ffed';
-                    o.innerHTML+=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓ 正确答案</span>`;
-                } else if (i===idx&&!correct) {
-                    o.style.borderColor='#ff4d4f'; o.style.background='#fff2f0';
-                    o.innerHTML+=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗ 错误</span>`;
-                } else o.style.opacity='0.6';
-            });
-
-            let ad = document.getElementById('analysis-display');
-            let at = document.getElementById('analysis-title');
-            let ac = document.getElementById('analysis-content');
-
-            if (correct) {
-                ad.style.background='#f6ffed'; ad.style.borderColor='#52c41a';
-                at.textContent='🎉 回答正确！'; at.style.color='#52c41a';
-            } else {
-                ad.style.background='#fff2f0'; ad.style.borderColor='#ff4d4f';
-                at.textContent='❌ 回答错误'; at.style.color='#ff4d4f';
-            }
-
-            let txt = `正确答案是 <strong style="color:#52c41a;">${labels[q.answer]}</strong>。<br>`;
-            if (q.analysis) txt += `<br><strong>解析：</strong>${q.analysis}`;
-            else txt += `<br>${q.options[q.answer]}`;
-
-            ac.innerHTML = txt;
-            ad.style.display = 'block';
-
-            if (correct) {
-                if (practiceState.currentIndex < practiceState.questions.length - 1) {
-                    setTimeout(() => { practiceState.currentIndex++; showQuestion(); }, 500);
-                } else {
-                    setTimeout(() => showPracticeResult(), 500);
-                }
-            } else {
-                let btnHtml = practiceState.currentIndex < practiceState.questions.length - 1
-                    ? '<button onclick="nextQuestion()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>'
-                    : '<button onclick="showPracticeResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';
-                ac.innerHTML += `<div style="margin-top:20px;text-align:center;">${btnHtml}</div>`;
-            }
-        }
-
-        function nextQuestion() {
-            practiceState.currentIndex++;
-            showQuestion();
-        }
-
-        function prevQuestion() {
-            if (practiceState.currentIndex > 0) { practiceState.currentIndex--; showQuestion(); }
-        }
-
-        function showPracticeResult() {
-            document.getElementById('practice-area').style.display='none';
-            document.getElementById('practice-result').style.display='block';
-            let total=practiceState.questions.length, correct=practiceState.correctCount;
-            let pct=Math.round((correct/total)*100);
-
-            let e=document.getElementById('result-emoji');
-            e.textContent=pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪';
-            let s=document.getElementById('final-score');
-            s.textContent=pct+'%'; s.style.color=pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f';
-            document.getElementById('result-detail').textContent=`共 ${total} 题 | 正确 ${correct} 题 | 错误 ${total-correct} 题`;
-        }
-
-        function restartPractice() {
-            let bank = BANKS[practiceState.bankId];
-            practiceState = { bankId:practiceState.bankId, questions:bank.questions, currentIndex:0, answers:new Array(bank.questions.length).fill(null), correctCount:0 };
-            document.getElementById('practice-result').style.display='none';
-            document.getElementById('practice-area').style.display='block';
-            showQuestion();
-        }
-
-        function changePracticeBank() {
-            document.getElementById('practice-result').style.display='none';
-            document.getElementById('practice-area').style.display='none';
-            document.getElementById('practice-select').style.display='block';
-            document.getElementById('practice-bank').value='';
-        }
-
-        // ==================== 初始化 ====================
-        window.onload = function() {
-            document.getElementById('session-info').style.display = 'block';
-            document.getElementById('session-info').innerHTML = '<span class="loading"></span>检测登录状态...';
-            checkSession().finally(() => {
-                document.getElementById('session-info').style.display = 'none';
-            });
-        };
-    </script>
+// ===== 初始化 =====
+window.onload=function(){
+    let am=document.getElementById('auto-msg');
+    am.style.display='block';am.innerHTML='<span class="spin"></span>检测登录状态...';
+    checkSession().finally(()=>{am.style.display='none'});
+};
+</script>
 </body>
 </html>
