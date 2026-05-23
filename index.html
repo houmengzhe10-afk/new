@@ -53,6 +53,10 @@
         .cbank strong{font-size:16px}
         .spin{display:inline-block;width:20px;height:20px;border:3px solid #f0f0f0;border-top-color:#667eea;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px}
         @keyframes spin{to{transform:rotate(360deg)}}
+        .bcheck{display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px 14px;background:#fff;border:2px solid #e0e0e0;border-radius:6px;font-size:14px;color:#555;transition:.2s;user-select:none}
+        .bcheck input{display:none}
+        .bcheck.sel{border-color:#667eea;background:#f0f2ff;color:#667eea;font-weight:500}
+        .btile{display:inline-block;padding:3px 10px;background:rgba(102,126,234,.15);color:#667eea;border-radius:4px;font-size:12px;margin:2px 4px;white-space:nowrap}
     </style>
 </head>
 <body>
@@ -73,6 +77,10 @@
 <div class="panel wide hidden" id="exam-panel">
     <div class="eh"><h2>试题内容</h2><button class="xbtn" onclick="logout()">退出</button></div>
     <div class="cbank"><strong>当前题库：</strong><span id="bank-name"></span></div>
+    <div id="exam-bank-chooser" style="display:none;text-align:center;padding:40px 20px;">
+        <h3 style="color:#333;margin-bottom:20px;">请选择要查看的试题库</h3>
+        <div id="exam-bank-list" style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;"></div>
+    </div>
     <div style="margin-bottom:20px;">
         <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#666;font-size:14px;">答题进度</span><span id="exam-ptxt" style="color:#667eea;font-weight:600;">0/0</span></div>
         <div style="height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;"><div id="exam-pbar" style="height:100%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);width:0%;transition:width .3s;"></div></div>
@@ -92,6 +100,7 @@
         <h3>用户密钥管理</h3>
         <div class="fg"><label>自定义密钥（留空自动生成）</label><input type="text" id="ckey" placeholder="留空自动生成8位随机密钥"></div>
         <div class="fg"><label>备注（可选）</label><input type="text" id="kremark" placeholder="如：张三的密钥"></div>
+        <div class="fg"><label>绑定试题库（可多选）</label><div id="bank-checks" style="display:flex;flex-wrap:wrap;gap:8px;padding:6px 0;"></div></div>
         <button class="btn btn-g" onclick="genKey()">生成密钥</button>
         <div style="margin-top:30px;"><h4 style="margin-bottom:15px;color:#555;">已生成密钥列表</h4><div id="klist"><p style="color:#999;text-align:center;padding:20px;">暂无密钥</p></div></div>
     </div>
@@ -150,8 +159,14 @@ function esc(s){let d=document.createElement('div');d.textContent=s;return d.inn
 // ===== 管理员唤醒 =====
 document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='@'){document.getElementById('login-modal').classList.add('active');document.getElementById('apwd').focus()}});
 function checkPwd(){if(document.getElementById('apwd').value.trim()!==ADM){document.getElementById('aerr').textContent='密码错误';return}document.getElementById('login-modal').classList.remove('active');enterAdmin()}
-function enterAdmin(){document.getElementById('user-panel').classList.add('hidden');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden');renderKeys();localStorage.setItem('admin_session','1')}
+function enterAdmin(){document.getElementById('user-panel').classList.add('hidden');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden');renderKeys();initBankChecks();localStorage.setItem('admin_session','1')}
 function adminLogout(){document.getElementById('admin-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');localStorage.removeItem('admin_session');t('已退出管理后台')}
+
+function initBankChecks(){
+    let c=document.getElementById('bank-checks'),h='';
+    Object.entries(BANKS).forEach(([id,b])=>{h+=`<label class="bcheck" onclick="this.classList.toggle('sel');this.querySelector('input').checked=this.classList.contains('sel')"><input type="checkbox" value="${id}">${esc(b.name)}</label>`});
+    c.innerHTML=h;
+}
 
 // ===== 密钥管理（localStorage） =====
 function getKeys(){try{return JSON.parse(localStorage.getItem('qbank_keys')||'[]')}catch(e){return[]}}
@@ -160,14 +175,19 @@ function saveKeys(ks){localStorage.setItem('qbank_keys',JSON.stringify(ks))}
 async function genKey(){
     let ck=document.getElementById('ckey').value.trim();
     let rm=document.getElementById('kremark').value.trim();
+    let bids=[];
+    document.querySelectorAll('#bank-checks .bcheck.sel input').forEach(cb=>bids.push(cb.value));
+    if(bids.length===0){t('请至少绑定一个试题库',true);return}
+    let bankId=bids.join(',');
     try{
-        let r=await fetch(API+'/generate-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bankId:'default',customKey:ck||null,adminToken:ADM,remark:rm})});
+        let r=await fetch(API+'/generate-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bankId:bankId,customKey:ck||null,adminToken:ADM,remark:rm})});
         let d=await r.json();
         if(d.success){
             let ks=getKeys();
-            ks.push({key:d.key,remark:rm||'',createdAt:new Date().toLocaleString()});
+            ks.push({key:d.key,remark:rm||'',banks:bids,createdAt:new Date().toLocaleString()});
             saveKeys(ks);
             document.getElementById('ckey').value='';document.getElementById('kremark').value='';
+            document.querySelectorAll('#bank-checks .bcheck.sel').forEach(l=>l.classList.remove('sel'));
             renderKeys();t('密钥生成成功');
         }else{t(d.error,true)}
     }catch(e){t('生成失败，请检查网络',true)}
@@ -180,9 +200,12 @@ function renderKeys(){
     ks.forEach((k,i)=>{
         let rm=k.remark?`<span style="color:#667eea;font-weight:500;">[${k.remark}]</span> `:'';
         let shortKey=k.key.split('.')[0] || k.key;
+        let btags='';
+        if(k.banks&&k.banks.length){k.banks.forEach(bid=>{let bn=BANKS[bid];if(bn)btags+=`<span class="btile">${esc(bn.name)}</span>`})}
         h+=`<div class="key-item">
             <div>
                 <div class="key-val" style="cursor:pointer" title="点击复制完整密钥" onclick="copyKey('${k.key.replace(/'/g,"\\'")}')">${rm}${shortKey} <span style="font-size:11px;color:#999;">📋复制</span></div>
+                ${btags?`<div style="margin-top:6px;">${btags}</div>`:''}
                 <div class="key-meta">创建: ${k.createdAt}</div>
             </div>
             <div class="key-acts">
@@ -228,6 +251,7 @@ async function unlock(){
             localStorage.setItem('qbank_bind','1');
             localStorage.setItem('qbank_key',d.boundKey||k);
             localStorage.setItem('qbank_fp',fp());
+            localStorage.setItem('qbank_banks',d.bankId||'');
             showExam(d.bankId);
         }else{e.textContent=d.error||'密钥无效'}
     }catch(e){e.textContent='网络错误'}
@@ -237,15 +261,29 @@ function showExam(bid){
     document.getElementById('user-panel').classList.add('hidden');
     document.getElementById('admin-panel').classList.add('hidden');
     document.getElementById('exam-panel').classList.remove('hidden');
+    let bankIds=bid.indexOf(',')!==-1?bid.split(','):[bid];
+    if(bankIds.length>1){
+        document.getElementById('exam-bank-chooser').style.display='block';
+        document.getElementById('exam-qarea').style.display='none';
+        document.getElementById('exam-res').style.display='none';
+        document.getElementById('bank-name').textContent='';
+        let h='';bankIds.forEach(id=>{let b=BANKS[id];if(b)h+=`<div onclick="selectExamBank('${id}')" style="padding:30px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border-radius:12px;cursor:pointer;font-size:18px;font-weight:600;min-width:150px;transition:.3s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(102,126,234,.4)'" onmouseout="this.style.transform='';this.style.boxShadow=''">${esc(b.name)}</div>`});
+        document.getElementById('exam-bank-list').innerHTML=h;
+        return;
+    }
+    selectExamBank(bankIds[0]);
+}
+function selectExamBank(bid){
+    document.getElementById('exam-bank-chooser').style.display='none';
+    document.getElementById('exam-qarea').style.display='block';
     let bank=BANKS[bid]||BANKS['default'];
     document.getElementById('bank-name').textContent=bank.name;
     es={bankId:bid,questions:bank.questions,currentIndex:0,answers:new Array(bank.questions.length).fill(null),correctCount:0};
     document.getElementById('exam-res').style.display='none';
-    document.getElementById('exam-qarea').style.display='block';
     showExamQ();
 }
 
-function logout(){localStorage.removeItem('qbank_bind');localStorage.removeItem('qbank_key');localStorage.removeItem('qbank_fp');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');document.getElementById('user-key').value=''}
+function logout(){localStorage.removeItem('qbank_bind');localStorage.removeItem('qbank_key');localStorage.removeItem('qbank_fp');localStorage.removeItem('qbank_banks');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');document.getElementById('user-key').value=''}
 
 // ===== 自动登录 =====
 async function checkSession(){
@@ -259,6 +297,7 @@ async function checkSession(){
         localStorage.removeItem('qbank_bind');
         localStorage.removeItem('qbank_key');
         localStorage.removeItem('qbank_fp');
+        localStorage.removeItem('qbank_banks');
         document.getElementById('user-err').textContent='检测到设备变更，请重新输入密钥';
         document.getElementById('auto-msg').style.display='none';
         return;
@@ -271,6 +310,7 @@ async function checkSession(){
             localStorage.removeItem('qbank_bind');
             localStorage.removeItem('qbank_key');
             localStorage.removeItem('qbank_fp');
+            localStorage.removeItem('qbank_banks');
             document.getElementById('user-err').textContent=d.error||'会话已过期，请重新输入密钥';
         }
     }catch(e){}
