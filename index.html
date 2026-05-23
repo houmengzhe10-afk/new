@@ -73,7 +73,17 @@
 <div class="panel wide hidden" id="exam-panel">
     <div class="eh"><h2>试题内容</h2><button class="xbtn" onclick="logout()">退出</button></div>
     <div class="cbank"><strong>当前题库：</strong><span id="bank-name"></span></div>
-    <div id="qlist"></div>
+    <div style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#666;font-size:14px;">答题进度</span><span id="exam-ptxt" style="color:#667eea;font-weight:600;">0/0</span></div>
+        <div style="height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;"><div id="exam-pbar" style="height:100%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);width:0%;transition:width .3s;"></div></div>
+    </div>
+    <div id="exam-qarea">
+        <div id="exam-q"></div>
+        <div id="exam-o" style="margin:20px 0;"></div>
+        <div id="exam-a" style="display:none;padding:20px;border-radius:12px;margin-bottom:20px;"></div>
+        <div id="exam-nav" style="display:none;text-align:center;margin-top:20px;"></div>
+    </div>
+    <div id="exam-res" style="display:none;text-align:center;padding:40px 20px;"></div>
 </div>
 
 <div class="panel wide hidden" id="admin-panel">
@@ -215,9 +225,9 @@ async function unlock(){
         let r=await fetch(API+'/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,fingerprint:fp()})});
         let d=await r.json();
         if(d.verified){
-            // 保存浏览器绑定
             localStorage.setItem('qbank_bind','1');
-            localStorage.setItem('qbank_key',k);
+            localStorage.setItem('qbank_key',d.boundKey||k);
+            localStorage.setItem('qbank_fp',fp());
             showExam(d.bankId);
         }else{e.textContent=d.error||'密钥无效'}
     }catch(e){e.textContent='网络错误'}
@@ -229,17 +239,13 @@ function showExam(bid){
     document.getElementById('exam-panel').classList.remove('hidden');
     let bank=BANKS[bid]||BANKS['default'];
     document.getElementById('bank-name').textContent=bank.name;
-    let h='';
-    bank.questions.forEach((q,i)=>{
-        h+=`<div class="q"><div class="qt"><span class="qn">${i+1}</span>${q.question}</div><div class="ops">`;
-        let lbs=['A','B','C','D','E','F'];
-        q.options.forEach((o,oi)=>{h+=`<div class="op"><span class="ol">${lbs[oi]}.</span>${o}</div>`});
-        h+='</div></div>';
-    });
-    document.getElementById('qlist').innerHTML=h;
+    es={bankId:bid,questions:bank.questions,currentIndex:0,answers:new Array(bank.questions.length).fill(null),correctCount:0};
+    document.getElementById('exam-res').style.display='none';
+    document.getElementById('exam-qarea').style.display='block';
+    showExamQ();
 }
 
-function logout(){localStorage.removeItem('qbank_bind');localStorage.removeItem('qbank_key');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');document.getElementById('user-key').value=''}
+function logout(){localStorage.removeItem('qbank_bind');localStorage.removeItem('qbank_key');localStorage.removeItem('qbank_fp');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');document.getElementById('user-key').value=''}
 
 // ===== 自动登录 =====
 async function checkSession(){
@@ -247,15 +253,32 @@ async function checkSession(){
     if(!bound)return;
     let k=localStorage.getItem('qbank_key');
     if(!k)return;
+    let savedFp=localStorage.getItem('qbank_fp');
+    let currentFp=fp();
+    if(savedFp&&savedFp!==currentFp){
+        localStorage.removeItem('qbank_bind');
+        localStorage.removeItem('qbank_key');
+        localStorage.removeItem('qbank_fp');
+        document.getElementById('user-err').textContent='检测到设备变更，请重新输入密钥';
+        document.getElementById('auto-msg').style.display='none';
+        return;
+    }
     try{
-        let r=await fetch(API+'/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,fingerprint:fp()})});
+        let r=await fetch(API+'/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,fingerprint:currentFp})});
         let d=await r.json();
         if(d.verified){showExam(d.bankId);t('欢迎回来！已自动登录')}
+        else{
+            localStorage.removeItem('qbank_bind');
+            localStorage.removeItem('qbank_key');
+            localStorage.removeItem('qbank_fp');
+            document.getElementById('user-err').textContent=d.error||'会话已过期，请重新输入密钥';
+        }
     }catch(e){}
 }
 
 // ===== 刷题功能 =====
 let ps={bankId:null,questions:[],currentIndex:0,answers:[],correctCount:0};
+let es={bankId:null,questions:[],currentIndex:0,answers:[],correctCount:0};
 
 function enterPractice(){
     document.getElementById('admin-panel').classList.add('hidden');
@@ -314,6 +337,50 @@ function showResult(){
 }
 function restartPractice(){let bank=BANKS[ps.bankId];ps={bankId:ps.bankId,questions:bank.questions,currentIndex:0,answers:new Array(bank.questions.length).fill(null),correctCount:0};document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='block';showQ()}
 function changeBank(){document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='none';document.getElementById('psel').style.display='block';document.getElementById('pbank').value=''}
+
+// ===== 用户答题功能 =====
+function showExamQ(){
+    let q=es.questions[es.currentIndex],cur=es.currentIndex+1,total=es.questions.length,lbs=['A','B','C','D','E','F'],prevAns=es.answers[es.currentIndex],isAns=prevAns!==null;
+    document.getElementById('exam-ptxt').textContent=`${cur}/${total}`;
+    document.getElementById('exam-pbar').style.width=`${(cur/total)*100}%`;
+    let nav='';
+    if(es.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevExamQ()" style="padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;color:#666;font-weight:500;">← 上一题</button></div>`;
+    document.getElementById('exam-q').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${esc(q.question)}</div></div>`;
+    let o='';
+    q.options.forEach((opt,i)=>{
+        let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;',bdg='',clk='';
+        if(isAns){
+            st+='pointer-events:none;';
+            if(i===q.answer){st+='border-color:#52c41a;background:#f6ffed;';bdg=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓ 正确</span>`}
+            else if(i===prevAns){st+='border-color:#ff4d4f;background:#fff2f0;';bdg=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗ 错误</span>`}
+            else st+='opacity:0.6;'
+        }
+        else{st+='cursor:pointer;';clk=`onclick="selExam(${i})" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"`}
+        o+=`<div ${clk} style="${st}"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
+    });
+    document.getElementById('exam-o').innerHTML=o;
+    let ad=document.getElementById('exam-a'),nd=document.getElementById('exam-nav');
+    if(isAns){
+        let ok=prevAns===q.answer;
+        ad.style.background=ok?'#f6ffed':'#fff2f0';ad.style.border=ok?'1px solid #52c41a':'1px solid #ff4d4f';
+        ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;">正确答案是 <strong style="color:#52c41a;">${lbs[q.answer]}</strong>。${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
+        ad.style.display='block';
+        nd.innerHTML=es.currentIndex<es.questions.length-1?'<button onclick="nextExamQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showExamResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';
+        nd.style.display='block';
+    }else{ad.style.display='none';nd.style.display='none'}
+}
+function selExam(idx){
+    let q=es.questions[es.currentIndex];
+    es.answers[es.currentIndex]=idx;if(idx===q.answer)es.correctCount++;
+    showExamQ();
+}
+function nextExamQ(){es.currentIndex++;showExamQ()}
+function prevExamQ(){if(es.currentIndex>0){es.currentIndex--;showExamQ()}}
+function showExamResult(){
+    document.getElementById('exam-qarea').style.display='none';document.getElementById('exam-res').style.display='block';
+    let total=es.questions.length,correct=es.correctCount,pct=Math.round((correct/total)*100);
+    document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f'};">${pct}%</div><div style="color:#666;font-size:16px;">共 ${total} 题 | 正确 ${correct} 题 | 错误 ${total-correct} 题</div>`;
+}
 
 // ===== 初始化 =====
 window.onload=function(){
