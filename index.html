@@ -150,8 +150,8 @@ function esc(s){let d=document.createElement('div');d.textContent=s;return d.inn
 // ===== 管理员唤醒 =====
 document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='@'){document.getElementById('login-modal').classList.add('active');document.getElementById('apwd').focus()}});
 function checkPwd(){if(document.getElementById('apwd').value.trim()!==ADM){document.getElementById('aerr').textContent='密码错误';return}document.getElementById('login-modal').classList.remove('active');enterAdmin()}
-function enterAdmin(){document.getElementById('user-panel').classList.add('hidden');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden');renderKeys()}
-function adminLogout(){document.getElementById('admin-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');t('已退出管理后台')}
+function enterAdmin(){document.getElementById('user-panel').classList.add('hidden');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden');renderKeys();localStorage.setItem('admin_session','1')}
+function adminLogout(){document.getElementById('admin-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');localStorage.removeItem('admin_session');t('已退出管理后台')}
 
 // ===== 密钥管理（localStorage） =====
 function getKeys(){try{return JSON.parse(localStorage.getItem('qbank_keys')||'[]')}catch(e){return[]}}
@@ -385,6 +385,7 @@ function showExamResult(){
 // ===== 初始化 =====
 window.onload=function(){
     let am=document.getElementById('auto-msg');
+    if(localStorage.getItem('admin_session')){am.style.display='none';enterAdmin();return}
     am.style.display='block';am.innerHTML='<span class="spin"></span>检测登录状态...';
     checkSession().finally(()=>{am.style.display='none'});
 };
