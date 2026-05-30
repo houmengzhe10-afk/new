@@ -281,13 +281,30 @@ function saveKeys(ks){localStorage.setItem('qbank_keys',JSON.stringify(ks))}
 
 async function genKey(){
     let ck=document.getElementById('ckey').value.trim();
-    let bid=document.getElementById('cbid').value.trim().toUpperCase();
+    let bidRaw=document.getElementById('cbid').value;
+    let bid=String(bidRaw||'').replace(/\s+/g,'').toUpperCase();
     let rm=document.getElementById('kremark').value.trim();
     let bids=[];
     document.querySelectorAll('#bank-dd-pn .bdd-it.sel').forEach(el=>bids.push(el.dataset.id));
-    if(!bid){t('请输入要绑定的浏览器ID',true);return}
-    if(!/^[A-Z0-9_]{3,64}$/.test(bid)){t('浏览器ID格式不合法',true);return}
+    if(!bid){t('请输入要绑定的浏览器ID',true);document.getElementById('cbid').focus();return}
+    if(!/^[A-Z0-9_]{3,64}$/.test(bid)){t('浏览器ID格式不合法（仅允许字母、数字、下划线，3-64位）：'+bid,true);return}
     if(bids.length===0){t('请至少绑定一个试题库',true);return}
+    let ks=getKeys();
+    if(ks.some(k=>k.browserId===bid)){t('该浏览器ID已绑定其他密钥',true);return}
+    let bankId=bids.join(',');
+    try{
+        let r=await fetch(API+'/generate-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bankId:bankId,customKey:ck||null,adminToken:ADM,remark:rm,browserId:bid})});
+        let d=await r.json();
+        if(d.success){
+            ks.push({key:d.key,remark:rm||'',banks:bids,browserId:d.browserId||bid,createdAt:new Date().toLocaleString()});
+            saveKeys(ks);
+            document.getElementById('ckey').value='';document.getElementById('cbid').value='';document.getElementById('kremark').value='';
+            document.querySelectorAll('#bank-dd-pn .bdd-it.sel').forEach(el=>el.classList.remove('sel'));
+            renderBankDD();
+            renderKeys();t('密钥生成成功');
+        }else{t(d.error,true)}
+    }catch(e){t('生成失败，请检查网络',true)}
+}
     let ks=getKeys();
     if(ks.some(k=>k.browserId===bid)){t('该浏览器ID已绑定其他密钥',true);return}
     let bankId=bids.join(',');
