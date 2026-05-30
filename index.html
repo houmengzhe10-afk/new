@@ -286,15 +286,16 @@ async function genKey(){
     let bids=[];
     document.querySelectorAll('#bank-dd-pn .bdd-it.sel').forEach(el=>bids.push(el.dataset.id));
     if(!bid){t('请输入要绑定的浏览器ID',true);return}
+    if(!/^[A-Z0-9_]{3,64}$/.test(bid)){t('浏览器ID格式不合法',true);return}
     if(bids.length===0){t('请至少绑定一个试题库',true);return}
     let ks=getKeys();
     if(ks.some(k=>k.browserId===bid)){t('该浏览器ID已绑定其他密钥',true);return}
     let bankId=bids.join(',');
     try{
-        let r=await fetch(API+'/generate-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bankId:bankId,customKey:ck||null,adminToken:ADM,remark:rm})});
+        let r=await fetch(API+'/generate-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bankId:bankId,customKey:ck||null,adminToken:ADM,remark:rm,browserId:bid})});
         let d=await r.json();
         if(d.success){
-            ks.push({key:d.key,remark:rm||'',banks:bids,browserId:bid,createdAt:new Date().toLocaleString()});
+            ks.push({key:d.key,remark:rm||'',banks:bids,browserId:d.browserId||bid,createdAt:new Date().toLocaleString()});
             saveKeys(ks);
             document.getElementById('ckey').value='';document.getElementById('cbid').value='';document.getElementById('kremark').value='';
             document.querySelectorAll('#bank-dd-pn .bdd-it.sel').forEach(el=>el.classList.remove('sel'));
@@ -346,8 +347,26 @@ function copyKey(key){
     });
 }
 function delKey(i){
-    if(!confirm('确定删除此密钥？'))return;
-    let ks=getKeys();ks.splice(i,1);saveKeys(ks);renderKeys();t('密钥已删除');
+    if(!confirm('确定删除此密钥？删除后该密钥将无法再次使用。'))return;
+    let ks=getKeys(),rec=ks[i];
+    if(rec&&rec.key){
+        let rev=JSON.parse(localStorage.getItem('qbank_revoked')||'[]');
+        let rawKey=rec.key.split('.')[0];
+        if(rev.indexOf(rawKey)===-1)rev.push(rawKey);
+        localStorage.setItem('qbank_revoked',JSON.stringify(rev));
+        if(rec.browserId){
+            let bidRev=JSON.parse(localStorage.getItem('qbank_revoked_bid')||'{}');
+            bidRev[rec.browserId]=(bidRev[rec.browserId]||[]).concat([rawKey]);
+            localStorage.setItem('qbank_revoked_bid',JSON.stringify(bidRev));
+        }
+    }
+    ks.splice(i,1);saveKeys(ks);renderKeys();t('密钥已删除并加入撤销列表');
+}
+
+function isRevoked(key){
+    let rev=JSON.parse(localStorage.getItem('qbank_revoked')||'[]');
+    let raw=String(key||'').split('.')[0];
+    return rev.indexOf(raw)!==-1;
 }
 
 // ===== 用户解锁 =====
@@ -355,17 +374,17 @@ async function unlock(){
     let k=document.getElementById('user-key').value.trim();
     let e=document.getElementById('user-err');e.textContent='';
     if(!k){e.textContent='请输入密钥';return}
+    if(isRevoked(k)){e.textContent='此密钥已被管理员撤销';return}
     let curBid=(localStorage.getItem('browser_id')||'').toUpperCase();
-    let ks=getKeys(),rec=ks.find(x=>x.key===k||x.key.indexOf(k+'.')===0||(x.key.split('.')[0]===k.split('.')[0]));
-    if(rec&&rec.browserId&&rec.browserId!==curBid){e.textContent='此密钥仅限绑定的浏览器使用，当前浏览器ID不匹配';return}
+    if(!curBid){e.textContent='浏览器ID未初始化，请刷新页面';return}
     try{
-        let r=await fetch(API+'/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,fingerprint:fp()})});
+        let r=await fetch(API+'/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,browserId:curBid})});
         let d=await r.json();
         if(d.verified){
             localStorage.setItem('qbank_bind','1');
-            localStorage.setItem('qbank_key',d.boundKey||k);
-            localStorage.setItem('qbank_fp',fp());
+            localStorage.setItem('qbank_key',k);
             localStorage.setItem('qbank_banks',d.bankId||'');
+            localStorage.setItem('qbank_bid',d.browserId||curBid);
             showExam(d.bankId);
         }else{e.textContent=d.error||'密钥无效'}
     }catch(e){e.textContent='网络错误'}
@@ -401,7 +420,7 @@ function selectExamBank(bid){
     showExamQ();
 }
 
-function logout(){localStorage.removeItem('qbank_bind');localStorage.removeItem('qbank_key');localStorage.removeItem('qbank_fp');localStorage.removeItem('qbank_banks');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');document.getElementById('user-key').value=''}
+function logout(){clearSession();document.getElementById('exam-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');document.getElementById('user-key').value=''}
 
 // ===== 自动登录 =====
 async function checkSession(){
@@ -409,29 +428,34 @@ async function checkSession(){
     if(!bound)return;
     let k=localStorage.getItem('qbank_key');
     if(!k)return;
-    let savedFp=localStorage.getItem('qbank_fp');
-    let currentFp=fp();
-    if(savedFp&&savedFp!==currentFp){
-        localStorage.removeItem('qbank_bind');
-        localStorage.removeItem('qbank_key');
-        localStorage.removeItem('qbank_fp');
-        localStorage.removeItem('qbank_banks');
+    let curBid=(localStorage.getItem('browser_id')||'').toUpperCase();
+    let savedBid=(localStorage.getItem('qbank_bid')||'').toUpperCase();
+    if(isRevoked(k)){
+        clearSession();
+        document.getElementById('user-err').textContent='此密钥已被管理员撤销';
+        return;
+    }
+    if(savedBid&&savedBid!==curBid){
+        clearSession();
         document.getElementById('user-err').textContent='检测到设备变更，请重新输入密钥';
-        document.getElementById('auto-msg').style.display='none';
         return;
     }
     try{
-        let r=await fetch(API+'/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,fingerprint:currentFp})});
+        let r=await fetch(API+'/verify-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,browserId:curBid})});
         let d=await r.json();
         if(d.verified){showExam(d.bankId);t('欢迎回来！已自动登录')}
         else{
-            localStorage.removeItem('qbank_bind');
-            localStorage.removeItem('qbank_key');
-            localStorage.removeItem('qbank_fp');
-            localStorage.removeItem('qbank_banks');
+            clearSession();
             document.getElementById('user-err').textContent=d.error||'会话已过期，请重新输入密钥';
         }
     }catch(e){}
+}
+function clearSession(){
+    localStorage.removeItem('qbank_bind');
+    localStorage.removeItem('qbank_key');
+    localStorage.removeItem('qbank_fp');
+    localStorage.removeItem('qbank_banks');
+    localStorage.removeItem('qbank_bid');
 }
 
 // ===== 刷题功能 =====
