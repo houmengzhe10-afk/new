@@ -586,14 +586,25 @@ function showExamResult(){
 window.onload=function(){
     initBrowserId();
     let am=document.getElementById('auto-msg');
-    if(localStorage.getItem('admin_session')){am.style.display='none';enterAdmin();return}
-    am.style.display='block';am.innerHTML='<span class="spin"></span>检测登录状态...';
-    checkSession().finally(()=>{am.style.display='none'});
+    if(localStorage.getItem('admin_session')){if(am)am.style.display='none';enterAdmin();return}
+    if(am){am.style.display='block';am.innerHTML='<span class="spin"></span>检测登录状态...'}
+    checkSession().finally(()=>{if(am)am.style.display='none'});
 };
 function initBrowserId(){
-    let id=localStorage.getItem('browser_id');
-    if(!id){id=fp().toUpperCase();localStorage.setItem('browser_id',id)}
-    document.getElementById('bid-val').textContent=id;
+    try{
+        let id=localStorage.getItem('browser_id');
+        if(!id||!/^[A-Z0-9_]{3,64}$/.test(id)){
+            let raw=fp();
+            id=String(raw).toUpperCase().replace(/[^A-Z0-9_]/g,'');
+            if(id.length<3)id='BR_'+Math.random().toString(36).slice(2,10).toUpperCase();
+            localStorage.setItem('browser_id',id);
+        }
+        let el=document.getElementById('bid-val');
+        if(el)el.textContent=id;
+    }catch(e){
+        let el=document.getElementById('bid-val');
+        if(el)el.textContent='BR_'+Math.random().toString(36).slice(2,10).toUpperCase();
+    }
 }
 function copyBrowserId(){
     let id=document.getElementById('bid-val').textContent;
