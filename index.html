@@ -235,7 +235,7 @@ function adminLogout(){document.getElementById('admin-panel').classList.add('hid
 
 function initBankChecks(){
     let c=document.getElementById('bank-checks'),h='';
-    Object.entries(BANKS).forEach(([id,b])=>{h+=`<label class="bcheck" onclick="this.classList.toggle('sel');this.querySelector('input').checked=this.classList.contains('sel')"><input type="checkbox" value="${id}">${esc(b.name)}</label>`});
+    Object.entries(BANKS).forEach(([id,b])=>{h+=`<div class="bcheck" data-id="${id}" onclick="this.classList.toggle('sel')">${esc(b.name)}</div>`});
     c.innerHTML=h;
 }
 
@@ -247,7 +247,7 @@ async function genKey(){
     let ck=document.getElementById('ckey').value.trim();
     let rm=document.getElementById('kremark').value.trim();
     let bids=[];
-    document.querySelectorAll('#bank-checks .bcheck.sel input').forEach(cb=>bids.push(cb.value));
+    document.querySelectorAll('#bank-checks .bcheck.sel').forEach(el=>bids.push(el.dataset.id));
     if(bids.length===0){t('请至少绑定一个试题库',true);return}
     let bankId=bids.join(',');
     try{
