@@ -57,6 +57,36 @@
         .bcheck input{display:none}
         .bcheck.sel{border-color:#667eea;background:#f0f2ff;color:#667eea;font-weight:500}
         .btile{display:inline-block;padding:3px 10px;background:rgba(102,126,234,.15);color:#667eea;border-radius:4px;font-size:12px;margin:2px 4px;white-space:nowrap}
+        body{align-items:flex-start;padding:36px 18px;background:linear-gradient(135deg,#eef2ff 0%,#f5f3ff 45%,#fff 100%);color:#1f2937}
+        .panel{border:1px solid rgba(102,126,234,.12);box-shadow:0 24px 70px rgba(31,41,55,.12);border-radius:22px;padding:34px;text-align:left}
+        .panel:not(.wide){text-align:center;margin-top:9vh}
+        .panel.wide{max-width:1080px;margin:0 auto}
+        .panel h1,.panel h2{letter-spacing:.5px}
+        .subtitle{text-align:center;color:#7b8190}
+        .fg{margin-bottom:18px}
+        .fg label{color:#374151;font-weight:700}
+        .fg input,.fg select{height:46px;border:1px solid #d9def0;border-radius:12px;background:#fbfcff;color:#111827}
+        .fg input:focus,.fg select:focus{border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.12)}
+        .btn,.xbtn,.btn-xs{border-radius:12px;box-shadow:none}
+        .btn:hover,.xbtn:hover,.btn-xs:hover{transform:translateY(-1px)}
+        .eh{background:#f8faff;border:1px solid #edf0f7;border-radius:16px;padding:18px 20px;margin-bottom:22px}
+        .eh h1,.eh h2{margin:0;color:#27324a}
+        .sec{border:1px solid #edf0f7;background:#fbfcff;border-radius:18px;padding:24px;margin-bottom:22px}
+        .sec h3{display:flex;align-items:center;margin-bottom:18px}
+        .key-item{border:1px solid #edf0f7;border-radius:14px;padding:16px 18px;background:#fff;box-shadow:0 8px 24px rgba(31,41,55,.04)}
+        .key-acts{padding-top:4px;border-top:1px dashed #edf0f7}
+        .cbank{border-radius:16px;padding:16px 18px;box-shadow:0 10px 26px rgba(102,126,234,.18)}
+        #bank-checks{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px!important}
+        .bcheck{justify-content:center;min-height:44px;border-radius:12px;border:1px solid #d9def0;background:#fff}
+        .bcheck.sel{box-shadow:0 0 0 4px rgba(102,126,234,.1)}
+        #klist{display:grid;gap:12px}
+        #exam-q>div,#pq>div{box-shadow:0 8px 24px rgba(31,41,55,.04)}
+        #exam-o>div,#po>div{box-shadow:0 6px 18px rgba(31,41,55,.04);transition:.2s}
+        #exam-a,#pa{border:1px solid transparent;box-shadow:0 8px 24px rgba(31,41,55,.05)}
+        #exam-bank-list>div{box-shadow:0 12px 28px rgba(102,126,234,.18)}
+        .modal{backdrop-filter:blur(4px)}
+        .modal-box{border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.24)}
+        @media (max-width:640px){body{padding:16px 10px}.panel{padding:22px;border-radius:18px}.eh{flex-direction:column;gap:12px;align-items:stretch;text-align:center}.key-acts{justify-content:stretch}.key-acts button{flex:1}#exam-bank-list{flex-direction:column!important}.panel:not(.wide){margin-top:4vh}}
     </style>
 </head>
 <body>
@@ -148,6 +178,28 @@ const BANKS={
         {question:'CSS中哪个属性用于设置背景颜色？',options:['color','background-color','font-color','border-color'],answer:1},
         {question:'JavaScript中声明变量用什么关键字？',options:['var','variable','int','string'],answer:0},
         {question:'以下哪种不是CSS选择器？',options:['类选择器','ID选择器','标签选择器','文本选择器'],answer:3,analysis:'CSS中没有"文本选择器"这个概念。常见的选择器包括类选择器、ID选择器、标签选择器、属性选择器等。'}
+    ]},
+    db_final:{name:'数据库期末复习',questions:[
+        {question:'当要查询的条件是某几个特定的不连续的数值时,可以用关键字( )?',options:['IN','BETWEEN AND','ON','OF'],answer:0,analysis:'IN关键字用于匹配多个不连续的指定值；BETWEEN AND用于连续数值区间，ON用于多表连接条件，OF无此查询匹配用法。'},
+        {question:'下列实体类型的联系中，属于一对一（1:1）联系的是（）。',options:['供应商与工程项目的供货联系','省对省会的所属联系','父亲对孩子的所属联系','教研室对教师的所属联系'],answer:1,analysis:'一个省仅有一个省会，一个省会仅归属一个省，属于一对一联系；供应商与工程是多对多，父亲与孩子、教研室与教师是一对多。'},
+        {question:'已知成绩关系如下表所示,执行SQL语句:SELECT COUNT(DISTINCT 学号) FROM成绩 WHERE 分数>60;\n成绩表数据：\nS1 C1 80\nS1 C2 65\nS1 C3 50\nS2 C1 NULL\nS2 C2 55\nS3 C3 95\n查询结果中包含的元组数目是()。',options:['4','1','3','2'],answer:3,analysis:'筛选分数大于60的记录：S1(80、65)、S3(95)；DISTINCT对学号去重后只剩S1、S3两个学号，统计结果元组数目为2。'},
+        {question:'SQL中,"DELETE FROM 表名"表示( )?',options:['从数据库中删除这个基本表','从基本表中删除所有元组','从基本表中删除所有属性','从基本表中删除重复元组'],answer:1,analysis:'DELETE语句作用是删除表内的数据（元组），无WHERE条件时会清空整张表全部数据；DROP TABLE才是删除数据表结构。'},
+        {question:'基于如下三个表：\n学生表S(Sno, SN, SEX, AGE, DEPT)\n课程表C(Cno, CN)\n学生选课表SC(Sno, Cno, GRADE)\n字段说明：Sno为学号，SN为姓名，SEX为性别，AGE为年龄，DEPT为系别，Cno为课程号，CN为课程名，GRADE为成绩。\n若检索选修课程号为"C2"的学生中成绩最高的学生的学号。正确的SELECT语句是（）。',options:["SELECT Sno FROM SC WHERE Cno = 'C2' AND GRADE >=ALL (SELECT GRADE FROM SC WHERE Cno = 'C2');","SELECT Sno FROM SC WHERE Cno = 'C2' AND GRADE >= (SELECT GRADE FROM SC WHERE Cno = 'C2');","SELECT Sno FROM SC WHERE Cno = 'C2' AND GRADE NOT IN (SELECT GRADE FROM SC WHERE Cno = 'C2');","SELECT Sno FROM SC WHERE Cno = 'C2' AND GRADE IN (SELECT GRADE FROM SC WHERE Cno = 'C2');"],answer:0,analysis:'>=ALL 代表大于等于子查询返回的全部数值，等价于取最大值，符合查找C2课程最高分学号的需求；B选项子查询返回多行数据不能直接使用>=，C、D的IN仅匹配存在的值，无法筛选出最高分。'},
+        {question:'设有一个关系:DEPT(DNO,DNAME,LOC),如果要找出倒数第三个字母为W,并且至少包含4个字母的DNAME,则查询条件子句应写成WHERE DNAME LIKE ( )。',options:["'__W_%'","'_W_%'","'_W__'","'_%W__'"],answer:3,analysis:'通配符_代表单个任意字符，%代表任意长度字符；倒数第三位是W，说明W的后方必须存在2个字符（W__），W前方可以有任意字符（%），组合匹配式为%W__，对应选项D。'},
+        {question:'在 SQL 语句中,与 X BETWEEN 20 AND 30 等价的表达式是( )。',options:['X>=20 AND X<30','X>=20 AND X<=30','X>20 AND X<=30','X>20 AND X<30'],answer:1,analysis:'BETWEEN ... AND ... 是闭区间，会包含上下限两个边界值，等价于X大于等于下限并且小于等于上限。'},
+        {question:'能够用于实现列改名的关键词是（）？',options:['Set','In','As','On'],answer:2,analysis:'AS关键字用于给查询字段、数据表设置别名，实现列改名；Set用于UPDATE修改字段值，In用于多值条件匹配，On用于多表连接的条件。'},
+        {question:'在SQL中使用UPDATE语句对表中数据进行修改时,应使用的子句是( )。',options:['FROM','VALUES','WHERE','SET'],answer:3,analysis:'UPDATE标准语法：UPDATE 表名 SET 字段=新值 [WHERE 筛选条件]；SET子句专门用来指定需要修改的字段和对应更新值。'},
+        {question:'与HAVING子句一起使用的子句是（ ）？',options:['WHERE','GROUP BY','ORDER BY','JOIN'],answer:1,analysis:'HAVING子句的作用是过滤分组后的聚合计算结果，语法规定必须搭配GROUP BY分组子句使用；WHERE过滤原始表数据，ORDER BY负责排序，JOIN用于多表连接。'},
+        {question:'用于数据库恢复的重要文件是( )?',options:['日志文件','备注文件','数据库文件','索引文件'],answer:0,analysis:'日志文件完整记录数据库所有修改操作，数据库故障时依靠日志执行事务重做、回滚操作，是实现数据库故障恢复的核心文件。'},
+        {question:'若用如下的SQL语句创建了一个表SC:\nCREATE TABLE SC\n(Sno CHAR(6) NOT NULL,\nCno CHAR(3) NOT NULL,\nSCORE INT,\nNOTE CHAR(20));\n向SC表插入如下行时,哪行可以被插入。',options:["('201009','111','60','必修')","(NULL,'103','80','选修')","('200823','101',NULL,NULL)","('201132',NULL,'86','')"],answer:2,analysis:'建表约束中Sno、Cno字段设置NOT NULL，不允许为空；A选项SCORE传入字符串，与INT类型冲突；B选项Sno为NULL违反非空约束；D选项Cno为NULL违反非空约束；C选项SCORE、NOTE无NOT NULL限制，允许传入NULL，语句合法。'},
+        {question:'查询中需要统计某列中值的个数应使用( )函数。',options:['COUNT(列名)','SUM(列名)','AVG(列名)','MAX(列名)'],answer:0,analysis:'COUNT(列名)用于统计指定列中非空数据的记录条数；SUM是求和函数，AVG是平均值函数，MAX是取最大值函数。'},
+        {question:'SQL语言的数据操纵语句包括SELECT,INSERT,UPDATE和DELETE等,其中最重要的,也是使用最频繁的语句是（）。',options:['UPDATE','DELETE','SELECT','INSERT'],answer:2,analysis:'SELECT语句用于数据查询，业务系统中读取数据的操作远多于新增、修改、删除数据，因此是DML中使用频率最高的语句。'},
+        {question:'E-R图中联系的类型不包含的是（）。',options:['1:1','1:n','1:0','m:n'],answer:2,analysis:'E-R模型中实体间的联系仅分为三种：一对一(1:1)、一对多(1:n)、多对多(m:n)，不存在1:0这种联系分类。'},
+        {question:'一个供应商可供应多种零件,一种零件可由多个供应商供应,则供应商与零件之间的联系是( )?',options:['多对一','一对多','多对多','一对一'],answer:2,analysis:'单个供应商对应多种零件（一对多），单个零件对应多个供应商（一对多），双向一对多的关系即为多对多(m:n)联系。'},
+        {question:'用于实现多表连接查询的关键词是( )?',options:['Join on','Set','Group by','Values'],answer:0,analysis:'JOIN关键字用于关联多张数据表，ON子句用来定义两张表之间的匹配连接条件；SET用于UPDATE更新语句，GROUP BY用于分组统计，VALUES用于INSERT插入语句。'},
+        {question:'为了让成绩列只能在0~100当中取值,需要进行()约束。',options:['非空','检查','唯一','外码'],answer:1,analysis:'CHECK（检查）约束可以自定义字段的合法取值范围，限制成绩数值区间为0~100；非空约束限制字段不能为NULL，唯一约束限制字段值不能重复，外码约束用来关联另一张表的主键。'},
+        {question:'下列哪个命令收回从u1创建表的权限（ ）？',options:['revoke create table to u1;','grant create table from u1;','deny create table to u1;','revoke create table from u1;'],answer:3,analysis:'回收权限的标准语法为REVOKE 权限 FROM 用户；GRANT是授予权限的关键字，DENY是拒绝权限关键字，二者语法格式均不符合题目需求。'},
+        {question:'有两个关系D、S，已经存有如下数据：\nD（院系表）\n院系号 | 院系名 | 系主任\n1 | 计算机系 | 刘其\n2 | 信管 | 陈勇\n3 | 艺术 | 赵玲\n4 | 日语 | 郭明\nS（学生表）\n学号 | 姓名 | 院系号\nA0001 | 张三 | 1\nB0301 | 李四 | 2\nD8099 | 王五 | 4\n其中D表的主码为院系号，S表的主码为学号，外码为院系号，参照D表的院系号，下面哪条记录能够插入到S表中？',options:["('A3908','马文','4')","('S1001','马文','5')","(NULL,'马文','S10')","('A0001','马文','1')"],answer:0,analysis:'S表学号为主键，不可为空、不可重复；院系号是外键，取值必须存在于D表院系号。B院系号5不存在；C学号为NULL；D学号A0001已存在主键冲突；A学号全新，院系号4在D表中存在，满足全部约束。'}
     ]}
 };
 
@@ -155,6 +207,13 @@ const BANKS={
 function fp(){let s=[navigator.userAgent,navigator.language,screen.colorDepth,screen.width+'x'+screen.height,new Date().getTimezoneOffset()].join('|');let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h=h&h;}return'fp_'+Math.abs(h).toString(16)}
 function t(m,e){let d=document.createElement('div');d.className='toast '+(e?'err':'ok');d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function shuffle(a){let r=a.slice();for(let i=r.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
+function shuffleBank(questions){
+    return shuffle(questions).map(q=>{
+        let idx=q.options.map((_,i)=>i),shuf=shuffle(idx);
+        return {question:q.question,options:shuf.map(i=>q.options[i]),answer:shuf.indexOf(q.answer),analysis:q.analysis};
+    });
+}
 
 // ===== 管理员唤醒 =====
 document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='@'){document.getElementById('login-modal').classList.add('active');document.getElementById('apwd').focus()}});
@@ -278,7 +337,8 @@ function selectExamBank(bid){
     document.getElementById('exam-qarea').style.display='block';
     let bank=BANKS[bid]||BANKS['default'];
     document.getElementById('bank-name').textContent=bank.name;
-    es={bankId:bid,questions:bank.questions,currentIndex:0,answers:new Array(bank.questions.length).fill(null),correctCount:0};
+    let qs=shuffleBank(bank.questions);
+    es={bankId:bid,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};
     document.getElementById('exam-res').style.display='none';
     showExamQ();
 }
@@ -335,7 +395,8 @@ function startPractice(){
     if(!id){t('请选择题库',true);return}
     let bank=BANKS[id];
     if(!bank||!bank.questions||bank.questions.length===0){t('题库无题目',true);return}
-    ps={bankId:id,questions:bank.questions,currentIndex:0,answers:new Array(bank.questions.length).fill(null),correctCount:0};
+    let qs=shuffleBank(bank.questions);
+    ps={bankId:id,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};
     document.getElementById('psel').style.display='none';document.getElementById('parea').style.display='block';showQ();
 }
 
@@ -375,7 +436,7 @@ function showResult(){
     let s=document.getElementById('rsc');s.textContent=pct+'%';s.style.color=pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f';
     document.getElementById('rdt').textContent=`共 ${total} 题 | 正确 ${correct} 题 | 错误 ${total-correct} 题`;
 }
-function restartPractice(){let bank=BANKS[ps.bankId];ps={bankId:ps.bankId,questions:bank.questions,currentIndex:0,answers:new Array(bank.questions.length).fill(null),correctCount:0};document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='block';showQ()}
+function restartPractice(){let bank=BANKS[ps.bankId];let qs=shuffleBank(bank.questions);ps={bankId:ps.bankId,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='block';showQ()}
 function changeBank(){document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='none';document.getElementById('psel').style.display='block';document.getElementById('pbank').value=''}
 
 // ===== 用户答题功能 =====
