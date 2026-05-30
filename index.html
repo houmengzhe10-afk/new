@@ -79,6 +79,21 @@
         #bank-checks{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px!important}
         .bcheck{justify-content:center;min-height:44px;border-radius:12px;border:1px solid #d9def0;background:#fff}
         .bcheck.sel{box-shadow:0 0 0 4px rgba(102,126,234,.1)}
+        .bdd{position:relative}
+        .bdd-tg{width:100%;min-height:46px;border:1px solid #d9def0;border-radius:12px;background:#fbfcff;padding:8px 40px 8px 14px;cursor:pointer;display:flex;align-items:center;flex-wrap:wrap;gap:6px;color:#9aa3b2;font-size:15px;position:relative;transition:.2s}
+        .bdd-tg:hover,.bdd.open .bdd-tg{border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.12)}
+        .bdd-tg::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#667eea;font-size:14px;transition:.2s}
+        .bdd.open .bdd-tg::after{transform:translateY(-50%) rotate(180deg)}
+        .bdd-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(102,126,234,.12);color:#667eea;padding:3px 8px 3px 10px;border-radius:6px;font-size:13px;font-weight:500}
+        .bdd-tag span{cursor:pointer;color:#8c94a8;font-weight:700;line-height:1}
+        .bdd-tag span:hover{color:#ff4d4f}
+        .bdd-pn{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #d9def0;border-radius:12px;box-shadow:0 12px 30px rgba(31,41,55,.15);padding:6px;z-index:20;max-height:240px;overflow-y:auto;display:none}
+        .bdd.open .bdd-pn{display:block}
+        .bdd-it{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;color:#374151;transition:.15s}
+        .bdd-it:hover{background:#f3f4ff}
+        .bdd-it.sel{background:#eef0ff;color:#667eea;font-weight:600}
+        .bdd-it::before{content:'';width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:4px;flex-shrink:0;display:inline-block;transition:.15s}
+        .bdd-it.sel::before{background:#667eea;border-color:#667eea;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3.5 8l3 3 6-6' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-size:cover}
         #klist{display:grid;gap:12px}
         #exam-q>div,#pq>div{box-shadow:0 8px 24px rgba(31,41,55,.04)}
         #exam-o>div,#po>div{box-shadow:0 6px 18px rgba(31,41,55,.04);transition:.2s}
@@ -130,7 +145,7 @@
         <h3>用户密钥管理</h3>
         <div class="fg"><label>自定义密钥（留空自动生成）</label><input type="text" id="ckey" placeholder="留空自动生成8位随机密钥"></div>
         <div class="fg"><label>备注（可选）</label><input type="text" id="kremark" placeholder="如：张三的密钥"></div>
-        <div class="fg"><label>绑定试题库（可多选）</label><div id="bank-checks" style="display:flex;flex-wrap:wrap;gap:8px;padding:6px 0;"></div></div>
+        <div class="fg"><label>绑定试题库（可多选）</label><div id="bank-dd" class="bdd"><div class="bdd-tg" id="bank-dd-tg" onclick="event.stopPropagation();toggleBankDD()"><span id="bank-dd-ph">请选择试题库</span></div><div class="bdd-pn" id="bank-dd-pn"></div></div></div>
         <button class="btn btn-g" onclick="genKey()">生成密钥</button>
         <div style="margin-top:30px;"><h4 style="margin-bottom:15px;color:#555;">已生成密钥列表</h4><div id="klist"><p style="color:#999;text-align:center;padding:20px;">暂无密钥</p></div></div>
     </div>
@@ -234,10 +249,24 @@ function enterAdmin(){document.getElementById('user-panel').classList.add('hidde
 function adminLogout(){document.getElementById('admin-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');localStorage.removeItem('admin_session');t('已退出管理后台')}
 
 function initBankChecks(){
-    let c=document.getElementById('bank-checks'),h='';
-    Object.entries(BANKS).forEach(([id,b])=>{h+=`<div class="bcheck" data-id="${id}" onclick="this.classList.toggle('sel')">${esc(b.name)}</div>`});
-    c.innerHTML=h;
+    let p=document.getElementById('bank-dd-pn'),h='';
+    Object.entries(BANKS).forEach(([id,b])=>{h+=`<div class="bdd-it" data-id="${id}" onclick="event.stopPropagation();toggleBankItem('${id}')">${esc(b.name)}</div>`});
+    p.innerHTML=h;
+    renderBankDD();
 }
+function toggleBankDD(){document.getElementById('bank-dd').classList.toggle('open')}
+function toggleBankItem(id){
+    let it=document.querySelector(`#bank-dd-pn .bdd-it[data-id="${id}"]`);
+    if(it)it.classList.toggle('sel');
+    renderBankDD();
+}
+function renderBankDD(){
+    let sel=document.querySelectorAll('#bank-dd-pn .bdd-it.sel'),tg=document.getElementById('bank-dd-tg'),ph=document.getElementById('bank-dd-ph');
+    let tags=Array.from(sel).map(it=>{let id=it.dataset.id,bn=BANKS[id]?BANKS[id].name:id;return `<span class="bdd-tag">${esc(bn)}<span onclick="event.stopPropagation();toggleBankItem('${id}')">×</span></span>`}).join('');
+    if(tags){ph.style.display='none';let old=tg.querySelector('.bdd-tags');if(old)old.remove();let w=document.createElement('div');w.className='bdd-tags';w.style.cssText='display:flex;flex-wrap:wrap;gap:6px;flex:1';w.innerHTML=tags;tg.appendChild(w)}
+    else{ph.style.display='';let old=tg.querySelector('.bdd-tags');if(old)old.remove()}
+}
+document.addEventListener('click',function(e){let dd=document.getElementById('bank-dd');if(dd&&!dd.contains(e.target))dd.classList.remove('open')});
 
 // ===== 密钥管理（localStorage） =====
 function getKeys(){try{return JSON.parse(localStorage.getItem('qbank_keys')||'[]')}catch(e){return[]}}
@@ -247,7 +276,7 @@ async function genKey(){
     let ck=document.getElementById('ckey').value.trim();
     let rm=document.getElementById('kremark').value.trim();
     let bids=[];
-    document.querySelectorAll('#bank-checks .bcheck.sel').forEach(el=>bids.push(el.dataset.id));
+    document.querySelectorAll('#bank-dd-pn .bdd-it.sel').forEach(el=>bids.push(el.dataset.id));
     if(bids.length===0){t('请至少绑定一个试题库',true);return}
     let bankId=bids.join(',');
     try{
