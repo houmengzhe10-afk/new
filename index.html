@@ -182,7 +182,7 @@ const BANKS={
     db_final:{name:'数据库期末复习',questions:[
         {question:'当要查询的条件是某几个特定的不连续的数值时,可以用关键字( )?',options:['IN','BETWEEN AND','ON','OF'],answer:0,analysis:'IN关键字用于匹配多个不连续的指定值；BETWEEN AND用于连续数值区间，ON用于多表连接条件，OF无此查询匹配用法。'},
         {question:'下列实体类型的联系中，属于一对一（1:1）联系的是（）。',options:['供应商与工程项目的供货联系','省对省会的所属联系','父亲对孩子的所属联系','教研室对教师的所属联系'],answer:1,analysis:'一个省仅有一个省会，一个省会仅归属一个省，属于一对一联系；供应商与工程是多对多，父亲与孩子、教研室与教师是一对多。'},
-        {question:'已知成绩关系如下表所示,执行SQL语句:SELECT COUNT(DISTINCT 学号) FROM成绩 WHERE 分数>60;\n成绩表数据：\nS1 C1 80\nS1 C2 65\nS1 C3 50\nS2 C1 NULL\nS2 C2 55\nS3 C3 95\n查询结果中包含的元组数目是()。',options:['4','1','3','2'],answer:3,analysis:'筛选分数大于60的记录：S1(80、65)、S3(95)；DISTINCT对学号去重后只剩S1、S3两个学号，统计结果元组数目为2。'},
+        {question:'已知成绩关系如下表所示,执行SQL语句:SELECT COUNT(DISTINCT 学号) FROM成绩 WHERE 分数>60;\n成绩表\n学号 | 课程号 | 分数\nS1 | C1 | 80\nS1 | C2 | 65\nS1 | C3 | 50\nS2 | C1 | NULL\nS2 | C2 | 55\nS3 | C3 | 95\n查询结果中包含的元组数目是()。',options:['4','1','3','2'],answer:3,analysis:'筛选分数大于60的记录：S1(80、65)、S3(95)；DISTINCT对学号去重后只剩S1、S3两个学号，统计结果元组数目为2。'},
         {question:'SQL中,"DELETE FROM 表名"表示( )?',options:['从数据库中删除这个基本表','从基本表中删除所有元组','从基本表中删除所有属性','从基本表中删除重复元组'],answer:1,analysis:'DELETE语句作用是删除表内的数据（元组），无WHERE条件时会清空整张表全部数据；DROP TABLE才是删除数据表结构。'},
         {question:'基于如下三个表：\n学生表S(Sno, SN, SEX, AGE, DEPT)\n课程表C(Cno, CN)\n学生选课表SC(Sno, Cno, GRADE)\n字段说明：Sno为学号，SN为姓名，SEX为性别，AGE为年龄，DEPT为系别，Cno为课程号，CN为课程名，GRADE为成绩。\n若检索选修课程号为"C2"的学生中成绩最高的学生的学号。正确的SELECT语句是（）。',options:["SELECT Sno FROM SC WHERE Cno = 'C2' AND GRADE >=ALL (SELECT GRADE FROM SC WHERE Cno = 'C2');","SELECT Sno FROM SC WHERE Cno = 'C2' AND GRADE >= (SELECT GRADE FROM SC WHERE Cno = 'C2');","SELECT Sno FROM SC WHERE Cno = 'C2' AND GRADE NOT IN (SELECT GRADE FROM SC WHERE Cno = 'C2');","SELECT Sno FROM SC WHERE Cno = 'C2' AND GRADE IN (SELECT GRADE FROM SC WHERE Cno = 'C2');"],answer:0,analysis:'>=ALL 代表大于等于子查询返回的全部数值，等价于取最大值，符合查找C2课程最高分学号的需求；B选项子查询返回多行数据不能直接使用>=，C、D的IN仅匹配存在的值，无法筛选出最高分。'},
         {question:'设有一个关系:DEPT(DNO,DNAME,LOC),如果要找出倒数第三个字母为W,并且至少包含4个字母的DNAME,则查询条件子句应写成WHERE DNAME LIKE ( )。',options:["'__W_%'","'_W_%'","'_W__'","'_%W__'"],answer:3,analysis:'通配符_代表单个任意字符，%代表任意长度字符；倒数第三位是W，说明W的后方必须存在2个字符（W__），W前方可以有任意字符（%），组合匹配式为%W__，对应选项D。'},
@@ -191,7 +191,7 @@ const BANKS={
         {question:'在SQL中使用UPDATE语句对表中数据进行修改时,应使用的子句是( )。',options:['FROM','VALUES','WHERE','SET'],answer:3,analysis:'UPDATE标准语法：UPDATE 表名 SET 字段=新值 [WHERE 筛选条件]；SET子句专门用来指定需要修改的字段和对应更新值。'},
         {question:'与HAVING子句一起使用的子句是（ ）？',options:['WHERE','GROUP BY','ORDER BY','JOIN'],answer:1,analysis:'HAVING子句的作用是过滤分组后的聚合计算结果，语法规定必须搭配GROUP BY分组子句使用；WHERE过滤原始表数据，ORDER BY负责排序，JOIN用于多表连接。'},
         {question:'用于数据库恢复的重要文件是( )?',options:['日志文件','备注文件','数据库文件','索引文件'],answer:0,analysis:'日志文件完整记录数据库所有修改操作，数据库故障时依靠日志执行事务重做、回滚操作，是实现数据库故障恢复的核心文件。'},
-        {question:'若用如下的SQL语句创建了一个表SC:\nCREATE TABLE SC\n(Sno CHAR(6) NOT NULL,\nCno CHAR(3) NOT NULL,\nSCORE INT,\nNOTE CHAR(20));\n向SC表插入如下行时,哪行可以被插入。',options:["('201009','111','60','必修')","(NULL,'103','80','选修')","('200823','101',NULL,NULL)","('201132',NULL,'86','')"],answer:2,analysis:'建表约束中Sno、Cno字段设置NOT NULL，不允许为空；A选项SCORE传入字符串，与INT类型冲突；B选项Sno为NULL违反非空约束；D选项Cno为NULL违反非空约束；C选项SCORE、NOTE无NOT NULL限制，允许传入NULL，语句合法。'},
+        {question:'若用如下的SQL语句创建了一个表SC:\nCREATE TABLE SC \n(Sno CHAR(6) NOT NULL,\n Cno CHAR(3) NOT NULL,\n SCORE INT, \nNOTE CHAR(20));\n 向SC表插入如下行时,哪行可以被插入。',options:["('201009','111','60','必修')","(NULL,'103','80','选修')","('200823','101',NULL,NULL)","('201132',NULL,'86','')"],answer:2,analysis:'建表约束中Sno、Cno字段设置NOT NULL，不允许为空；A选项SCORE传入字符串，与INT类型冲突；B选项Sno为NULL违反非空约束；D选项Cno为NULL违反非空约束；C选项SCORE、NOTE无NOT NULL限制，允许传入NULL，语句合法。'},
         {question:'查询中需要统计某列中值的个数应使用( )函数。',options:['COUNT(列名)','SUM(列名)','AVG(列名)','MAX(列名)'],answer:0,analysis:'COUNT(列名)用于统计指定列中非空数据的记录条数；SUM是求和函数，AVG是平均值函数，MAX是取最大值函数。'},
         {question:'SQL语言的数据操纵语句包括SELECT,INSERT,UPDATE和DELETE等,其中最重要的,也是使用最频繁的语句是（）。',options:['UPDATE','DELETE','SELECT','INSERT'],answer:2,analysis:'SELECT语句用于数据查询，业务系统中读取数据的操作远多于新增、修改、删除数据，因此是DML中使用频率最高的语句。'},
         {question:'E-R图中联系的类型不包含的是（）。',options:['1:1','1:n','1:0','m:n'],answer:2,analysis:'E-R模型中实体间的联系仅分为三种：一对一(1:1)、一对多(1:n)、多对多(m:n)，不存在1:0这种联系分类。'},
@@ -207,6 +207,18 @@ const BANKS={
 function fp(){let s=[navigator.userAgent,navigator.language,screen.colorDepth,screen.width+'x'+screen.height,new Date().getTimezoneOffset()].join('|');let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h=h&h;}return'fp_'+Math.abs(h).toString(16)}
 function t(m,e){let d=document.createElement('div');d.className='toast '+(e?'err':'ok');d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function renderQText(s){
+    let lines=String(s).split('\n'),out='',i=0;
+    while(i<lines.length){
+        if(lines[i].indexOf('|')!==-1&&i+1<lines.length&&lines[i+1].indexOf('|')!==-1){
+            let rows=[];while(i<lines.length&&lines[i].indexOf('|')!==-1){rows.push(lines[i].split('|').map(c=>c.trim()));i++}
+            out+='<table style="border-collapse:collapse;margin:8px 0;font-size:15px;">';
+            rows.forEach((r,ri)=>{let tag=ri===0?'th':'td',bg=ri===0?'background:#eef2ff;':'';out+='<tr>'+r.map(c=>`<${tag} style="border:1px solid #cbd5e1;padding:6px 12px;text-align:left;${bg}">${esc(c)}</${tag}>`).join('')+'</tr>'});
+            out+='</table>';
+        }else{out+=esc(lines[i])+'\n';i++}
+    }
+    return out.replace(/\n$/,'');
+}
 function shuffle(a){let r=a.slice();for(let i=r.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
 function shuffleBank(questions){
     return shuffle(questions).map(q=>{
@@ -406,7 +418,7 @@ function showQ(){
     document.getElementById('pbar').style.width=`${(cur/total)*100}%`;
     let nav='';
     if(ps.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevQ()" style="padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;color:#666;font-weight:500;">← 上一题</button></div>`;
-    document.getElementById('pq').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${esc(q.question)}</div></div>`;
+    document.getElementById('pq').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${renderQText(q.question)}</div></div>`;
     let o='',lbs=['A','B','C','D','E','F'];
     q.options.forEach((opt,i)=>{o+=`<div class="oi" onclick="sel(${i})" style="display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;cursor:pointer;border:2px solid #e0e0e0;" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span></div>`});
     document.getElementById('po').innerHTML=o;
@@ -446,7 +458,7 @@ function showExamQ(){
     document.getElementById('exam-pbar').style.width=`${(cur/total)*100}%`;
     let nav='';
     if(es.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevExamQ()" style="padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;color:#666;font-weight:500;">← 上一题</button></div>`;
-    document.getElementById('exam-q').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${esc(q.question)}</div></div>`;
+    document.getElementById('exam-q').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${renderQText(q.question)}</div></div>`;
     let o='';
     q.options.forEach((opt,i)=>{
         let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;',bdg='',clk='';
