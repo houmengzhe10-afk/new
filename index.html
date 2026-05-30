@@ -555,8 +555,14 @@ function showExamQ(){
 }
 function selExam(idx){
     let q=es.questions[es.currentIndex];
-    es.answers[es.currentIndex]=idx;if(idx===q.answer)es.correctCount++;
+    es.answers[es.currentIndex]=idx;
+    let ok=idx===q.answer;
+    if(ok)es.correctCount++;
     showExamQ();
+    if(ok){
+        if(es.currentIndex<es.questions.length-1)setTimeout(()=>{es.currentIndex++;showExamQ()},500);
+        else setTimeout(()=>showExamResult(),500);
+    }
 }
 function nextExamQ(){es.currentIndex++;showExamQ()}
 function prevExamQ(){if(es.currentIndex>0){es.currentIndex--;showExamQ()}}
