@@ -345,9 +345,12 @@ function showExam(bid){
     selectExamBank(bankIds[0]);
 }
 function selectExamBank(bid){
+    let allowed=(localStorage.getItem('qbank_banks')||'').split(',').filter(Boolean);
+    if(allowed.length&&allowed.indexOf(bid)===-1){t('该试题库未授权访问',true);return}
+    if(!BANKS[bid]){t('试题库不存在',true);return}
     document.getElementById('exam-bank-chooser').style.display='none';
     document.getElementById('exam-qarea').style.display='block';
-    let bank=BANKS[bid]||BANKS['default'];
+    let bank=BANKS[bid];
     document.getElementById('bank-name').textContent=bank.name;
     let qs=shuffleBank(bank.questions);
     es={bankId:bid,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};
