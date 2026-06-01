@@ -99,6 +99,14 @@
         .bid-badge .bid-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 0 0 3px rgba(102,126,234,.15)}
         .bid-badge .bid-lb{color:#9aa3b2;font-size:12px}
         .bid-badge .bid-val{font-family:'Consolas','SF Mono',monospace;font-weight:600;color:#667eea;letter-spacing:.5px}
+        .ta-wrap{margin:20px 0}
+        .ta-wrap textarea{width:100%;min-height:120px;padding:14px 16px;border:2px solid #d9def0;border-radius:12px;font-size:15px;font-family:'Consolas','SF Mono','Courier New',monospace;line-height:1.7;resize:vertical;background:#fbfcff;color:#1f2937;transition:.2s}
+        .ta-wrap textarea:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.12)}
+        .ta-wrap textarea:disabled{background:#f3f4f6;color:#9aa3b2;cursor:not-allowed}
+        .ta-submit{padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:.2s;margin-top:10px}
+        .ta-submit:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(102,126,234,.4)}
+        .ta-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+        .ta-ans{font-family:'Consolas','SF Mono','Courier New',monospace;background:#f8f9fa;padding:12px 16px;border-radius:8px;margin-top:10px;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.7;color:#333;border:1px solid #e0e0e0}
         #klist{display:grid;gap:12px}
         #exam-q>div,#pq>div{box-shadow:0 8px 24px rgba(31,41,55,.04)}
         #exam-o>div,#po>div{box-shadow:0 6px 18px rgba(31,41,55,.04);transition:.2s}
@@ -222,6 +230,16 @@ const BANKS={
         {question:'为了让成绩列只能在0~100当中取值,需要进行()约束。',options:['非空','检查','唯一','外码'],answer:1,analysis:'CHECK（检查）约束可以自定义字段的合法取值范围，限制成绩数值区间为0~100；非空约束限制字段不能为NULL，唯一约束限制字段值不能重复，外码约束用来关联另一张表的主键。'},
         {question:'下列哪个命令收回从u1创建表的权限（ ）？',options:['revoke create table to u1;','grant create table from u1;','deny create table to u1;','revoke create table from u1;'],answer:3,analysis:'回收权限的标准语法为REVOKE 权限 FROM 用户；GRANT是授予权限的关键字，DENY是拒绝权限关键字，二者语法格式均不符合题目需求。'},
         {question:'有两个关系D、S，已经存有如下数据：\nD（院系表）\n院系号 | 院系名 | 系主任\n1 | 计算机系 | 刘其\n2 | 信管 | 陈勇\n3 | 艺术 | 赵玲\n4 | 日语 | 郭明\nS（学生表）\n学号 | 姓名 | 院系号\nA0001 | 张三 | 1\nB0301 | 李四 | 2\nD8099 | 王五 | 4\n其中D表的主码为院系号，S表的主码为学号，外码为院系号，参照D表的院系号，下面哪条记录能够插入到S表中？',options:["('A3908','马文','4')","('S1001','马文','5')","(NULL,'马文','S10')","('A0001','马文','1')"],answer:0,analysis:'S表学号为主键，不可为空、不可重复；院系号是外键，取值必须存在于D表院系号。B院系号5不存在；C学号为NULL；D学号A0001已存在主键冲突；A学号全新，院系号4在D表中存在，满足全部约束。'}
+    ]},
+    db_sql_short:{name:'数据库期末简答',questions:[
+        {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n1、根据以上描述，请实现创建评论表 comment 的 SQL 语句。',answer:'Create table comment( cid int primary key, uid int references user(uid), vid int references video(vid), commentdate datetime not null, content text not null )',analysis:'创建表的 SQL，注意 cid 设为主键，uid 和 vid 作为外键分别引用 user 和 video 表，commentdate 和 content 设为 NOT NULL。'},
+        {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n2、向用户表 user 中插入一条记录，其中用户编号为 10，昵称为\'清风\'，性别为\'男\'，手机号码为\'13800138001\'。',answer:'Insert into user(uid, userame, sex, mobile) Values(10, \'清风\', \'男\', \'13800138001\')',analysis:'INSERT 语句需要指定字段名和对应值，注意字段顺序与值顺序一致。'},
+        {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n3、创建博主吴夏(真名)参与评论视频的视图 wuxia_commentview，该视图包含用户真名，视频编号，视频标题，评论时间，评论内容。',answer:'Create view wuxia_commentview as Select realname, video.vid, title, commentdate, content From user join comment on user.uid=comment.uid Join video on video.vid=comment.vid Where realname=\'吴夏\'',analysis:'创建视图用 CREATE VIEW，需要多表 JOIN（user 连接 comment 再连接 video），WHERE 过滤真名为吴夏。'},
+        {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n4、网站要删除从\'2024-01-20\'到\'2024-01-22\'期间所有的评论信息。',answer:'Delete from comment where commentdate between \'2024-01-20\' and \'2024-01-22\'',analysis:'DELETE 删除数据，BETWEEN ... AND ... 用于区间条件，注意 BETWEEN 是闭区间包含边界日期。'},
+        {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n5、为评论表创建复合索引 idx_uid_date，先按照 uid 升序排列，同一 uid 的视频再按照评论时间降序排序。',answer:'Create index idx_uid_date on comment(uid asc, commentdate desc)',analysis:'CREATE INDEX 创建索引，复合索引中多个字段用逗号分隔，分别指定 ASC/DESC 排序方式。'},
+        {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n6、修改视频表中标题为 \'楷书基础笔画教学\' 的播放时长改为：15。',answer:'Update video set duration=15 where title=\'楷书基础笔画教学\'',analysis:'UPDATE 修改数据，SET 指定新值，WHERE 定位到标题匹配的记录。'},
+        {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n7、查询标题中包含楷书字样且在\'2024-01-20\'至\'2024-01-26\'期间发布的视频信息。',answer:'Select * from video where title like \'%楷书%\' and createtime between \'2024-01-20\' and \'2024-01-26\'',analysis:'LIKE 配合 % 通配符实现模糊匹配，BETWEEN AND 限定日期范围。'},
+        {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n8、查询视频全量信息，要求先按视频类别编号升序，再按创建时间降序。',answer:'Select * from video order by tid asc, createtime desc',analysis:'ORDER BY 排序，先按 tid 升序 (ASC)，相同 tid 再按 createtime 降序 (DESC)。'}
     ]}
 };
 
@@ -244,6 +262,7 @@ function renderQText(s){
 function shuffle(a){let r=a.slice();for(let i=r.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
 function shuffleBank(questions){
     return shuffle(questions).map(q=>{
+        if(q.type==='text')return {type:'text',question:q.question,answer:q.answer,analysis:q.analysis};
         let idx=q.options.map((_,i)=>i),shuf=shuffle(idx);
         return {question:q.question,options:shuf.map(i=>q.options[i]),answer:shuf.indexOf(q.answer),analysis:q.analysis};
     });
@@ -490,12 +509,35 @@ function showQ(){
     let nav='';
     if(ps.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevQ()" style="padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;color:#666;font-weight:500;">← 上一题</button></div>`;
     document.getElementById('pq').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${renderQText(q.question)}</div></div>`;
-    let o='',lbs=['A','B','C','D','E','F'];
-    q.options.forEach((opt,i)=>{o+=`<div class="oi" onclick="sel(${i})" style="display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;cursor:pointer;border:2px solid #e0e0e0;" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span></div>`});
-    document.getElementById('po').innerHTML=o;
+    let isAns=ps.answers[ps.currentIndex]!==null;
+    if(q.type==='text'){
+        let taId='p-ta-'+ps.currentIndex;
+        document.getElementById('po').innerHTML=`<div class="ta-wrap"><textarea id="${taId}" placeholder="请输入SQL语句..." ${isAns?'disabled':''}>${isAns?ps.answers[ps.currentIndex]:''}</textarea>${isAns?'':'<button class="ta-submit" onclick="submitPracticeText()">提交答案</button>'}</div>`;
+    }else{
+        let o='',lbs=['A','B','C','D','E','F'];
+        q.options.forEach((opt,i)=>{o+=`<div class="oi" onclick="sel(${i})" style="display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;cursor:pointer;border:2px solid #e0e0e0;" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span></div>`});
+        document.getElementById('po').innerHTML=o;
+    }
     document.getElementById('pa').style.display='none';
 }
-
+function submitPracticeText(){
+    let q=ps.questions[ps.currentIndex];
+    let ta=document.getElementById('p-ta-'+ps.currentIndex);
+    if(!ta)return;
+    let ans=ta.value.trim();
+    if(!ans){t('请输入答案',true);return}
+    let ok=normalizeSQL(ans)===normalizeSQL(q.answer);
+    ps.answers[ps.currentIndex]=ans;
+    if(ok)ps.correctCount++;
+    showQ();
+    let ad=document.getElementById('pa'),at=document.getElementById('pat'),ac=document.getElementById('pac');
+    if(ok){ad.style.background='#f6ffed';ad.style.borderColor='#52c41a';at.textContent='🎉 回答正确！';at.style.color='#52c41a'}else{ad.style.background='#fff2f0';ad.style.borderColor='#ff4d4f';at.textContent='❌ 回答错误';at.style.color='#ff4d4f'}
+    let txt=`正确答案：<div class="ta-ans">${esc(q.answer)}</div>`;
+    if(q.analysis)txt+=`<br><strong>解析：</strong>${q.analysis}`;
+    ac.innerHTML=txt;ad.style.display='block';
+    if(ok){if(ps.currentIndex<ps.questions.length-1){setTimeout(()=>{ps.currentIndex++;showQ()},500)}else{setTimeout(()=>showResult(),500)}}
+    else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
+}
 function sel(idx){
     let q=ps.questions[ps.currentIndex],ok=idx===q.answer;
     ps.answers[ps.currentIndex]=idx;if(ok)ps.correctCount++;
@@ -530,28 +572,55 @@ function showExamQ(){
     let nav='';
     if(es.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevExamQ()" style="padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;color:#666;font-weight:500;">← 上一题</button></div>`;
     document.getElementById('exam-q').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${renderQText(q.question)}</div></div>`;
-    let o='';
-    q.options.forEach((opt,i)=>{
-        let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;',bdg='',clk='';
-        if(isAns){
-            st+='pointer-events:none;';
-            if(i===q.answer){st+='border-color:#52c41a;background:#f6ffed;';bdg=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓ 正确</span>`}
-            else if(i===prevAns){st+='border-color:#ff4d4f;background:#fff2f0;';bdg=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗ 错误</span>`}
-            else st+='opacity:0.6;'
-        }
-        else{st+='cursor:pointer;';clk=`onclick="selExam(${i})" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"`}
-        o+=`<div ${clk} style="${st}"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
-    });
-    document.getElementById('exam-o').innerHTML=o;
+    if(q.type==='text'){
+        let taId='exam-ta-'+es.currentIndex;
+        document.getElementById('exam-o').innerHTML=`<div class="ta-wrap"><textarea id="${taId}" placeholder="请输入SQL语句..." ${isAns?'disabled':''}>${isAns&&prevAns?prevAns:''}</textarea>${isAns?'':'<button class="ta-submit" onclick="submitExamText()">提交答案</button>'}</div>`;
+    }else{
+        let o='';
+        q.options.forEach((opt,i)=>{
+            let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;',bdg='',clk='';
+            if(isAns){
+                st+='pointer-events:none;';
+                if(i===q.answer){st+='border-color:#52c41a;background:#f6ffed;';bdg=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓ 正确</span>`}
+                else if(i===prevAns){st+='border-color:#ff4d4f;background:#fff2f0;';bdg=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗ 错误</span>`}
+                else st+='opacity:0.6;'
+            }
+            else{st+='cursor:pointer;';clk=`onclick="selExam(${i})" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"`}
+            o+=`<div ${clk} style="${st}"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
+        });
+        document.getElementById('exam-o').innerHTML=o;
+    }
     let ad=document.getElementById('exam-a'),nd=document.getElementById('exam-nav');
     if(isAns){
         let ok=prevAns===q.answer;
         ad.style.background=ok?'#f6ffed':'#fff2f0';ad.style.border=ok?'1px solid #52c41a':'1px solid #ff4d4f';
-        ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;">正确答案是 <strong style="color:#52c41a;">${lbs[q.answer]}</strong>。${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
+        if(q.type==='text'){
+            ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;"><strong>正确答案：</strong><div class="ta-ans">${esc(q.answer)}</div>${q.analysis?`<br><strong>解析：</strong>${q.analysis}`:''}</div>`;
+        }else{
+            ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;">正确答案是 <strong style="color:#52c41a;">${lbs[q.answer]}</strong>。${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
+        }
         ad.style.display='block';
         nd.innerHTML=es.currentIndex<es.questions.length-1?'<button onclick="nextExamQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showExamResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';
         nd.style.display='block';
     }else{ad.style.display='none';nd.style.display='none'}
+}
+function submitExamText(){
+    let q=es.questions[es.currentIndex];
+    let ta=document.getElementById('exam-ta-'+es.currentIndex);
+    if(!ta)return;
+    let ans=ta.value.trim();
+    if(!ans){t('请输入答案',true);return}
+    let ok=normalizeSQL(ans)===normalizeSQL(q.answer);
+    es.answers[es.currentIndex]=ans;
+    if(ok)es.correctCount++;
+    showExamQ();
+    if(ok){
+        if(es.currentIndex<es.questions.length-1)setTimeout(()=>{es.currentIndex++;showExamQ()},500);
+        else setTimeout(()=>showExamResult(),500);
+    }
+}
+function normalizeSQL(s){
+    return String(s||'').replace(/'/g,'').replace(/\s+/g,' ').replace(/\s*([,;()=<>])\s*/g,'$1').replace(/;/g,'').trim().toLowerCase();
 }
 function selExam(idx){
     let q=es.questions[es.currentIndex];
