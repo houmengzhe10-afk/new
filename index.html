@@ -172,6 +172,15 @@
         <h3 style="color:#fff;">题库练习</h3><p style="margin-bottom:20px;opacity:.9;">管理员可在此进行题库练习和测试</p>
         <button class="btn" onclick="enterPractice()" style="background:#fff;color:#667eea;max-width:200px;margin:0 auto;">进入刷题模式</button>
     </div>
+    <div class="sec">
+        <h3>错题本 <span id="wrong-book-count" style="font-size:14px;color:#faad14;font-weight:600;"></span></h3>
+        <p style="color:#666;margin-bottom:15px;font-size:14px;">答题结束后，错题会自动保存到错题本中</p>
+        <div id="wrong-book-list" style="margin-bottom:15px;"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-p" onclick="enterWrongBookPractice()" style="max-width:200px;">错题重练</button>
+            <button class="btn btn-r" onclick="clearWrongBook()" style="max-width:200px;">清空错题本</button>
+        </div>
+    </div>
     <button class="btn btn-r" onclick="adminLogout()" style="margin-top:20px;">退出管理后台</button>
 </div>
 
@@ -439,10 +448,22 @@ function shuffleBank(questions){
     });
 }
 
+function saveWrongBook(wrongList){
+    let book=getWrongBook();
+    wrongList.forEach(item=>{
+        let exists=book.some(w=>w.question===item.question&&w.bankId===item.bankId);
+        if(!exists)book.push(item);
+    });
+    localStorage.setItem('wrong_book',JSON.stringify(book));
+}
+function getWrongBook(){try{return JSON.parse(localStorage.getItem('wrong_book')||'[]')}catch(e){return[]}}
+function clearWrongBook(){localStorage.removeItem('wrong_book');t('错题本已清空')}
+function getWrongBookCount(){return getWrongBook().length}
+
 // ===== 管理员唤醒 =====
 document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='@'){document.getElementById('login-modal').classList.add('active');document.getElementById('apwd').focus()}});
 function checkPwd(){if(document.getElementById('apwd').value.trim()!==ADM){document.getElementById('aerr').textContent='密码错误';return}document.getElementById('login-modal').classList.remove('active');enterAdmin()}
-function enterAdmin(){document.getElementById('user-panel').classList.add('hidden');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden');renderKeys();initBankChecks();localStorage.setItem('admin_session','1')}
+function enterAdmin(){document.getElementById('user-panel').classList.add('hidden');document.getElementById('exam-panel').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden');renderKeys();initBankChecks();initWrongBook();localStorage.setItem('admin_session','1')}
 function adminLogout(){document.getElementById('admin-panel').classList.add('hidden');document.getElementById('user-panel').classList.remove('hidden');localStorage.removeItem('admin_session');t('已退出管理后台')}
 
 function initBankChecks(){
@@ -660,8 +681,44 @@ function enterPractice(){
     Object.entries(BANKS).forEach(([id,b])=>{s.innerHTML+=`<option value="${id}">${b.name}</option>`});
     resetUI();
 }
-function exitPractice(){document.getElementById('practice-page').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden')}
+function exitPractice(){document.getElementById('practice-page').classList.add('hidden');document.getElementById('admin-panel').classList.remove('hidden');renderWrongBook()}
 function resetUI(){document.getElementById('psel').style.display='block';document.getElementById('parea').style.display='none';document.getElementById('pres').style.display='none'}
+
+function renderWrongBook(){
+    let book=getWrongBook();
+    let countEl=document.getElementById('wrong-book-count');
+    let listEl=document.getElementById('wrong-book-list');
+    if(countEl)countEl.textContent=book.length>0?`(${book.length}题)`:'';
+    if(!listEl)return;
+    if(book.length===0){listEl.innerHTML='<p style="color:#999;text-align:center;padding:15px;">暂无错题</p>';return}
+    let banks={};
+    book.forEach((q,i)=>{
+        let bn=q.bankName||'未知题库';
+        if(!banks[bn])banks[bn]={count:0,indices:[]};
+        banks[bn].count++;
+        banks[bn].indices.push(i);
+    });
+    let h='';
+    Object.entries(banks).forEach(([name,data])=>{
+        h+=`<div style="padding:12px 15px;background:#f8f9fa;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:500;color:#333;">${esc(name)}</span><span style="color:#faad14;font-weight:600;">${data.count}题</span></div>`;
+    });
+    listEl.innerHTML=h;
+}
+
+function enterWrongBookPractice(){
+    let book=getWrongBook();
+    if(book.length===0){t('错题本为空，没有错题可练习',true);return}
+    let qs=shuffleBank(book.map(q=>({question:q.question,options:q.options,answer:q.answer,type:q.type,answers:q.answers,analysis:q.analysis})));
+    ps={bankId:'wrong_book',questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};
+    document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('practice-page').classList.remove('hidden');
+    document.getElementById('psel').style.display='none';
+    document.getElementById('parea').style.display='block';
+    document.getElementById('pres').style.display='none';
+    showQ();
+}
+
+function initWrongBook(){renderWrongBook()}
 
 function startPractice(){
     let id=document.getElementById('pbank').value;
@@ -768,20 +825,62 @@ function prevQ(){if(ps.currentIndex>0){ps.currentIndex--;showQ()}}
 function showResult(){
     document.getElementById('parea').style.display='none';document.getElementById('pres').style.display='block';
     let total=ps.questions.length,correct=ps.correctCount,pct=Math.round((correct/total)*100);
+    let wrongCount=total-correct;
+    if(wrongCount>0){
+        let wrongList=[];
+        ps.questions.forEach((q,i)=>{
+            let a=ps.answers[i];
+            if(a===null)return;
+            let ok=q.type==='multi'?(a||[]).slice().sort().join(',')===(q.answers||[]).slice().sort().join(','):q.type==='text'?normalizeSQL(a)===normalizeSQL(q.answer):a===q.answer;
+            if(!ok)wrongList.push({...q,userAnswer:a,bankId:ps.bankId,bankName:BANKS[ps.bankId]?BANKS[ps.bankId].name:'',timestamp:Date.now()});
+        });
+        if(wrongList.length>0)saveWrongBook(wrongList);
+    }
     document.getElementById('rem').textContent=pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪';
     let s=document.getElementById('rsc');s.textContent=pct+'%';s.style.color=pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f';
-    document.getElementById('rdt').textContent=`共 ${total} 题 | 正确 ${correct} 题 | 错误 ${total-correct} 题`;
-    let wrongCount=total-correct;
+    document.getElementById('rdt').textContent=`共 ${total} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题`;
     document.getElementById('pbtns').innerHTML=`<button class="btn btn-p" onclick="restartPractice()" style="max-width:200px">重新练习</button>${wrongCount>0?`<button class="btn" onclick="retryWrongPractice()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="changeBank()" style="max-width:200px">切换题库</button>`;
 }
 function retryWrongPractice(){
-    let wrong=[];ps.questions.forEach((q,i)=>{let a=ps.answers[i];if(a===null)return;let ok=q.type==='multi'?(a||[]).slice().sort().join(',')===(q.answers||[]).slice().sort().join(','):q.type==='text'?normalizeSQL(a)===normalizeSQL(q.answer):a===q.answer;if(!ok)wrong.push(q)});
+    let wrong=[];
+    ps.questions.forEach((q,i)=>{
+        let a=ps.answers[i];
+        if(a===null)return;
+        let ok=q.type==='multi'?(a||[]).slice().sort().join(',')===(q.answers||[]).slice().sort().join(','):q.type==='text'?normalizeSQL(a)===normalizeSQL(q.answer):a===q.answer;
+        if(!ok)wrong.push(q);
+    });
     if(wrong.length===0){t('全部正确，没有错题！');return}
-    let qs=shuffleBank(wrong);ps={bankId:ps.bankId,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};
+    let qs=shuffleBank(wrong);
+    ps={bankId:ps.bankId,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};
     document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='block';showQ();
 }
-function restartPractice(){let bank=BANKS[ps.bankId];let qs=shuffleBank(bank.questions);ps={bankId:ps.bankId,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='block';showQ()}
-function changeBank(){document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='none';document.getElementById('psel').style.display='block';document.getElementById('pbank').value=''}
+function restartPractice(){
+    let qs;
+    if(ps.bankId==='wrong_book'){
+        let book=getWrongBook();
+        if(book.length===0){t('错题本已清空',true);changeBank();return}
+        qs=shuffleBank(book.map(q=>({question:q.question,options:q.options,answer:q.answer,type:q.type,answers:q.answers,analysis:q.analysis})));
+    }else{
+        let bank=BANKS[ps.bankId];
+        qs=shuffleBank(bank.questions);
+    }
+    ps={bankId:ps.bankId,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};
+    document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='block';showQ();
+}
+function changeBank(){
+    if(ps.bankId==='wrong_book'){
+        document.getElementById('pres').style.display='none';
+        document.getElementById('parea').style.display='none';
+        document.getElementById('practice-page').classList.add('hidden');
+        document.getElementById('admin-panel').classList.remove('hidden');
+        renderWrongBook();
+    }else{
+        document.getElementById('pres').style.display='none';
+        document.getElementById('parea').style.display='none';
+        document.getElementById('psel').style.display='block';
+        document.getElementById('pbank').value='';
+    }
+}
 
 // ===== 用户答题功能 =====
 function showExamQ(){
@@ -906,6 +1005,16 @@ function showExamResult(){
     document.getElementById('exam-qarea').style.display='none';document.getElementById('exam-res').style.display='block';
     let total=es.questions.length,correct=es.correctCount,pct=Math.round((correct/total)*100);
     let wrongCount=total-correct;
+    if(wrongCount>0){
+        let wrongList=[];
+        es.questions.forEach((q,i)=>{
+            let a=es.answers[i];
+            if(a===null)return;
+            let ok=q.type==='multi'?(a||[]).slice().sort().join(',')===(q.answers||[]).slice().sort().join(','):q.type==='text'?normalizeSQL(a)===normalizeSQL(q.answer):a===q.answer;
+            if(!ok)wrongList.push({...q,userAnswer:a,bankId:es.bankId,bankName:BANKS[es.bankId]?BANKS[es.bankId].name:'',timestamp:Date.now()});
+        });
+        if(wrongList.length>0)saveWrongBook(wrongList);
+    }
     document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f'};">${pct}%</div><div style="color:#666;font-size:16px;">共 ${total} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题</div><div style="margin-top:30px;display:flex;gap:15px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-p" onclick="restartExam()" style="max-width:200px">重新答题</button>${wrongCount>0?`<button class="btn" onclick="retryWrongExam()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="logout()" style="max-width:200px">返回解锁</button></div>`;
 }
 function retryWrongExam(){
@@ -924,45 +1033,49 @@ function restartExam(){
 }
 
 function endExamEarly(){
-    if(!confirm('确定要结束答题吗？答错的题目将保存到错题重练中。'))return;
     let total=es.questions.length;
     let answered=es.answers.filter(a=>a!==null).length;
     if(answered===0){t('您还没有答题，无法结束',true);return}
     let correct=0;
+    let wrongList=[];
     es.questions.forEach((q,i)=>{
         let a=es.answers[i];
         if(a===null)return;
         let ok=q.type==='multi'?(a||[]).slice().sort().join(',')===(q.answers||[]).slice().sort().join(','):q.type==='text'?normalizeSQL(a)===normalizeSQL(q.answer):a===q.answer;
         if(ok)correct++;
+        else wrongList.push({...q,userAnswer:a,bankId:es.bankId,bankName:BANKS[es.bankId]?BANKS[es.bankId].name:'',timestamp:Date.now()});
     });
     es.correctCount=correct;
+    if(wrongList.length>0)saveWrongBook(wrongList);
     document.getElementById('exam-qarea').style.display='none';
     document.getElementById('exam-res').style.display='block';
     let pct=Math.round((correct/total)*100);
     let wrongCount=answered-correct;
-    document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f'};">${pct}%</div><div style="color:#666;font-size:16px;margin-bottom:10px;">共 ${total} 题 | 已答 ${answered} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题</div><div style="color:#999;font-size:13px;margin-bottom:20px;">（本次提前结束答题）</div><div style="margin-top:30px;display:flex;gap:15px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-p" onclick="restartExam()" style="max-width:200px">重新答题</button>${wrongCount>0?`<button class="btn" onclick="retryWrongExam()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="logout()" style="max-width:200px">返回解锁</button></div>`;
+    document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f'};">${pct}%</div><div style="color:#666;font-size:16px;margin-bottom:10px;">共 ${total} 题 | 已答 ${answered} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题</div>${wrongCount>0?`<div style="color:#52c41a;font-size:14px;margin-bottom:15px;">✓ 已自动保存 ${wrongCount} 道错题到错题本</div>`:''}<div style="color:#999;font-size:13px;margin-bottom:20px;">（本次提前结束答题）</div><div style="margin-top:30px;display:flex;gap:15px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-p" onclick="restartExam()" style="max-width:200px">重新答题</button>${wrongCount>0?`<button class="btn" onclick="retryWrongExam()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="logout()" style="max-width:200px">返回解锁</button></div>`;
 }
 
 function endPracticeEarly(){
-    if(!confirm('确定要结束练习吗？答错的题目将保存到错题重练中。'))return;
     let total=ps.questions.length;
     let answered=ps.answers.filter(a=>a!==null).length;
     if(answered===0){t('您还没有答题，无法结束',true);return}
     let correct=0;
+    let wrongList=[];
     ps.questions.forEach((q,i)=>{
         let a=ps.answers[i];
         if(a===null)return;
         let ok=q.type==='multi'?(a||[]).slice().sort().join(',')===(q.answers||[]).slice().sort().join(','):q.type==='text'?normalizeSQL(a)===normalizeSQL(q.answer):a===q.answer;
         if(ok)correct++;
+        else wrongList.push({...q,userAnswer:a,bankId:ps.bankId,bankName:BANKS[ps.bankId]?BANKS[ps.bankId].name:'',timestamp:Date.now()});
     });
     ps.correctCount=correct;
+    if(wrongList.length>0)saveWrongBook(wrongList);
     document.getElementById('parea').style.display='none';
     document.getElementById('pres').style.display='block';
     let pct=Math.round((correct/total)*100);
     let wrongCount=answered-correct;
     document.getElementById('rem').textContent=pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪';
     let s=document.getElementById('rsc');s.textContent=pct+'%';s.style.color=pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f';
-    document.getElementById('rdt').innerHTML=`共 ${total} 题 | 已答 ${answered} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题<br><span style="color:#999;font-size:13px;">（本次提前结束练习）</span>`;
+    document.getElementById('rdt').innerHTML=`共 ${total} 题 | 已答 ${answered} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题${wrongCount>0?`<br><span style="color:#52c41a;font-size:14px;">✓ 已自动保存 ${wrongCount} 道错题到错题本</span>`:''}<br><span style="color:#999;font-size:13px;">（本次提前结束练习）</span>`;
     document.getElementById('pbtns').innerHTML=`<button class="btn btn-p" onclick="restartPractice()" style="max-width:200px">重新练习</button>${wrongCount>0?`<button class="btn" onclick="retryWrongPractice()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="changeBank()" style="max-width:200px">切换题库</button>`;
 }
 
