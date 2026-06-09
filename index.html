@@ -107,6 +107,7 @@
         .ta-submit:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(102,126,234,.4)}
         .ta-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
         .ta-ans{font-family:'Consolas','SF Mono','Courier New',monospace;background:#f8f9fa;padding:12px 16px;border-radius:8px;margin-top:10px;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.7;color:#333;border:1px solid #e0e0e0}
+        .om{cursor:pointer;transition:.15s}.om-sel{border-color:#667eea!important;background:#f0f2ff!important;box-shadow:0 0 0 3px rgba(102,126,234,.12)}
         #klist{display:grid;gap:12px}
         #exam-q>div,#pq>div{box-shadow:0 8px 24px rgba(31,41,55,.04)}
         #exam-o>div,#po>div{box-shadow:0 6px 18px rgba(31,41,55,.04);transition:.2s}
@@ -240,6 +241,166 @@ const BANKS={
         {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n6、修改视频表中标题为 \'楷书基础笔画教学\' 的播放时长改为：15。',answer:'Update video set duration=15 where title=\'楷书基础笔画教学\'',analysis:'UPDATE 修改数据，SET 指定新值，WHERE 定位到标题匹配的记录。'},
         {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n7、查询标题中包含楷书字样且在\'2024-01-20\'至\'2024-01-26\'期间发布的视频信息。',answer:'Select * from video where title like \'%楷书%\' and createtime between \'2024-01-20\' and \'2024-01-26\'',analysis:'LIKE 配合 % 通配符实现模糊匹配，BETWEEN AND 限定日期范围。'},
         {type:'text',question:'短视频系统数据表：\n用户表：user(uid, username, realname, birthday, sex, mobile, intro)\n视频类别表：videotype(tid, typename)\n视频表：video(vid, title, uid, createtime, tid, filename, duration)\n评论表：comment(cid, uid, vid, commentdate, content)\n点赞表：likes(lid, uid, vid)\n\n8、查询视频全量信息，要求先按视频类别编号升序，再按创建时间降序。',answer:'Select * from video order by tid asc, createtime desc',analysis:'ORDER BY 排序，先按 tid 升序 (ASC)，相同 tid 再按 createtime 降序 (DESC)。'}
+    ]},
+    rehab_final:{name:'康复期末复习',questions:[
+        {question:'患者女,67岁,脑卒中右侧肢体瘫痪,查体:右上肢肌张力严重增高,被动运动困难,改良Ashworth分级法应评定为',options:['1级','1+级','2级','3级'],answer:3,analysis:'改良Ashworth分级3级表现为肌张力严重增高，被动运动困难'},
+        {question:'患者男,60岁。脑卒中病程1周半,病情稳定,无并发症,对该患者进行运动功能评估,以下哪项评估不属于该评估的范畴',options:['Brunnstrom方法','Barthel指数法','Fugl-Meyer法','Bobath法'],answer:1,analysis:'Barthel指数法用于日常生活活动能力评估，不属于运动功能评估范畴'},
+        {question:'患者男,42岁,颅脑损伤后出现行为障碍"发作性失控",其临床特点不包括以下选项中的',options:['发作时间短,发作后有自责感','无诱因、无预谋、无计划','发作时直接作用于最靠近的人或物','表现为精神萎靡、感情淡漠、缺乏主动性、不愿活动'],answer:3,analysis:'D选项是淡漠型行为障碍的表现，不是发作性失控的特点'},
+        {question:'脊髓损伤确定运动神经平面的关键肌的肌力应达到几级',options:['1级','2级','3级','4级'],answer:2,analysis:'脊髓损伤运动神经平面确定标准为关键肌肌力≥3级'},
+        {question:'T4脊髓节段损害的感觉障碍的体表标志位于',options:['脐部水平','乳头下水平','坐骨结节','腹股沟水平'],answer:1,analysis:'T4感觉平面对应乳头下水平，T10对应脐水平，L1对应腹股沟水平'},
+        {question:'某患者因腓总神经损伤引起足下垂,现为该患者选择下肢矫形器,应选择',options:['踝足矫形器','膝踝足矫形器','髋膝踝足矫形器','截瘫行走矫形器'],answer:0,analysis:'腓总神经损伤导致踝足功能障碍，首选踝足矫形器纠正足下垂'},
+        {question:'患者女,24岁。不慎摔倒致左上肢桡骨中上段骨折。石膏外固定,现石膏已拆除,发现其肘关节屈曲活动度120度,前臂旋前旋后各90度。肘关节屈曲受限的原因不包括',options:['关节粘连','疼痛、肌肉萎缩','软组织粘连','骨质疏松'],answer:3,analysis:'骨质疏松不会直接导致肘关节屈曲活动受限，关节粘连、软组织粘连、疼痛和肌肉萎缩是常见原因'},
+        {question:'患者男,47岁。膝骨关节炎5年,进行性加重2个月,肿痛较严重。对于关节肿痛的处理方法正确的是',options:['膝关节抗阻运动','手术','卧床休息','增重'],answer:2,analysis:'膝骨关节炎急性肿痛期应卧床休息，避免负重运动加重症状'},
+        {question:'关于急性软组织损伤,错误的是',options:['适当制动','控制状态下尽量早期做肌肉等长收缩','关节活动度训练','早期仍能从事竞技运动'],answer:3,analysis:'急性软组织损伤早期应制动休息，禁止竞技运动，避免加重损伤'},
+        {question:'患者男,69岁,诊断"慢性支气管炎,阻塞性肺气肿",现痰多,难咳出,现进行排痰训练,不包括的方法是',options:['胸部叩击','咳嗽训练','体位引流','胸部按摩'],answer:3,analysis:'排痰训练包括胸部叩击、咳嗽训练、体位引流等，胸部按摩不属于排痰方法'},
+        {question:'52岁患者肩关节反复脱位,肩关节可做一定程度外展,三角肌触之无收缩,其最大可能为',options:['腋神经损伤','正中神经损伤','肌皮神经损伤','尺神经损伤'],answer:0,analysis:'腋神经支配三角肌，损伤后导致三角肌瘫痪，肩关节外展受限'},
+        {question:'患者女性,18岁,上唇红肿伴剧痛2天。查体:上唇隆起呈紫红色,有多个脓栓,中央破溃坏死。血常规白细胞高,考虑诊断为',options:['疖','痈','丹毒','脓肿'],answer:1,analysis:'痈是多个相邻毛囊及其周围组织的急性化脓性感染，好发于上唇，表现为多个脓栓、红肿剧痛'},
+        {question:'患者男,20岁,重度脑外伤6个月,生命体征稳定,但一直卧床,无主动意识反应,四肢肌张力改良Ashworth分期为2级,目前最适合的运动是',options:['被动运动','主动运动','抗阻运动','器械练习'],answer:0,analysis:'患者无主动意识反应，无法进行主动运动，应进行被动运动预防关节挛缩'},
+        {question:'脊髓损伤按严重程度分为5级,B级指的是',options:['完全性损伤,鞍区无任何运动、感觉功能保留','不完全性损伤,损伤平面以下包括S4-S5保留感觉功能,但无运动功能','不完全性损伤,损伤平面以下运动功能保留,一半以上关键肌肌力在III级以下','不完全性损伤,损伤平面以下运动功能保留,且损伤平面以下至少有一半以上的关键肌肌力大于或等于III级'],answer:1,analysis:'ASIA分级B级为不完全性损伤，损伤平面以下包括S4-S5保留感觉功能，无运动功能'},
+        {question:'肌筋膜疼痛综合征的治疗原则为',options:['确定和治疗基础病理损伤','减轻疼痛','加强运动治疗','口服药治疗'],answer:1,analysis:'肌筋膜疼痛综合征的首要治疗原则是减轻疼痛，缓解症状'},
+        {question:'"对瘫痪肢体做被动的关节活动以预防关节挛缩"属于哪种康复策略',options:['加强健康器官的补偿功能','用适应性器械装置增进功能','应用心理技术以改进患者的行为表现及提高学习效果','预防和矫正继发性功能障碍'],answer:3,analysis:'预防关节挛缩属于预防和矫正继发性功能障碍的康复策略'},
+        {question:'偏瘫运动功能的评价方法在临床上应用最多的是',options:['上田敏法','MAS法','Bobath法','Brunnstrom法'],answer:3,analysis:'Brunnstrom法是临床上应用最广泛的偏瘫运动功能评价方法'},
+        {question:'患者脑卒中后6个月,能独立行走,但速度慢,患侧上肢仅有部分分离运动,此时康复重点应为',options:['职业训练','诱发共同运动','卧床良肢位','提高步行速度和精细运动'],answer:3,analysis:'患者处于恢复期，康复重点为提高步行速度和上肢精细运动功能'},
+        {question:'脊髓损伤患者损伤平面以下出现运动和痛温觉障碍,而本体感觉存在的是',options:['半切综合征','后束综合征','中央束综合征','前束综合征'],answer:3,analysis:'前束综合征表现为损伤平面以下运动和痛温觉障碍，本体感觉保留'},
+        {question:'确定T10平面损伤的皮肤感觉区是',options:['脐水平','脐上2cm','脐上4cm','脐下4cm'],answer:0,analysis:'T10脊髓节段感觉平面对应脐水平'},
+        {question:'帕金森病患者语言训练不包括',options:['持续发声训练','发声启动训练','语言理解训练','音量控制训练'],answer:2,analysis:'帕金森病患者语言障碍主要表现为发声困难、音量低，语言理解功能通常正常，无需语言理解训练'},
+        {question:'患者,男,39岁,颈肩部疼痛伴头痛、心慌、出汗异常,无上肢放射痛,压头试验阴性。颈椎X线示颈椎不稳。该患者最可能的诊断是',options:['神经根型颈椎病','混合型颈椎病','交感神经型颈椎病','椎动脉型颈椎病'],answer:2,analysis:'交感神经型颈椎病表现为交感神经症状，如头痛、心慌、出汗异常等，无上肢放射痛'},
+        {question:'患者,女,64岁,全髋关节置换术后第4天,患侧髋关节主动屈曲60°,外展20°,股四头肌肌力3级,为增强股四头肌肌力,此时应优先进行的训练是',options:['坐位抗阻伸膝','直腿抬高(主动,不加重力负荷)','站立位静蹲','股四头肌等长收缩'],answer:3,analysis:'全髋关节置换术后早期，股四头肌肌力训练优先采用等长收缩，避免关节过度活动'},
+        {question:'患儿,女,7岁,痉挛型双瘫,已能独立行走但步态异常(剪刀步、尖足)。经康复治疗后,患儿母亲询问家庭康复的注意事项。下列指导中正确的是',options:['增加高热量饮食以增强肌力','日常采用正确的抱姿和转移方式,家庭康复与正规训练相结合','完全停止院内康复训练,仅在家观察','长期卧床休息可改善肌张力'],answer:1,analysis:'痉挛型双瘫患儿家庭康复应采用正确的抱姿和转移方式，结合正规训练，不能停止康复或长期卧床'},
+        {question:'患者,女,45岁,L4/5腰椎间盘突出症急性发作,腰痛剧烈,右下肢放射痛,VAS评分7分。目前最适合的康复措施是',options:['立即行腰椎快速牵引','绝对卧床休息,床不宜太软','腰椎旋转复位手法','腰背肌等张训练'],answer:1,analysis:'腰椎间盘突出症急性发作期应绝对卧床休息，减轻椎间盘压力'},
+        {question:'关于骨折临床愈合的标准,下列说法错误的是',options:['X线片显示骨折线完全消失','拆除外固定后,上肢能向前平举1kg重物持续1min','局部无压痛及纵向叩击痛','局部无异常活动'],answer:0,analysis:'骨折临床愈合标准为X线片显示骨折线模糊，有连续性骨痂通过骨折线，而非完全消失'},
+        {question:'通过内辅助法改善阿尔茨海默病患者记忆力不正确的是',options:['使用记事本','无错误性学习','联想法','图片刺激法'],answer:0,analysis:'使用记事本属于外辅助法，不属于内辅助法'},
+        {question:'患者,女,70岁,帕金森病晚期,卧床、吞咽启动困难,预防误吸最关键的措施是',options:['强制经口进食','被动关节活动','吞咽功能训练与饮食调整','加大左旋多巴剂量'],answer:2,analysis:'吞咽功能训练与饮食调整是预防帕金森病患者误吸的关键措施'},
+        {question:'患者,男,40岁,C7损伤,恢复期,可独立床椅转移,坐位平衡可,上肢肌力尚可,下肢肌力1-2级。该患者功能预后最可能为',options:['需他人全程辅助','轮椅独立,大部自理','可社区步行','可家庭步行'],answer:1,analysis:'C7脊髓损伤患者预后通常为轮椅独立，大部分日常生活可自理'},
+        {question:'患者男,58岁,脑卒中后出现下肢深静脉血栓,下列哪项处理不正确',options:['下肢主动运动','患侧下肢按摩','抬高下肢','穿压力长筒袜'],answer:1,analysis:'下肢深静脉血栓急性期禁止按摩患肢，防止血栓脱落导致肺栓塞'},
+        {question:'患者男,68岁,脑出血后3周,右侧偏瘫,右上肢屈肌痉挛明显,右下肢伸肌痉挛,不能独立站立。为改善该患者下肢痉挛,下列哪项治疗最合适',options:['长时间卧床休息','鼓励患者用力踢腿','牵伸腘绳肌和跟腱','加强股四头肌力量训练'],answer:2,analysis:'牵伸痉挛肌肉是改善肌张力增高的有效方法，应牵伸腘绳肌和跟腱缓解下肢伸肌痉挛'},
+        {question:'脑外伤患者康复治疗原则',options:['及早消除大脑水肿,促进大脑神经再生','抑制异常反射活动,改善运动模式,重建正常的运动模式','防止卧床并发症,对瘫痪肢体进行肌力和耐力训练','抗痉挛体位预防或减轻痉挛模式'],answer:1,analysis:'脑外伤患者康复治疗的核心原则是抑制异常反射活动，改善运动模式，重建正常运动模式'},
+        {question:'导致帕金森病患者最易跌倒的原因是',options:['顽固性便秘','直立性低血压','下肢水肿','心悸'],answer:1,analysis:'帕金森病患者常出现直立性低血压，导致头晕、跌倒'},
+        {question:'周围性面神经麻痹患者发生什么情况时不宜进行低频电疗',options:['面肌痉挛','合并眼部疾病','病情无好转','同时针灸'],answer:0,analysis:'面肌痉挛时进行低频电疗会加重痉挛症状，因此不宜使用'},
+        {question:'患者,女,62岁,渐进性双下肢行走不稳,有踩棉花感,手部精细动作障碍,病理征阳性。MRI显示C5/6椎间盘突出压迫脊髓。该患者应首选的治疗方法是',options:['手术治疗','运动疗法','推拿手法治疗','颈椎牵引'],answer:0,analysis:'脊髓型颈椎病出现明显脊髓压迫症状时，应首选手术治疗'},
+        {question:'患者,男,68岁,左膝关节骨性关节炎,疼痛以负重时明显,休息后减轻。康复治疗师指导其进行运动疗法,下列运动中最为适宜的是',options:['快速下蹲起立','非负重情况下屈伸运动','爬楼梯训练','登山锻炼'],answer:1,analysis:'膝骨关节炎患者应进行非负重关节活动度训练，避免负重运动加重关节损伤'},
+        {question:'患者,女,74岁,因左股骨颈骨折行左全髋关节置换术(骨水泥固定),术后第1天,生命体征平稳,伤口干燥,患肢末梢血运良好。术后第3周,患者可进行的训练中,错误的是',options:['患侧股四头肌等长收缩、等张收缩','扶双拐练习行走','平衡杠内做患侧少量负重站立练习','髋关节抗阻力运动训练'],answer:3,analysis:'全髋关节置换术后3周不宜进行髋关节抗阻力运动训练，避免关节脱位'},
+        {question:'患者,男,41岁,面颈部深II度烧伤后3周创面愈合,愈合后瘢痕逐渐增生、发红、发硬、发痒。目前预防瘢痕过度增生的最有效康复方法是',options:['压力疗法(弹力衣、弹力套)','紫外线照射','红外线照射','超短波治疗'],answer:0,analysis:'压力疗法是预防烧伤后瘢痕过度增生最有效的方法'},
+        {question:'患者,男,64岁,脑卒中后遗留偏瘫痉挛,经综合康复训练、口服药物及物理因子治疗后痉挛仍明显,患侧上肢屈曲挛缩影响卫生和穿衣。此时可推荐的进一步治疗方法是',options:['增加口服抗痉挛药物剂量至大剂量','局部肉毒毒素注射治疗','终止所有康复治疗','继续增加康复训练强度'],answer:1,analysis:'对于顽固性痉挛，局部肉毒毒素注射是有效的治疗方法'},
+        {question:'下列哪个动作利于保护置换的人工髋关节',options:['髋关节处于轻度外展或中立位','保持髋关节屈曲、内收、内旋位','快速行走','两腿交叉'],answer:0,analysis:'人工髋关节置换术后应保持髋关节轻度外展或中立位，避免屈曲、内收、内旋和两腿交叉'},
+        {question:'患者男,22岁,神经修复术后,叩击神经远端出现放射麻痛,提示',options:['神经再生','感染','神经粘连','瘢痕压迫'],answer:0,analysis:'Tinel征阳性（叩击神经远端出现放射麻痛）提示神经再生'},
+        {question:'学习书面材料最有效的方法是',options:['记事本','无错误学习法','PQRST法','联想法'],answer:2,analysis:'PQRST法是学习书面材料最有效的方法，包括预览、提问、阅读、复述、复习'},
+        {question:'帕金森病患者肌强直最早出现的部位是',options:['面部表情肌','下肢的关节','上肢的关节','腹部'],answer:2,analysis:'帕金森病肌强直最早出现于上肢关节，逐渐累及全身'},
+        {question:'患者,男,51岁,头部外伤后昏迷,GCS评分4分,CT示左侧硬膜外血肿、脑疝形成、脑挫裂伤,该患者颅脑损伤严重程度为',options:['重度','极轻度','轻度','中度'],answer:0,analysis:'GCS评分3-8分为重度颅脑损伤'},
+        {question:'用格拉斯哥昏迷量表(GCS)判断急性颅脑损伤的意识状况,总分15分,昏迷的评分标准为',options:['≤8','≤9','≤10','≤7'],answer:0,analysis:'GCS评分≤8分为昏迷状态'},
+        {question:'不属于丹毒临床表现的是',options:['与正常皮肤边缘界限不明显','局部可有烧灼样疼痛','早期有全身表现','局部皮肤微隆起','附近淋巴结可肿大'],answer:0,analysis:'丹毒与正常皮肤边缘界限清楚，这是其典型临床表现之一'},
+        {question:'对痈进行紫外线照射时,照射野应包括多大范围',options:['整个病灶','包括病灶外5cm以上','包括病灶外2cm','包括病灶外1cm','包括病灶外3cm'],answer:1,analysis:'痈的紫外线照射范围应包括病灶外5cm以上，确保覆盖所有感染区域'},
+        {question:'急性软组织感染需及早切开引流的是',options:['疖痈','丹毒','脓肿形成','蜂窝织炎'],answer:3,analysis:'蜂窝织炎如不及时切开引流，易导致感染扩散，引起严重并发症'},
+        {question:'患者男,65岁。吸烟40年,每天消耗2包,慢性咳嗽、咳痰10多年,冬季咳嗽严重,痰多伴气喘。该患者目前最需要采取的措施是',options:['戒烟','进行呼吸与耐寒训练','咳嗽严重时可使用镇咳药','急性期应使用抗生素'],answer:0,analysis:'戒烟是慢性阻塞性肺病患者最重要的干预措施'},
+        {question:'慢性阻塞性肺病与呼吸功能无关的康复治疗方法为',options:['呼吸肌训练','抗阻训练','缩唇样呼吸训练','腹式呼吸'],answer:1,analysis:'抗阻训练主要用于增强肌力，与呼吸功能无直接关系'},
+        {question:'不属于心肺功能状况评定的是',options:['心肺运动实验','6分钟步行实验','低水平运动实验','MMSE量表'],answer:3,analysis:'MMSE量表用于认知功能评定，不属于心肺功能评定'},
+        {question:'急性心肌梗死最早出现和最突出的症状是',options:['疼痛','心律失常','休克','心功能不全'],answer:0,analysis:'疼痛是急性心肌梗死最早出现和最突出的症状'},
+        {question:'患者男,45岁。4个月前摔倒,致右侧胫腓骨中下段骨折,行石膏外固定。目前石膏已拆除显示骨折愈合良好,现右膝关节屈曲受限。膝关节的活动度为',options:['屈0-150度,伸0度','屈0-90度,伸0-5度','屈0-45度,伸0度','屈0-60度,伸0-45度','屈0-30度,伸0度'],answer:0,analysis:'正常膝关节活动度为屈0-150度，伸0度'},
+        {question:'患者男,45岁。4个月前摔倒,致右侧胫腓骨中下段骨折,行石膏外固定。目前石膏已拆除显示骨折愈合良好,现右膝关节屈曲受限。下述现阶段康复治疗的目的不正确的是',options:['消除残余肿胀','限制关节活动,防止不必要的损伤','软化和牵伸挛缩的纤维组织','增加关节活动范围和肌力','恢复肌肉的协调性和灵活性'],answer:1,analysis:'骨折愈合后应进行关节活动度训练，而不是限制关节活动'},
+        {question:'患者男,45岁。4个月前摔倒,致右侧胫腓骨中下段骨折,行石膏外固定。目前石膏已拆除显示骨折愈合良好,现右膝关节屈曲受限。患者关节屈曲受限可能的原因为',options:['疼痛','骨质增生形成','软组织粘连','肌肉耐力下降','肌力下降'],answer:2,analysis:'石膏固定后关节屈曲受限最常见的原因是软组织粘连'},
+        {question:'患者女,62岁。神经根型颈椎病16年,2月前进行性加重,遵医嘱,卧床休息2月余。多将手法治疗视为禁忌症的是',options:['软组织型颈椎病','神经根型颈椎病','脊髓型颈椎病','椎动脉型颈椎病','交感神经型颈椎病'],answer:2,analysis:'脊髓型颈椎病手法治疗可能加重脊髓损伤，视为禁忌症'},
+        {question:'患者女,62岁。神经根型颈椎病16年,2月前进行性加重,遵医嘱,卧床休息2月余。后期牵引治疗的合适角度为',options:['颈椎后伸10-20度','颈椎前倾10-20度','颈椎前倾45-60度','颈椎前倾30-40度','颈椎后伸30-45度'],answer:1,analysis:'神经根型颈椎病牵引治疗采用颈椎前倾10-20度，可有效拉开椎间隙'},
+        {question:'患者女,62岁。神经根型颈椎病16年,2月前进行性加重,遵医嘱,卧床休息2月余。卧床休息对颈部的作用不正确的是',options:['使颈部肌肉放松','减轻由于肌肉痉挛和头部重量对椎间盘的压力','减少颈部活动','减轻神经根粘连','有利于组织充血、水肿的消退'],answer:3,analysis:'卧床休息不能减轻神经根粘连，需要通过康复训练改善'},
+        {question:'患者男,56岁。就诊主诉:右肩疼痛活动受限一年,夜间为甚,逐渐加重,肩关节活动受限日益加重,半年前缓解,怕冷,肩关节广泛压痛,MRI诊断为肩周炎。肩周炎的康复训练不包括',options:['爬墙运动','弯腰晃肩法','外旋锻炼','甩手训练','被动运动'],answer:4,analysis:'肩周炎康复训练包括主动运动如爬墙、弯腰晃肩、外旋、甩手等，被动运动不属于主动康复训练内容'},
+        {question:'患者男,56岁。就诊主诉:右肩疼痛活动受限一年,夜间为甚,逐渐加重,肩关节活动受限日益加重,半年前缓解,怕冷,肩关节广泛压痛,MRI诊断为肩周炎。肩关节的活动度为',options:['0-90度','0-180度','0-45度','0-150度','0-120度'],answer:1,analysis:'正常肩关节前屈活动度为0-180度'},
+        {question:'患者男,56岁。就诊主诉:右肩疼痛活动受限一年,夜间为甚,逐渐加重,肩关节活动受限日益加重,半年前缓解,怕冷,肩关节广泛压痛,MRI诊断为肩周炎。下列关于粘连的治疗方法错误的是',options:['避免活动','小针刀治疗','关节囊松解','关节松动训练','中药外敷'],answer:0,analysis:'粘连的治疗应进行适当活动和关节松动训练，避免活动会加重粘连'},
+        {question:'患者男,62岁。右膝疼痛、肿胀6个月。X线摄片示右膝髁间隆起增生,诊断右膝骨关节炎。最适宜该患者的全身有氧训练方式是',options:['爬山','举重','快走','游泳','跑步'],answer:3,analysis:'游泳是非负重有氧训练，最适合膝骨关节炎患者'},
+        {question:'患者男,62岁。右膝疼痛、肿胀6个月。X线摄片示右膝髁间隆起增生,诊断右膝骨关节炎。在运动时因气喘不能自由交谈,运动后无力、恶心,关节疼痛感考虑最可能的原因是',options:['运动量过大','运动强度过大','关节炎加重','肌肉损伤','心脏病复发'],answer:1,analysis:'运动时气喘不能自由交谈，运动后出现不适症状，提示运动强度过大'},
+        {question:'患者男,62岁。右膝疼痛、肿胀6个月。X线摄片示右膝髁间隆起增生,诊断右膝骨关节炎。物理治疗应采用',options:['紫外线','牵引','超短波','分级振动疗法','电疗'],answer:2,analysis:'超短波可促进局部血液循环，减轻炎症反应，缓解膝骨关节炎症状'},
+        {question:'患者男,47岁。膝骨关节炎5年,进行性加重2个月,肿痛较严重。对于关节肿痛的处理方法正确的是',options:['膝关节抗阻运动','高频温热疗法','卧床休息','增重','手术'],answer:2,analysis:'膝骨关节炎急性肿痛期应卧床休息，避免负重'},
+        {question:'患者男,47岁。膝骨关节炎5年,进行性加重2个月,肿痛较严重。对膝关节保护不正确的是',options:['关节随年龄增加而老化是自然规律,不应予以重视','体重超胖的中年人应控制饮食,进行体育活动,防止下肢各承重关节长时间超负荷','对儿童的各种骨关节畸形应予以矫正','保持关节正常的对位对线','在畸形疼痛时,关节不应负荷或活动'],answer:0,analysis:'关节老化虽为自然规律，但应采取措施保护关节，延缓退变'},
+        {question:'患者男,27岁。全髋关节置换术后3天。预防深静脉血栓应该采取的方式是',options:['绝对卧床','避免运动','早期踝泵运动','冷疗','热疗'],answer:2,analysis:'早期踝泵运动可促进下肢血液循环，预防深静脉血栓形成'},
+        {question:'患者男,27岁。全髋关节置换术后3天。患者主要的肌力训练为',options:['等张训练','等长训练','等速训练','抗阻训练','主动运动'],answer:1,analysis:'全髋关节置换术后早期肌力训练以等长收缩为主'},
+        {question:'患者男,27岁。全髋关节置换术后3天。对全髋关节置换术后康复要点不正确的是',options:['髋关节应保持内收、内旋、半屈曲位','髋关节伸直训练,俯卧位有利于伸髋训练','术后1-2天可行髋部冷疗','避免在不平整、不光滑的路面上行走','术侧髋尽可能后伸,避免起立时屈髋大于90度'],answer:0,analysis:'全髋关节置换术后应保持髋关节外展中立位，避免内收、内旋'},
+        {question:'患者男52岁。中风后偏瘫,左上肢能将手向腰后旋转,肘伸展位肩能前屈90度,左下肢坐位时能背屈,言语清楚,理解力正常,患者日常活动正常,但当家属说出指令时,患者不能按指令做出相应动作。被动活动时,患者肌张力明显增高,在大于1/2ROM内有阻力,但被动活动肢体较容易。患者Ashworth分级为',options:['0级','1级','1+级','2级','3级'],answer:3,analysis:'改良Ashworth分级2级表现为肌张力明显增高，在大于1/2ROM内有阻力，被动活动较容易'},
+        {question:'患者男52岁。中风后偏瘫,左上肢能将手向腰后旋转,肘伸展位肩能前屈90度,左下肢坐位时能背屈,言语清楚,理解力正常,患者日常活动正常,但当家属说出指令时,患者不能按指令做出相应动作。被动活动时,患者肌张力明显增高,在大于1/2ROM内有阻力,但被动活动肢体较容易。患者还可能存在的障碍',options:['意念运动性失用','运动性失语','感觉性失语','左右失认','迟缓性构音障碍'],answer:0,analysis:'患者能理解指令但不能执行，提示意念运动性失用'},
+        {question:'患者男52岁。中风后偏瘫,左上肢能将手向腰后旋转,肘伸展位肩能前屈90度,左下肢坐位时能背屈,言语清楚,理解力正常,患者日常活动正常,但当家属说出指令时,患者不能按指令做出相应动作。被动活动时,患者肌张力明显增高,在大于1/2ROM内有阻力,但被动活动肢体较容易。患者Brunnstrom运动功能分期为',options:['I期','II期','III期','IV期','V期'],answer:3,analysis:'患者出现部分分离运动，符合Brunnstrom IV期表现'},
+        {question:'患者男51岁。因"突发右侧肢体麻木1小时"入院,查体:患者神志清楚,右侧肢体轻偏瘫,右侧Babinski征(+),腱反射亢进,左侧肢体未见明显异常。入院头颅CT报告:左侧基底节缺血性梗死。患者此时的康复治疗原则是',options:['主要进行功能康复','主要进行心理治疗','预防并发症和继发性损害的发生','绝对卧床','大强度训练'],answer:2,analysis:'脑梗死急性期康复治疗原则是预防并发症和继发性损害'},
+        {question:'患者男51岁。因"突发右侧肢体麻木1小时"入院,查体:患者神志清楚,右侧肢体轻偏瘫,右侧Babinski征(+),腱反射亢进,左侧肢体未见明显异常。入院头颅CT报告:左侧基底节缺血性梗死。对该患者的康复治疗措施是',options:['增强右侧肢体肌力和肌肉耐力','诱发主动运动','抑制异常反射活动,重建正常运动模式','以卧床为主','进行大强度运动以增加其肌肉力量'],answer:2,analysis:'脑梗死急性期应抑制异常反射活动，重建正常运动模式'},
+        {question:'患者女53岁。脑梗死恢复期,查体:患者神志清楚,右侧肢体中枢性瘫痪,右侧Babinski征(+),腱反射亢进,偏身感觉减退,左侧肢体未见明显异常。入院头颅CT报告:左侧基底节缺血性梗死。现患者可以在没有外力的情况下维持平衡,伸手够物的情况下不能维持平衡。能理解他人言语,能够发音,但言语产生困难。由此推断患者的平衡功能分级为',options:['I级','II级','III级','IV级','V级'],answer:0,analysis:'平衡功能I级为静态平衡，能在无外力情况下维持平衡'},
+        {question:'患者女53岁。脑梗死恢复期,查体:患者神志清楚,右侧肢体中枢性瘫痪,右侧Babinski征(+),腱反射亢进,偏身感觉减退,左侧肢体未见明显异常。入院头颅CT报告:左侧基底节缺血性梗死。现患者可以在没有外力的情况下维持平衡,伸手够物的情况下不能维持平衡。能理解他人言语,能够发音,但言语产生困难。此类患者可能出现的异常步态是',options:['关节强直步态','鸭步','跨栏步','画圈步态','前冲步态'],answer:3,analysis:'偏瘫患者典型步态为画圈步态'},
+        {question:'患者女53岁。脑梗死恢复期,查体:患者神志清楚,右侧肢体中枢性瘫痪,右侧Babinski征(+),腱反射亢进,偏身感觉减退,左侧肢体未见明显异常。入院头颅CT报告:左侧基底节缺血性梗死。现患者可以在没有外力的情况下维持平衡,伸手够物的情况下不能维持平衡。能理解他人言语,能够发音,但言语产生困难。该患者存在的失语类型为',options:['运动性失语','感觉性失语','传导性失语','经皮质运动性失语','完全性失语'],answer:0,analysis:'患者能理解言语但表达困难，符合运动性失语表现'},
+        {question:'患者女,34岁。车祸后入院,诊断为颈脊髓损伤(C1-C4),目前神志清楚,气管切开,呼吸机辅助呼吸,四肢不完全性瘫痪,无自主运动,留置导尿,神经源性膀胱。对于四肢的康复训练错误的是',options:['0-1级肌力时,可以采用电刺激及被动活动,防止肌肉萎缩','1-2级肌力时,可以采用肌电反馈训练','3-4级肌力时可以由主动训练到抗阻训练','0级肌力时患者可以进行主动训练','患者进行抗阻训练时避免屏气'],answer:3,analysis:'0级肌力时患者无法进行主动训练，只能进行被动活动和电刺激'},
+        {question:'患者女,34岁。车祸后入院,诊断为颈脊髓损伤(C1-C4),目前神志清楚,气管切开,呼吸机辅助呼吸,四肢不完全性瘫痪,无自主运动,留置导尿,神经源性膀胱。对患者进行膀胱功能训练,不正确的是',options:['反射性排尿训练','盆底肌训练','饮水和排尿时间间隔无限制','监测患者的残余尿量','避免患者膀胱过度充盈'],answer:2,analysis:'膀胱功能训练应定时定量饮水，规律排尿，不能无限制饮水和排尿'},
+        {question:'患者男,45岁。车祸后入院,右侧髂腰肌肌力5级,左侧4级,股四头肌肌力右侧4级,左侧可伸膝,可对抗一定阻力,胫前肌右侧2级,左侧1级,肛门括约肌无张力。患者左侧股四头肌肌力分级为',options:['0级','1级','2级','3级','4级'],answer:4,analysis:'肌力4级表现为能对抗一定阻力完成运动'},
+        {question:'患者男,45岁。车祸后入院,右侧髂腰肌肌力5级,左侧4级,股四头肌肌力右侧4级,左侧可伸膝,可对抗一定阻力,胫前肌右侧2级,左侧1级,肛门括约肌无张力。由题分析患者脊髓损伤运动神经平面大致为',options:['L2','L3','L4','L5','S1'],answer:1,analysis:'L3运动平面关键肌为股四头肌，左侧股四头肌肌力4级，提示损伤平面为L3'},
+        {question:'患者男,45岁。车祸后入院,右侧髂腰肌肌力5级,左侧4级,股四头肌肌力右侧4级,左侧可伸膝,可对抗一定阻力,胫前肌右侧2级,左侧1级,肛门括约肌无张力。该患者常见的并发症不包括',options:['褥疮','尿道感染','肺部感染','下肢深静脉血栓','失语症'],answer:4,analysis:'失语症是脑部损伤的并发症，脊髓损伤不会出现失语症'},
+        {question:'髋关节置换术后功能训练中错误的是',options:['双下肢之间放置三角垫','尽早进行术侧髋关节活动度的训练','翻身时患侧髋关节尽量屈曲','坐位时避免双膝并拢'],answer:2,analysis:'髋关节置换术后翻身时应避免患侧髋关节过度屈曲，防止脱位'},
+        {question:'患者膝关节置换术后3天,发生髂股静脉血栓形成,患肢腹股沟韧带以下明显肿胀,浅静脉扩张。此时,不宜选择的物理治疗是',options:['超短波无热量','抬高患肢','直流电疗法','正压顺序循环治疗'],answer:3,analysis:'下肢深静脉血栓急性期禁止使用正压顺序循环治疗，防止血栓脱落'},
+        {question:'全髋关节置换术后早期,错误的是',options:['卧位时不要忘记在两腿间放枕头,保持双下肢外展位','坐位时不要使身体前倾','术后床上坐位及床旁坐位屈髋均可超过90°','不要下蹲取物'],answer:2,analysis:'全髋关节置换术后早期屈髋不能超过90°，防止脱位'},
+        {question:'膝关节置换术后功能恢复期练习上下楼梯,动作顺序是',options:['健腿先上,健腿先下','健腿先上,患腿先下','患腿先上,健腿先下','患腿先上,患腿先下'],answer:1,analysis:'膝关节置换术后上下楼梯应遵循"健腿先上，患腿先下"的原则'},
+        {question:'人工全髋关节置换术后早期不宜进行下列哪一项训练',options:['踝关节背屈练习','直腿抬高练习','翻身练习','髋关节外展练习'],answer:1,analysis:'全髋关节置换术后早期不宜进行直腿抬高练习，以免增加髋关节压力'},
+        {question:'伤处出血基本停止,以炎性渗出、肿胀及肉芽组织增生为主;制动时间过长者出现肌肉萎缩、关节不稳定。以上描述属于运动损伤的哪一期?',options:['急性期','稳定期','恢复期','康复期'],answer:1,analysis:'运动损伤稳定期表现为出血停止，炎性渗出、肿胀及肉芽组织增生'},
+        {question:'肩周炎冻结期的治疗,错误的是',options:['属于慢性期','按摩或手法松动','需松解粘连的方法','冻结期休息制动,以免造成新损伤'],answer:3,analysis:'肩周炎冻结期应进行关节活动度训练和粘连松解，不能休息制动'},
+        {question:'肩周炎患者疼痛比较明显,给予物理因子治疗,下列哪项是错误的',options:['神经肌肉电刺激','微波,微热量','红外线痛区照射','干扰电疗'],answer:0,analysis:'神经肌肉电刺激主要用于肌力训练，不用于缓解肩周炎疼痛'},
+        {question:'肩周炎急性期的治疗,不正确的是',options:['患肢局部制动','传统康复手法,如针灸','急性期不进行肌力训练','克服疼痛感坚持关节活动度训练'],answer:3,analysis:'肩周炎急性期应适当制动，避免过度活动加重疼痛'},
+        {question:'骨关节炎康复治疗的目的不是',options:['缓解疼痛','改善症状','促进软骨生长','恢复功能','延缓进展'],answer:2,analysis:'骨关节炎软骨损伤不可逆，康复治疗不能促进软骨生长'},
+        {question:'某男,45岁,因右上肢放射痛伴手指麻木,动作不灵活2年就诊,检查发现颈肩部压痛。神经牵拉试验及压头试验阳性,右上肢桡侧皮肤感觉减退,握力减弱,肌张力减低,最可能的诊断是',options:['交感神经型颈椎病','脊髓型颈椎病','椎动脉型颈椎病','神经根型颈椎病'],answer:3,analysis:'神经根型颈椎病表现为上肢放射痛、麻木，神经牵拉试验和压头试验阳性'},
+        {question:'椎动脉型颈椎病的典型表现是',options:['下肢无力、步伐不稳','头部转动时发作性眩晕','颈肩臂疼痛麻木','心慌、胸闷'],answer:1,analysis:'椎动脉型颈椎病典型表现为头部转动时发作性眩晕'},
+        {question:'手外伤后手功能恢复两个要素是',options:['关节活动度和肌力','肌腱活动度和肌力','感觉和肌力','关节和肌腱活动度','关节活动度和感觉'],answer:0,analysis:'手功能恢复的两个关键要素是关节活动度和肌力'},
+        {question:'手外伤导致拇短伸肌麻痹所致拇指对掌功能障碍及拇指、示指捏物功能障碍是哪条神经损伤',options:['正中神经','尺神经','桡神经','桡神经腕段','桡神经肘段'],answer:0,analysis:'正中神经损伤导致拇短伸肌麻痹，出现拇指对掌功能障碍'},
+        {question:'下列哪种活动可改善患者腕关节功能',options:['珠算','锯木','乒乓球运动','下棋','拧螺钉'],answer:2,analysis:'乒乓球运动需要腕关节灵活活动，可有效改善腕关节功能'},
+        {question:'手部严重感染迁延较久可能导致什么后遗症,而需尽早处理',options:['手部黏连挛缩导致功能障碍','影响美观','色素沉着','废用性肌萎缩','水肿'],answer:0,analysis:'手部严重感染迁延不愈易导致粘连挛缩，严重影响手功能'},
+        {question:'手的功能位是',options:['腕背伸10-25°','腕背伸20-25°','腕背伸20-30°','腕背伸30-40°','腕背伸10-15°'],answer:1,analysis:'手的功能位为腕背伸20-25°，手指微屈'},
+        {question:'屈指肌腱完全断裂修复后4周,应开始做',options:['主动运动','被动运动','牵伸运动','抗阻运动','绝对制动'],answer:0,analysis:'屈指肌腱修复后4周可开始进行主动运动，促进功能恢复'},
+        {question:'手外伤治疗的最终目的是',options:['早期彻底清创','一期闭合创口','骨折解剖复位固定','组织修复','恢复手部运动功能'],answer:4,analysis:'手外伤治疗的最终目的是恢复手部运动功能'},
+        {question:'手外伤后的消肿不包括',options:['抬高患肢','主动运动','正压序贯治疗','脱敏治疗','漩涡浴等热疗'],answer:3,analysis:'脱敏治疗用于改善感觉过敏，不属于消肿方法'},
+        {question:'手外伤后肌力测试不包括',options:['握力指数','徒手肌力检查','Jebsen手功能测试','捏力(指尖捏、三指捏)','拇指与示指桡侧的侧捏力'],answer:2,analysis:'Jebsen手功能测试用于评估手的综合功能，不属于单纯肌力测试'},
+        {question:'不是手外伤中常见问题及并发症的是',options:['肿胀','瘢痕、挛缩','肌无力和耐力消失','疼痛和感觉过敏','复杂区域疼痛综合征I型(反射性交感神经营养不良)'],answer:4,analysis:'复杂区域疼痛综合征I型是手外伤的少见并发症'},
+        {question:'女孩,12岁,半小时前从自行车后座上摔下,右手撑地,肘上肿痛。医师检查发现下列情况,即诊断:肱骨外上髁骨折,其主要依据哪一条',options:['肘上肿痛明显','局部有皮下淤血','压痛明显','局部反常活动'],answer:3,analysis:'局部反常活动是骨折的特有体征，可作为诊断依据'},
+        {question:'以下哪项不是骨折愈合的过程',options:['血肿机化期','原始骨痂期','成熟骨板期','骨折愈合期','塑形期'],answer:3,analysis:'骨折愈合过程包括血肿机化期、原始骨痂期、成熟骨板期和塑形期'},
+        {question:'超声波疗法禁忌证',options:['小儿骨干部','成人骨骺部','小儿骨骺部','成人骨干部'],answer:2,analysis:'小儿骨骺部是超声波疗法的禁忌证，以免影响骨骼发育'},
+        {question:'患者,女,26岁,运动员,右上肢运动后疼痛2天就诊。体查时嘱患者用力握拳。发现患者小指与无名指不能屈曲,则考虑',options:['正中神经损伤','尺神经损伤','桡神经损伤','肱骨外上髁炎','肱骨内上髁炎'],answer:1,analysis:'尺神经损伤导致小指和无名指屈曲障碍'},
+        {question:'发现拇指不能与其他四指相对,同时腕关节不能主动背伸,握拳时腕下垂更为明显',options:['正中神经损伤','尺神经损伤','桡神经损伤','肱骨外上髁炎','肱骨内上髁炎'],answer:2,analysis:'桡神经损伤导致腕下垂和拇指不能背伸'},
+        {question:'患者,男,16岁,1个月前后肘前方刀刺伤,经清创缝合,创口愈合,但右手逐渐呈猿手畸形,不能握笔写字。查体时可发现',options:['尺侧一指半皮肤感觉消失','拇指对掌功能障碍','手指夹纸试验阳性','掌指关节指间关节被动屈曲障碍','1~5指主动屈曲障碍'],answer:1,analysis:'猿手畸形是正中神经损伤的典型表现，伴有拇指对掌功能障碍'},
+        {question:'腓总神经损伤后表现为',options:['划圈步态','慌张步态','剪刀步态','共济失调步态','足下垂步态'],answer:4,analysis:'腓总神经损伤导致足下垂，出现足下垂步态'},
+        {question:'患者王某,男性,28岁,主诉早晨起床洗脸照镜子时出现右眼不能闭合。查体:右边抬眉不能,右鼻唇沟变浅,口角左歪,流涎,四肢活动良好。该患者急性期治疗应首选',options:['电刺激','维生素','糖皮质激素','抗生素','手术'],answer:2,analysis:'周围性面神经麻痹急性期首选糖皮质激素治疗，减轻神经水肿'},
+        {question:'周围神经病损后表现为无汗、少汗或多汗,皮肤温度降低或增高,色泽苍白或紫绀,指甲粗糙脆裂等属于哪一种周围神经功能损害',options:['触觉损害','温度觉损害','本体感觉损害','运动功能损害','自主神经功能损害'],answer:4,analysis:'上述症状是自主神经功能损害的表现'},
+        {question:'患者,男,20岁,右手腕部被刀割伤2小时。查体:右手垂腕,垂指畸形,腕关节不能背伸,掌指关节不能伸直,手背桡侧感觉减退。临床考虑右手桡神经损伤,其康复治疗错误的是',options:['右手腕关节固定于功能位','轻运动量开始的被动运动为主,患者出现主动运动时,应积极进行主动活动','对右手功能进行评定,包括畸形、关节活动范围测量、日常生活活动能力的评定等','配合超短波治疗消除局部炎症、水肿','开始即应进行主动活动的训练,以便早日康复'],answer:4,analysis:'桡神经损伤早期应进行被动运动，待出现主动运动后再进行主动训练'},
+        {question:'患者,男,16岁,1个月前后肘前方刀刺伤,经清创缝合,创口愈合,但右手逐渐呈猿手畸形,不能握笔写字。采取哪一项治疗措施',options:['手术探查修补','局部物理治疗','电刺激治疗','激光治疗','药物治疗'],answer:0,analysis:'正中神经完全断裂应尽早手术探查修补'},
+        {question:'患者,女,30岁,因车祸致右下肢外伤,术后出现右足下垂、马蹄内翻足,足背外侧感觉消失,踝关节不能背伸,临床诊断为腓总神经损伤,行营养神经治疗后拟行康复干预。该患者足背外侧感觉消失属于周围神经损伤的哪种感觉障碍类型',options:['感觉过敏','感觉倒错','感觉过度','感觉缺失','感觉异常'],answer:3,analysis:'感觉消失属于感觉缺失'},
+        {question:'患者,女,30岁,因车祸致右下肢外伤,术后出现右足下垂、马蹄内翻足,足背外侧感觉消失,踝关节不能背伸,临床诊断为腓总神经损伤,行营养神经治疗后拟行康复干预。针对该患者的下垂足、马蹄内翻足,首选的矫形器为',options:['膝关节支具','踝足矫形器','对指夹板','肩关节外展夹板','髋膝踝足矫形器'],answer:1,analysis:'腓总神经损伤导致踝足功能障碍，首选踝足矫形器'},
+        {question:'患者,女,30岁,因车祸致右下肢外伤,术后出现右足下垂、马蹄内翻足,足背外侧感觉消失,踝关节不能背伸,临床诊断为腓总神经损伤,行营养神经治疗后拟行康复干预。检查该患者神经再生情况时,轻叩损伤平面出现足背放射性麻痛,此体征为',options:['Babinski征阳性','Tinel征阳性','Gordon征阳性','Chaddock征阳性','Oppenheim征阳性'],answer:1,analysis:'Tinel征阳性提示神经再生'},
+        {question:'患者,女,30岁,因车祸致右下肢外伤,术后出现右足下垂、马蹄内翻足,足背外侧感觉消失,踝关节不能背伸,临床诊断为腓总神经损伤,行营养神经治疗后拟行康复干预。该患者出现右下肢轻度肿胀,其康复消肿治疗方法不包括',options:['抬高患肢','向心性按摩','弹力绷带压迫','患肢持续下垂','被动运动'],answer:3,analysis:'患肢持续下垂会加重肿胀，应抬高患肢促进回流'},
+        {type:'multi',question:'帕金森病的临床主要表现包括',options:['静止性震颤','运动迟缓','肌强直','姿势步态异常'],answers:[0,1,2,3],analysis:'帕金森病的四大主征为静止性震颤、运动迟缓、肌强直和姿势步态异常'},
+        {question:'下列关于静止性震颤说法错误的是',options:['震颤常为本病的首发症状','多自一侧上肢远端开始,表现为拇指与示指间呈"搓丸样"动作','上肢震颤通常比下肢明显','表现明显的对称性'],answer:3,analysis:'帕金森病静止性震颤通常不对称，多从一侧上肢开始'},
+        {question:'帕金森病肌强直的特点是',options:['伸肌和屈肌的张力同时增高','伸肌张力增高,屈肌张力不变','伸肌张力不变,屈肌张力增高','以上说法都不正确'],answer:0,analysis:'帕金森病肌强直为铅管样或齿轮样强直，伸肌和屈肌张力同时增高'},
+        {type:'multi',question:'帕金森病患者姿势平衡障碍可出现下列症状中的',options:['冻结现象','慌张步态','面具脸','写字过小症'],answers:[0,1],analysis:'冻结现象和慌张步态是帕金森病姿势平衡障碍的典型表现，面具脸和写字过小症属于运动迟缓的表现'},
+        {question:'AD最早出现的症状通常是',options:['记忆力减退','性格改变','交流困难','焦虑抑郁'],answer:0,analysis:'阿尔茨海默病最早出现的症状是近事记忆力减退'},
+        {question:'患者,女,68岁,"渐进性认知功能减退1年余",现出现近事遗忘,随后出现注意力不集中。体检:意识清,问话能正确回答,反应迟钝,粗测记忆力、计算力、注意力均减退。头CT提示大脑弥漫性萎缩,患者重点评定',options:['关节活动度评定','认知功能评定','平衡评定','肌张力评定'],answer:1,analysis:'患者表现为认知功能减退，应重点进行认知功能评定'},
+        {question:'阿尔茨海默病最重要的康复治疗目标是',options:['改善患者肢体功能','维持或改善认知功能','治愈患者','改善患者的行为异常'],answer:1,analysis:'阿尔茨海默病康复治疗的核心目标是维持或改善认知功能，延缓病情进展'},
+        {question:'对阿尔茨海默病患者进行行为障碍训练时不恰当的是',options:['对所有的恰当行为及时给予鼓励','只给予鼓励不惩罚','在每次不恰当行为出现后的一段短时间内,拒绝一切奖励性刺激','在不恰当行为发生后应用预先声明的惩罚'],answer:1,analysis:'行为障碍训练应采用正强化和适当惩罚相结合的方法，不能只鼓励不惩罚'},
+        {question:'患者,女,70岁,因"渐进性认知功能下降2年,性情改变6个月"入院。2年前患者出现近事遗忘,日常丢三落四;6个月前开始出现易怒、多疑,拒绝他人照顾,偶尔出现哭笑无常,尚能完成简单穿衣、进食等日常活动,无明显神经系统原始反射。实验室检查无明显异常,脑电图示慢波增多,临床诊断为阿尔茨海默病。该患者的临床表现中,属于非认知性精神症状的是',options:['近事遗忘','哭笑无常、易怒多疑','穿衣自理能力存在','丢三落四','认知功能下降'],answer:1,analysis:'哭笑无常、易怒多疑属于非认知性精神症状，其他为认知功能障碍表现'},
+        {question:'患者,女,70岁,因"渐进性认知功能下降2年,性情改变6个月"入院。2年前患者出现近事遗忘,日常丢三落四;6个月前开始出现易怒、多疑,拒绝他人照顾,偶尔出现哭笑无常,尚能完成简单穿衣、进食等日常活动,无明显神经系统原始反射。实验室检查无明显异常,脑电图示慢波增多,临床诊断为阿尔茨海默病。为该患者进行MoCA量表评定,得分为16分,其痴呆程度为',options:['正常','轻度痴呆','中度痴呆','重度痴呆','极重度痴呆'],answer:1,analysis:'MoCA量表评分26-30分为正常，18-25分为轻度痴呆，10-17分为中度痴呆，<10分为重度痴呆'},
+        {question:'患者,女,70岁,因"渐进性认知功能下降2年,性情改变6个月"入院。2年前患者出现近事遗忘,日常丢三落四;6个月前开始出现易怒、多疑,拒绝他人照顾,偶尔出现哭笑无常,尚能完成简单穿衣、进食等日常活动,无明显神经系统原始反射。实验室检查无明显异常,脑电图示慢波增多,临床诊断为阿尔茨海默病。针对该患者的运动康复,以下哪种方法不适合',options:['太极拳','日常家务等作业疗法','卧床静养,减少活动','简单的氧耐力训练','不对称运动游戏'],answer:2,analysis:'阿尔茨海默病患者应进行适当运动康复，卧床静养会加速功能衰退'},
+        {question:'某男性患者,40岁,因车祸致腰椎椎体骨折,6个月前已行钢板固定手术。患者自述S4-5节段无感觉,也无运动功能。目前留置导尿,小便可解但不能完全排空,测定膀胱残余尿量为300ml。现可独立坐稳,也可练习抛接球训练。平卧位可全范围屈髋,无需辅助,然而伸膝不能。根据ASIA分级,患者目前处于()',options:['A级','B级','C级','D级','E级'],answer:1,analysis:'ASIA B级为不完全性损伤，损伤平面以下包括S4-S5保留感觉功能，无运动功能'},
+        {question:'某男性患者,40岁,因车祸致腰椎椎体骨折,6个月前已行钢板固定手术。患者自述S4-5节段无感觉,也无运动功能。目前留置导尿,小便可解但不能完全排空,测定膀胱残余尿量为300ml。现可独立坐稳,也可练习抛接球训练。平卧位可全范围屈髋,无需辅助,然而伸膝不能。根据患者目前膀胱残余尿量情况,不正确的处理措施是()',options:['定时定量饮水','仍需留置导尿','教会患者膀胱的自我训练','教会患者清洁导尿','电刺激辅助治疗'],answer:1,analysis:'膀胱残余尿量300ml可拔除导尿管，进行膀胱自我训练和清洁导尿'},
+        {question:'某男性患者,40岁,因车祸致腰椎椎体骨折,6个月前已行钢板固定手术。患者自述S4-5节段无感觉,也无运动功能。目前留置导尿,小便可解但不能完全排空,测定膀胱残余尿量为300ml。现可独立坐稳,也可练习抛接球训练。平卧位可全范围屈髋,无需辅助,然而伸膝不能。患者目前的损伤平面应为()',options:['T12','L1','L2','L3','L4'],answer:2,analysis:'L2运动平面关键肌为髂腰肌，患者可全范围屈髋，提示髂腰肌肌力正常，损伤平面为L2'},
+        {question:'某男性患者,40岁,因车祸致腰椎椎体骨折,6个月前已行钢板固定手术。患者自述S4-5节段无感觉,也无运动功能。目前留置导尿,小便可解但不能完全排空,测定膀胱残余尿量为300ml。现可独立坐稳,也可练习抛接球训练。平卧位可全范围屈髋,无需辅助,然而伸膝不能。患者下一步的治疗方案中,不正确的是()',options:['强化屈髋力量训练','强化上肢力量','转移训练','站立训练','单纯被动运动'],answer:4,analysis:'患者可进行主动训练，不应仅进行单纯被动运动'},
+        {question:'某男性患者,40岁,因车祸致腰椎椎体骨折,6个月前已行钢板固定手术。患者自述S4-5节段无感觉,也无运动功能。目前留置导尿,小便可解但不能完全排空,测定膀胱残余尿量为300ml。现可独立坐稳,也可练习抛接球训练。平卧位可全范围屈髋,无需辅助,然而伸膝不能。患者目前的坐位平衡分级为()',options:['零级平衡','一级平衡','二级平衡','三级平衡','四级平衡'],answer:2,analysis:'患者可独立坐稳并进行抛接球训练，提示坐位平衡为二级（自动动态平衡）'},
+        {question:'某男性患者,40岁,因车祸致腰椎椎体骨折,6个月前已行钢板固定手术。患者自述S4-5节段无感觉,也无运动功能。目前留置导尿,小便可解但不能完全排空,测定膀胱残余尿量为300ml。现可独立坐稳,也可练习抛接球训练。平卧位可全范围屈髋,无需辅助,然而伸膝不能。根据病史,患者将来预后最可能会是()',options:['只能依靠轮椅代步','可在佩戴KAFO下实现室内步行','可在佩戴AFO下实现室内步行','可在佩戴KAFO下实现社区步行','可完全恢复正常'],answer:1,analysis:'L2脊髓损伤患者预后可在佩戴膝踝足矫形器（KAFO）下实现室内步行'},
+        {question:'男性,66岁。因"双上肢震颤半年,加重伴肢体僵硬行走不稳1个月"入院,既往健康。住院诊断"帕金森病",经口服药物治疗后震颤减轻,但步态不稳,行走时双下肢拖地。根据患者目前情况,下一步治疗不妥的是',options:['加大口服药物剂量','进行步态训练','给予松弛训练','给予平衡训练'],answer:0,analysis:'患者药物治疗后震颤减轻，出现步态不稳，应进行康复训练，不应盲目加大药物剂量'},
+        {question:'男性,66岁。因"双上肢震颤半年,加重伴肢体僵硬行走不稳1个月"入院,既往健康。住院诊断"帕金森病",经口服药物治疗后震颤减轻,但步态不稳,行走时双下肢拖地。患者经治疗后目前存在起步、转身困难,治疗中不应采取的措施是',options:['治疗师给予指令加快启动速度和步行速度','按照地面上的标记进行行走步幅训练','尽快加大摆动上肢和旋转躯干的幅度','按治疗师的指令进行上、下肢协同运动训练'],answer:2,analysis:'帕金森病患者起步、转身困难时，应循序渐进进行训练，不能尽快加大运动幅度'},
+        {question:'男性,65岁,"渐进性双手活动笨拙伴震颤1年余,加重13天",震颤安静时明显,右手为重。体检:意识清,问话能正确回答,面具脸,无面瘫,右手呈搓泥丸样。四肢肌力正常,双上肢肌张力呈齿轮样增强,右上肢明显,双侧病理征阴性。头CT提示脑部苍白球病理性钙化,该患者不宜选择的训练是',options:['松弛训练','关节牵伸训练','步态训练','抗阻肌力训练'],answer:3,analysis:'帕金森病患者肌强直明显，不宜进行抗阻肌力训练，以免加重肌强直'},
+        {question:'某男性脊髓损伤患者,脊髓损伤后感觉运动功能检查发现损伤水平以下存在运动功能,肛门反射存在,关键肌力为4级,根据ASIA分级,患者目前处于',options:['A级','B级','C级','D级'],answer:3,analysis:'ASIA D级为不完全性损伤，损伤平面以下运动功能存在，大多数关键肌肌力≥3级'},
+        {question:'脊髓休克的概念错误的是',options:['脊髓受伤后运动功能完全丧失','神经反射全部丧失','有球-肛门反射','损伤平面以下感觉全部丧失'],answer:2,analysis:'脊髓休克时球-肛门反射消失，反射恢复提示脊髓休克结束'},
+        {question:'下列不属于胸段脊髓损伤后可出现的功能障碍是',options:['深静脉血栓','肩手综合征','大便困难','尿潴留'],answer:1,analysis:'肩手综合征是脑卒中的常见并发症，胸段脊髓损伤不会出现'},
+        {question:'下列关于ASIA损伤分级的叙述,正确的是',options:['A级完全损伤,S4-5无运动功能,感觉功能正常','B级不完全损伤,损伤平面以下,包括S4-5保留感觉、运动功能','C级不完全损伤,损伤水平以下感觉功能存在,大多数关键肌肌力小于4级','D级不完全损伤,损伤水平以下运动功能存在,大多数关键肌肌力大于等于3级'],answer:3,analysis:'ASIA D级定义为不完全性损伤，损伤平面以下运动功能存在，大多数关键肌肌力≥3级'},
+        {question:'下列关于脊髓损伤后急性期康复治疗措施错误的是',options:['患者卧位时应保持肢体于功能位','四肢瘫患者采用手功能位夹板使腕、手保持于功能位','定时给四肢关节进行被动活动','可不做排痰训练','患者可利用电动起立床进行站立训练'],answer:3,analysis:'脊髓损伤急性期应加强排痰训练，预防肺部感染'},
+        {question:'下列关于坐轮椅时的姿势,不正确的是',options:['双眼平视,两肩放松,身体上部稍向前倾','臀部紧贴靠背','大小腿之间的角度保持90°','驱动轮椅时肘关节保持120°左右为宜'],answer:2,analysis:'坐轮椅时大小腿之间的角度应保持110-130°，以90°为宜是错误的'},
+        {question:'颅脑损伤患者急性期的康复治疗目标不包括',options:['提高觉醒能力','促进功能恢复','防治各种并发症','学会代偿性方法'],answer:3,analysis:'学会代偿性方法是恢复期的康复目标，不是急性期目标'},
+        {question:'轻度脑外伤GCS评分是',options:['GCS评分4-7分','GCS评分8-10分','GCS评分9-12分','GCS评分13-15分'],answer:3,analysis:'GCS评分13-15分为轻度脑外伤，9-12分为中度，3-8分为重度'},
+        {question:'以下关于电脑软件在认知训练中的应用,不正确的是',options:['电脑软件提供的刺激强度可控,给予的反馈及时、客观','电脑软件进行认知训练时可以节省治疗师的劳动','电脑软件操作的趣味性较大,患者常乐于使用','鉴于上述特点,电脑软件训练可以代替治疗师'],answer:3,analysis:'电脑软件训练不能代替治疗师，只能作为辅助手段'},
+        {question:'患者,女 58岁,车祸导致语言理解障碍半年收入院。查体:患者神清,有自发言语表达,但不能和周围人进行交流,构音清晰,肢体运动功能未出现异常。该患者的康复治疗,错误的是',options:['对患者进行言语、认知功能评定,采取综合治疗手段','采取多途径的言语刺激方法,促进言语理解功能的恢复','重视患者心理治疗,鼓励患者多与人交流','主要用营养神经药物治疗'],answer:3,analysis:'语言理解障碍应进行言语康复训练，不能仅依靠药物治疗'},
+        {question:'患者,女性52岁,因右侧肢体偏瘫到康复科治疗,患者痛温觉、触觉、本体感觉正常,但不能通过手触摸辨认物体的形态。该患者属于哪种失认症',options:['视觉失认症','听觉失认症','触觉失认症','身体失认症'],answer:2,analysis:'不能通过触摸辨认物体形态属于触觉失认症'},
+        {question:'李某,车祸致伤头部,入院时,呼之可睁眼,压眶时有躲避反应,不能准确回答医生的问题,不清楚自己身在何处,该患者GCS评分为',options:['10分','11分','12分','13分'],answer:1,analysis:'呼之可睁眼（3分）+ 压眶躲避（4分）+ 不能准确回答问题（4分）= 11分'},
+        {type:'multi',question:'意识障碍包括',options:['嗜睡','昏睡','昏迷','抽搐'],answers:[0,1,2],analysis:'意识障碍包括嗜睡、昏睡、昏迷，抽搐不属于意识障碍'},
+        {type:'multi',question:'用GCS判定脑损害的严重程度是根据下列方面中的',options:['睁眼情况','感觉功能','肢体运动','言语表达'],answers:[0,2,3],analysis:'GCS评分包括睁眼反应、运动反应和言语反应三个方面'},
+        {question:'不属于脑卒中临床表现的是',options:['意识障碍','头痛、头晕','偏瘫','截瘫','失语'],answer:3,analysis:'截瘫是脊髓损伤的表现，脑卒中表现为偏瘫'},
+        {question:'患者有突然剧烈的头疼、呕吐,同时有脑膜刺激征,轻度意识障碍,则该患者高度怀疑为',options:['脑血栓形成','脑出血','蛛网膜下腔出血','脑梗塞'],answer:2,analysis:'蛛网膜下腔出血典型表现为突然剧烈头痛、呕吐、脑膜刺激征阳性'},
+        {question:'划圈步态发生的原因是',options:['髋、膝、踝协同性伸展','髋、膝、踝协同性屈曲','髋关节伸展','膝、踝协同性伸展','疼痛造成的'],answer:0,analysis:'偏瘫患者划圈步态是由于患侧下肢伸肌痉挛，髋、膝、踝协同性伸展所致'},
+        {question:'手可作球状和圆柱状抓握,手指同时伸展,但不能单独伸展是Brunnstrom几期的表现',options:['I期','II期','III期','IV期','V期'],answer:4,analysis:'Brunnstrom V期表现为手可作球状和圆柱状抓握，手指同时伸展，但不能单独伸展'},
+        {question:'患者的肌张力逐渐恢复,并出现精细运动,属于Brunnstrom6阶段的哪一期',options:['I期','II期','IV期','V期'],answer:3,analysis:'Brunnstrom V期患者肌张力逐渐恢复，出现分离运动和精细运动'}
     ]}
 };
 
@@ -263,6 +424,10 @@ function shuffle(a){let r=a.slice();for(let i=r.length-1;i>0;i--){let j=Math.flo
 function shuffleBank(questions){
     return shuffle(questions).map(q=>{
         if(q.type==='text')return {type:'text',question:q.question,answer:q.answer,analysis:q.analysis};
+        if(q.type==='multi'){
+            let idx=q.options.map((_,i)=>i),shuf=shuffle(idx);
+            return {type:'multi',question:q.question,options:shuf.map(i=>q.options[i]),answers:q.answers.map(a=>shuf.indexOf(a)),analysis:q.analysis};
+        }
         let idx=q.options.map((_,i)=>i),shuf=shuffle(idx);
         return {question:q.question,options:shuf.map(i=>q.options[i]),answer:shuf.indexOf(q.answer),analysis:q.analysis};
     });
@@ -513,6 +678,23 @@ function showQ(){
     if(q.type==='text'){
         let taId='p-ta-'+ps.currentIndex;
         document.getElementById('po').innerHTML=`<div class="ta-wrap"><textarea id="${taId}" placeholder="请输入SQL语句..." ${isAns?'disabled':''}>${isAns?ps.answers[ps.currentIndex]:''}</textarea>${isAns?'':'<button class="ta-submit" onclick="submitPracticeText()">提交答案</button>'}</div>`;
+    }else if(q.type==='multi'){
+        let o='',lbs=['A','B','C','D','E','F'];
+        let selPrev=isAns&&Array.isArray(ps.answers[ps.currentIndex])?ps.answers[ps.currentIndex]:[];
+        q.options.forEach((opt,i)=>{
+            let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;transition:.2s;',bdg='';
+            if(isAns){
+                st+='pointer-events:none;';
+                let isCor=q.answers.indexOf(i)!==-1,was=selPrev.indexOf(i)!==-1;
+                if(isCor&&was){st+='border-color:#52c41a;background:#f6ffed;';bdg=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓</span>`}
+                else if(!isCor&&was){st+='border-color:#ff4d4f;background:#fff2f0;';bdg=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗</span>`}
+                else if(isCor&&!was){st+='border-color:#faad14;background:#fffbe6;';bdg=`<span style="color:#faad14;font-weight:600;margin-left:10px;">漏选</span>`}
+                else st+='opacity:0.6;';
+            }else{let sc=selPrev.indexOf(i)!==-1?' om-sel':'';st+=`cursor:pointer;${sc}`}
+            o+=`<div class="om${isAns?'':' om'}" data-multi="${i}" ${isAns?'':`onclick="togglePracticeMulti(${i})"`} style="${st}"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
+        });
+        if(!isAns)o+=`<button class="ta-submit" onclick="submitPracticeMulti()">提交答案</button>`;
+        document.getElementById('po').innerHTML=o;
     }else{
         let o='',lbs=['A','B','C','D','E','F'];
         q.options.forEach((opt,i)=>{o+=`<div class="oi" onclick="sel(${i})" style="display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;cursor:pointer;border:2px solid #e0e0e0;" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span></div>`});
@@ -534,6 +716,29 @@ function submitPracticeText(){
     if(ok){ad.style.background='#f6ffed';ad.style.borderColor='#52c41a';at.textContent='🎉 回答正确！';at.style.color='#52c41a'}else{ad.style.background='#fff2f0';ad.style.borderColor='#ff4d4f';at.textContent='❌ 回答错误';at.style.color='#ff4d4f'}
     let txt=`正确答案：<div class="ta-ans">${esc(q.answer)}</div>`;
     if(q.analysis)txt+=`<br><strong>解析：</strong>${q.analysis}`;
+    ac.innerHTML=txt;ad.style.display='block';
+    if(ok){if(ps.currentIndex<ps.questions.length-1){setTimeout(()=>{ps.currentIndex++;showQ()},500)}else{setTimeout(()=>showResult(),500)}}
+    else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
+}
+function togglePracticeMulti(idx){
+    let d=document.querySelector(`#po div[data-multi="${idx}"]`);
+    if(d&&!d.classList.contains('om-sel'))d.classList.add('om-sel');else if(d)d.classList.remove('om-sel');
+}
+function submitPracticeMulti(){
+    let q=ps.questions[ps.currentIndex];
+    let divs=document.querySelectorAll('#po div[data-multi]');
+    let sel=[];divs.forEach(d=>{if(d.classList.contains('om-sel'))sel.push(parseInt(d.dataset.multi))});
+    if(sel.length===0){t('请至少选择一个选项',true);return}
+    let ans=sel;
+    let ok=sel.slice().sort().join(',')===(q.answers||[]).slice().sort().join(',');
+    ps.answers[ps.currentIndex]=ans;
+    if(ok)ps.correctCount++;
+    showQ();
+    let ad=document.getElementById('pa'),at=document.getElementById('pat'),ac=document.getElementById('pac'),lbs=['A','B','C','D','E','F'];
+    if(ok){ad.style.background='#f6ffed';ad.style.borderColor='#52c41a';at.textContent='🎉 全部正确！';at.style.color='#52c41a'}else{ad.style.background='#fff2f0';ad.style.borderColor='#ff4d4f';at.textContent='❌ 有误';at.style.color='#ff4d4f'}
+    let ansShow=(q.answers||[]).map(i=>lbs[i]).filter(Boolean).join('、');
+    let txt=`正确答案：<strong style="color:#52c41a;">${ansShow}</strong>`;
+    if(q.analysis)txt+=`<br><br><strong>解析：</strong>${q.analysis}`;
     ac.innerHTML=txt;ad.style.display='block';
     if(ok){if(ps.currentIndex<ps.questions.length-1){setTimeout(()=>{ps.currentIndex++;showQ()},500)}else{setTimeout(()=>showResult(),500)}}
     else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
@@ -575,6 +780,27 @@ function showExamQ(){
     if(q.type==='text'){
         let taId='exam-ta-'+es.currentIndex;
         document.getElementById('exam-o').innerHTML=`<div class="ta-wrap"><textarea id="${taId}" placeholder="请输入SQL语句..." ${isAns?'disabled':''}>${isAns&&prevAns?prevAns:''}</textarea>${isAns?'':'<button class="ta-submit" onclick="submitExamText()">提交答案</button>'}</div>`;
+    }else if(q.type==='multi'){
+        let o='';
+        let selPrev=isAns&&Array.isArray(prevAns)?prevAns:[];
+        q.options.forEach((opt,i)=>{
+            let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;transition:.2s;',bdg='',clk='';
+            if(isAns){
+                st+='pointer-events:none;';
+                let isCor=q.answers.indexOf(i)!==-1,was=selPrev.indexOf(i)!==-1;
+                if(isCor&&was){st+='border-color:#52c41a;background:#f6ffed;';bdg=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓</span>`}
+                else if(!isCor&&was){st+='border-color:#ff4d4f;background:#fff2f0;';bdg=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗</span>`}
+                else if(isCor&&!was){st+='border-color:#faad14;background:#fffbe6;';bdg=`<span style="color:#faad14;font-weight:600;margin-left:10px;">漏选</span>`}
+                else st+='opacity:0.6;';
+            }else{
+                let selCls=selPrev.indexOf(i)!==-1?' om-sel':'';
+                clk=`onclick="toggleExamMulti(${i})"`;
+                st+=`cursor:pointer;${selCls}`;
+            }
+            o+=`<div class="om${isAns?'':' om'}" data-multi="${i}" ${clk} style="${st}"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
+        });
+        if(!isAns)o+=`<button class="ta-submit" onclick="submitExamMulti()">提交答案</button>`;
+        document.getElementById('exam-o').innerHTML=o;
     }else{
         let o='';
         q.options.forEach((opt,i)=>{
@@ -592,11 +818,20 @@ function showExamQ(){
     }
     let ad=document.getElementById('exam-a'),nd=document.getElementById('exam-nav');
     if(isAns){
-        let ok=prevAns===q.answer;
-        ad.style.background=ok?'#f6ffed':'#fff2f0';ad.style.border=ok?'1px solid #52c41a':'1px solid #ff4d4f';
-        if(q.type==='text'){
+        let ok;
+        if(q.type==='multi'){
+            let ua=Array.isArray(prevAns)?prevAns:[];
+            ok=ua.slice().sort().join(',')===(q.answers||[]).slice().sort().join(',');
+            ad.style.background=ok?'#f6ffed':'#fff2f0';ad.style.border=ok?'1px solid #52c41a':'1px solid #ff4d4f';
+            let ansShow=lbs.map((l,i)=>(q.answers||[]).indexOf(i)!==-1?l:'').filter(Boolean).join('、');
+            ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 全部正确！':'❌ 有误'}</div><div style="line-height:1.6;">正确答案：<strong style="color:#52c41a;">${ansShow}</strong>${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
+        }else if(q.type==='text'){
+            ok=normalizeSQL(prevAns)===normalizeSQL(q.answer);
+            ad.style.background=ok?'#f6ffed':'#fff2f0';ad.style.border=ok?'1px solid #52c41a':'1px solid #ff4d4f';
             ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;"><strong>正确答案：</strong><div class="ta-ans">${esc(q.answer)}</div>${q.analysis?`<br><strong>解析：</strong>${q.analysis}`:''}</div>`;
         }else{
+            ok=prevAns===q.answer;
+            ad.style.background=ok?'#f6ffed':'#fff2f0';ad.style.border=ok?'1px solid #52c41a':'1px solid #ff4d4f';
             ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;">正确答案是 <strong style="color:#52c41a;">${lbs[q.answer]}</strong>。${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
         }
         ad.style.display='block';
@@ -621,6 +856,24 @@ function submitExamText(){
 }
 function normalizeSQL(s){
     return String(s||'').replace(/'/g,'').replace(/\s+/g,' ').replace(/\s*([,;()=<>])\s*/g,'$1').replace(/;/g,'').trim().toLowerCase();
+}
+function toggleExamMulti(idx){
+    let d=document.querySelector(`#exam-o div[data-multi="${idx}"]`);
+    if(d&&!d.classList.contains('om-sel'))d.classList.add('om-sel');else if(d)d.classList.remove('om-sel');
+}
+function submitExamMulti(){
+    let q=es.questions[es.currentIndex];
+    let divs=document.querySelectorAll('#exam-o div[data-multi]');
+    let sel=[];divs.forEach(d=>{if(d.classList.contains('om-sel'))sel.push(parseInt(d.dataset.multi))});
+    if(sel.length===0){t('请至少选择一个选项',true);return}
+    let ok=sel.slice().sort().join(',')===(q.answers||[]).slice().sort().join(',');
+    es.answers[es.currentIndex]=sel;
+    if(ok)es.correctCount++;
+    showExamQ();
+    if(ok){
+        if(es.currentIndex<es.questions.length-1)setTimeout(()=>{es.currentIndex++;showExamQ()},500);
+        else setTimeout(()=>showExamResult(),500);
+    }
 }
 function selExam(idx){
     let q=es.questions[es.currentIndex];
