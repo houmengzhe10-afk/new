@@ -187,7 +187,7 @@
     </div>
     <div id="pres" style="display:none;text-align:center;padding:40px 20px;">
         <div id="rem" style="font-size:80px;margin-bottom:20px;"></div><div id="rsc" style="font-size:48px;font-weight:700;margin-bottom:15px;"></div><div id="rdt" style="color:#666;font-size:16px;margin-bottom:30px;"></div>
-        <div style="display:flex;gap:15px;justify-content:center;">
+        <div id="pbtns" style="display:flex;gap:15px;justify-content:center;">
             <button class="btn btn-p" onclick="restartPractice()" style="max-width:200px">重新练习</button>
             <button class="btn btn-s" onclick="changeBank()" style="max-width:200px">切换题库</button>
         </div>
@@ -765,6 +765,14 @@ function showResult(){
     document.getElementById('rem').textContent=pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪';
     let s=document.getElementById('rsc');s.textContent=pct+'%';s.style.color=pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f';
     document.getElementById('rdt').textContent=`共 ${total} 题 | 正确 ${correct} 题 | 错误 ${total-correct} 题`;
+    let wrongCount=total-correct;
+    document.getElementById('pbtns').innerHTML=`<button class="btn btn-p" onclick="restartPractice()" style="max-width:200px">重新练习</button>${wrongCount>0?`<button class="btn" onclick="retryWrongPractice()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="changeBank()" style="max-width:200px">切换题库</button>`;
+}
+function retryWrongPractice(){
+    let wrong=[];ps.questions.forEach((q,i)=>{let a=ps.answers[i];if(a===null)return;let ok=q.type==='multi'?(a||[]).slice().sort().join(',')===(q.answers||[]).slice().sort().join(','):q.type==='text'?normalizeSQL(a)===normalizeSQL(q.answer):a===q.answer;if(!ok)wrong.push(q)});
+    if(wrong.length===0){t('全部正确，没有错题！');return}
+    let qs=shuffleBank(wrong);ps={bankId:ps.bankId,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};
+    document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='block';showQ();
 }
 function restartPractice(){let bank=BANKS[ps.bankId];let qs=shuffleBank(bank.questions);ps={bankId:ps.bankId,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='block';showQ()}
 function changeBank(){document.getElementById('pres').style.display='none';document.getElementById('parea').style.display='none';document.getElementById('psel').style.display='block';document.getElementById('pbank').value=''}
@@ -891,7 +899,14 @@ function prevExamQ(){if(es.currentIndex>0){es.currentIndex--;showExamQ()}}
 function showExamResult(){
     document.getElementById('exam-qarea').style.display='none';document.getElementById('exam-res').style.display='block';
     let total=es.questions.length,correct=es.correctCount,pct=Math.round((correct/total)*100);
-    document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f'};">${pct}%</div><div style="color:#666;font-size:16px;">共 ${total} 题 | 正确 ${correct} 题 | 错误 ${total-correct} 题</div><div style="margin-top:30px;display:flex;gap:15px;justify-content:center;"><button class="btn btn-p" onclick="restartExam()" style="max-width:200px">重新答题</button><button class="btn btn-s" onclick="logout()" style="max-width:200px">返回解锁</button></div>`;
+    let wrongCount=total-correct;
+    document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f'};">${pct}%</div><div style="color:#666;font-size:16px;">共 ${total} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题</div><div style="margin-top:30px;display:flex;gap:15px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-p" onclick="restartExam()" style="max-width:200px">重新答题</button>${wrongCount>0?`<button class="btn" onclick="retryWrongExam()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="logout()" style="max-width:200px">返回解锁</button></div>`;
+}
+function retryWrongExam(){
+    let wrong=[];es.questions.forEach((q,i)=>{let a=es.answers[i];if(a===null)return;let ok=q.type==='multi'?(a||[]).slice().sort().join(',')===(q.answers||[]).slice().sort().join(','):q.type==='text'?normalizeSQL(a)===normalizeSQL(q.answer):a===q.answer;if(!ok)wrong.push(q)});
+    if(wrong.length===0){t('全部正确，没有错题！');return}
+    let qs=shuffleBank(wrong);es={bankId:es.bankId,questions:qs,currentIndex:0,answers:new Array(qs.length).fill(null),correctCount:0};
+    document.getElementById('exam-res').style.display='none';document.getElementById('exam-qarea').style.display='block';showExamQ();
 }
 function restartExam(){
     let bank=BANKS[es.bankId];
