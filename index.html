@@ -982,7 +982,7 @@ const BANKS={
 };
 
 // ===== 工具函数 =====
-function fp(){let s=[navigator.userAgent,navigator.language,screen.colorDepth,screen.width+'x'+screen.height,new Date().getTimezoneOffset()].join('|');let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h=h&h;}return'fp_'+Math.abs(h).toString(16)}
+function fp(){let s=[navigator.userAgent,navigator.language,screen.colorDepth,screen.width+'x'+screen.height,new Date().getTimezoneOffset()].join('|');let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h=h&0x7FFFFFFF;}return'fp_'+Math.abs(h).toString(16)}
 function t(m,e){let d=document.createElement('div');d.className='toast '+(e?'err':'ok');d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function renderQText(s){
