@@ -6,7 +6,7 @@
     <title>题库管理系统</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 70%,#533483 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
         .panel{background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:40px;width:100%;max-width:480px;text-align:center}
         .panel.wide{max-width:1000px}
         .panel h1{color:#333;margin-bottom:10px;font-size:28px}
@@ -57,64 +57,92 @@
         .bcheck input{display:none}
         .bcheck.sel{border-color:#667eea;background:#f0f2ff;color:#667eea;font-weight:500}
         .btile{display:inline-block;padding:3px 10px;background:rgba(102,126,234,.15);color:#667eea;border-radius:4px;font-size:12px;margin:2px 4px;white-space:nowrap}
-        body{align-items:flex-start;padding:36px 18px;background:linear-gradient(135deg,#eef2ff 0%,#f5f3ff 45%,#fff 100%);color:#1f2937}
-        .panel{border:1px solid rgba(102,126,234,.12);box-shadow:0 24px 70px rgba(31,41,55,.12);border-radius:22px;padding:34px;text-align:left}
+        body{align-items:flex-start;padding:36px 18px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 70%,#533483 100%);color:#e2e8f0}
+        .panel{background:linear-gradient(145deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 100%);border:1px solid rgba(255,255,255,.1);box-shadow:0 24px 70px rgba(0,0,0,.3);border-radius:22px;padding:34px;text-align:left;backdrop-filter:blur(20px)}
         .panel:not(.wide){text-align:center;margin-top:9vh}
         .panel.wide{max-width:1080px;margin:0 auto}
-        .panel h1,.panel h2{letter-spacing:.5px}
-        .subtitle{text-align:center;color:#7b8190}
+        .panel h1,.panel h2{letter-spacing:.5px;color:#fff}
+        .subtitle{text-align:center;color:#94a3b8}
         .fg{margin-bottom:18px}
-        .fg label{color:#374151;font-weight:700}
-        .fg input,.fg select{height:46px;border:1px solid #d9def0;border-radius:12px;background:#fbfcff;color:#111827}
-        .fg input:focus,.fg select:focus{border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.12)}
+        .fg label{color:#cbd5e1;font-weight:700}
+        .fg input,.fg select{height:46px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.06);color:#e2e8f0}
+        .fg input::placeholder,.fg select::placeholder{color:#64748b}
+        .fg input:focus,.fg select:focus{border-color:#818cf8;box-shadow:0 0 0 4px rgba(129,140,248,.2);outline:none}
         .btn,.xbtn,.btn-xs{border-radius:12px;box-shadow:none}
         .btn:hover,.xbtn:hover,.btn-xs:hover{transform:translateY(-1px)}
-        .eh{background:#f8faff;border:1px solid #edf0f7;border-radius:16px;padding:18px 20px;margin-bottom:22px}
-        .eh h1,.eh h2{margin:0;color:#27324a}
-        .sec{border:1px solid #edf0f7;background:#fbfcff;border-radius:18px;padding:24px;margin-bottom:22px}
-        .sec h3{display:flex;align-items:center;margin-bottom:18px}
-        .key-item{border:1px solid #edf0f7;border-radius:14px;padding:16px 18px;background:#fff;box-shadow:0 8px 24px rgba(31,41,55,.04)}
-        .key-acts{padding-top:4px;border-top:1px dashed #edf0f7}
-        .cbank{border-radius:16px;padding:16px 18px;box-shadow:0 10px 26px rgba(102,126,234,.18)}
+        .btn-p{background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff}
+        .btn-p:hover{box-shadow:0 8px 25px rgba(129,140,248,.4)}
+        .btn-g{background:linear-gradient(135deg,#34d399 0%,#10b981 100%);color:#fff;margin-top:15px}
+        .btn-g:hover{box-shadow:0 8px 25px rgba(52,211,153,.4)}
+        .btn-r{background:linear-gradient(135deg,#f87171 0%,#ef4444 100%);color:#fff}
+        .btn-r:hover{box-shadow:0 8px 25px rgba(248,113,113,.4)}
+        .btn-s{background:rgba(255,255,255,.08);color:#94a3b8;margin-top:10px;border:1px solid rgba(255,255,255,.1)}
+        .btn-s:hover{background:rgba(255,255,255,.14);color:#e2e8f0}
+        .eh{background:linear-gradient(135deg,rgba(129,140,248,.15) 0%,rgba(192,132,252,.1) 100%);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px 20px;margin-bottom:22px}
+        .eh h1,.eh h2{margin:0;color:#fff}
+        .xbtn{padding:8px 20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:10px;cursor:pointer;color:#94a3b8;font-size:14px}
+        .xbtn:hover{background:rgba(255,255,255,.14);color:#e2e8f0}
+        .sec{border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.01) 100%);border-radius:18px;padding:24px;margin-bottom:22px}
+        .sec h3{display:flex;align-items:center;margin-bottom:18px;color:#e2e8f0}
+        .sec h3::before{background:linear-gradient(135deg,#818cf8 0%,#c084fc 100%)}
+        .key-item{border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px;background:linear-gradient(145deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.02) 100%);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+        .key-val{color:#a78bfa}
+        .key-meta{color:#64748b}
+        .key-acts{padding-top:4px;border-top:1px dashed rgba(255,255,255,.08)}
+        .cbank{background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);border-radius:16px;padding:16px 18px;box-shadow:0 10px 26px rgba(129,140,248,.3)}
         #bank-checks{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px!important}
-        .bcheck{justify-content:center;min-height:44px;border-radius:12px;border:1px solid #d9def0;background:#fff}
-        .bcheck.sel{box-shadow:0 0 0 4px rgba(102,126,234,.1)}
+        .bcheck{justify-content:center;min-height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#94a3b8}
+        .bcheck.sel{border-color:#818cf8;background:rgba(129,140,248,.15);color:#a78bfa;box-shadow:0 0 0 4px rgba(129,140,248,.15)}
         .bdd{position:relative}
-        .bdd-tg{width:100%;min-height:46px;border:1px solid #d9def0;border-radius:12px;background:#fbfcff;padding:8px 40px 8px 14px;cursor:pointer;display:flex;align-items:center;flex-wrap:wrap;gap:6px;color:#9aa3b2;font-size:15px;position:relative;transition:.2s}
-        .bdd-tg:hover,.bdd.open .bdd-tg{border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.12)}
-        .bdd-tg::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#667eea;font-size:14px;transition:.2s}
+        .bdd-tg{width:100%;min-height:46px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.06);padding:8px 40px 8px 14px;cursor:pointer;display:flex;align-items:center;flex-wrap:wrap;gap:6px;color:#64748b;font-size:15px;position:relative;transition:.2s}
+        .bdd-tg:hover,.bdd.open .bdd-tg{border-color:#818cf8;box-shadow:0 0 0 4px rgba(129,140,248,.2)}
+        .bdd-tg::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#818cf8;font-size:14px;transition:.2s}
         .bdd.open .bdd-tg::after{transform:translateY(-50%) rotate(180deg)}
-        .bdd-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(102,126,234,.12);color:#667eea;padding:3px 8px 3px 10px;border-radius:6px;font-size:13px;font-weight:500}
-        .bdd-tag span{cursor:pointer;color:#8c94a8;font-weight:700;line-height:1}
-        .bdd-tag span:hover{color:#ff4d4f}
-        .bdd-pn{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #d9def0;border-radius:12px;box-shadow:0 12px 30px rgba(31,41,55,.15);padding:6px;z-index:20;max-height:240px;overflow-y:auto;display:none}
+        .bdd-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(129,140,248,.2);color:#a78bfa;padding:3px 8px 3px 10px;border-radius:6px;font-size:13px;font-weight:500}
+        .bdd-tag span{cursor:pointer;color:#94a3b8;font-weight:700;line-height:1}
+        .bdd-tag span:hover{color:#f87171}
+        .bdd-pn{position:absolute;top:calc(100% + 6px);left:0;right:0;background:linear-gradient(145deg,#1e293b 0%,#1a1a2e 100%);border:1px solid rgba(255,255,255,.1);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.4);padding:6px;z-index:20;max-height:240px;overflow-y:auto;display:none}
         .bdd.open .bdd-pn{display:block}
-        .bdd-it{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;color:#374151;transition:.15s}
-        .bdd-it:hover{background:#f3f4ff}
-        .bdd-it.sel{background:#eef0ff;color:#667eea;font-weight:600}
-        .bdd-it::before{content:'';width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:4px;flex-shrink:0;display:inline-block;transition:.15s}
-        .bdd-it.sel::before{background:#667eea;border-color:#667eea;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3.5 8l3 3 6-6' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-size:cover}
-        .bid-badge{position:fixed;top:14px;right:14px;z-index:99999;background:rgba(255,255,255,.96);border:1px solid rgba(102,126,234,.3);border-radius:999px;padding:8px 14px;font-size:13px;color:#374151;box-shadow:0 8px 24px rgba(31,41,55,.15);display:flex;align-items:center;gap:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;backdrop-filter:blur(6px);cursor:pointer;transition:.2s;user-select:none;pointer-events:auto}
-        .bid-badge:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(31,41,55,.18)}
-        .bid-badge .bid-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 0 0 3px rgba(102,126,234,.15)}
-        .bid-badge .bid-lb{color:#9aa3b2;font-size:12px}
-        .bid-badge .bid-val{font-family:'Consolas','SF Mono',monospace;font-weight:600;color:#667eea;letter-spacing:.5px}
+        .bdd-it{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;color:#94a3b8;transition:.15s}
+        .bdd-it:hover{background:rgba(129,140,248,.1)}
+        .bdd-it.sel{background:rgba(129,140,248,.15);color:#a78bfa;font-weight:600}
+        .bdd-it::before{content:'';width:16px;height:16px;border:1.5px solid #475569;border-radius:4px;flex-shrink:0;display:inline-block;transition:.15s}
+        .bdd-it.sel::before{background:#818cf8;border-color:#818cf8;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3.5 8l3 3 6-6' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-size:cover}
+        .bid-badge{position:fixed;top:14px;right:14px;z-index:99999;background:rgba(30,41,59,.96);border:1px solid rgba(129,140,248,.3);border-radius:999px;padding:8px 14px;font-size:13px;color:#e2e8f0;box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;align-items:center;gap:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;backdrop-filter:blur(6px);cursor:pointer;transition:.2s;user-select:none;pointer-events:auto}
+        .bid-badge:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(0,0,0,.4)}
+        .bid-badge .bid-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#818cf8,#c084fc);box-shadow:0 0 0 3px rgba(129,140,248,.2)}
+        .bid-badge .bid-lb{color:#64748b;font-size:12px}
+        .bid-badge .bid-val{font-family:'Consolas','SF Mono',monospace;font-weight:600;color:#a78bfa;letter-spacing:.5px}
         .ta-wrap{margin:20px 0}
-        .ta-wrap textarea{width:100%;min-height:120px;padding:14px 16px;border:2px solid #d9def0;border-radius:12px;font-size:15px;font-family:'Consolas','SF Mono','Courier New',monospace;line-height:1.7;resize:vertical;background:#fbfcff;color:#1f2937;transition:.2s}
-        .ta-wrap textarea:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.12)}
-        .ta-wrap textarea:disabled{background:#f3f4f6;color:#9aa3b2;cursor:not-allowed}
-        .ta-submit{padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:.2s;margin-top:10px}
-        .ta-submit:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(102,126,234,.4)}
+        .ta-wrap textarea{width:100%;min-height:120px;padding:14px 16px;border:2px solid rgba(255,255,255,.1);border-radius:12px;font-size:15px;font-family:'Consolas','SF Mono','Courier New',monospace;line-height:1.7;resize:vertical;background:rgba(255,255,255,.04);color:#e2e8f0;transition:.2s}
+        .ta-wrap textarea:focus{outline:none;border-color:#818cf8;box-shadow:0 0 0 4px rgba(129,140,248,.2)}
+        .ta-wrap textarea:disabled{background:rgba(255,255,255,.02);color:#64748b;cursor:not-allowed}
+        .ta-submit{padding:12px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:.2s;margin-top:10px}
+        .ta-submit:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(129,140,248,.4)}
         .ta-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-        .ta-ans{font-family:'Consolas','SF Mono','Courier New',monospace;background:#f8f9fa;padding:12px 16px;border-radius:8px;margin-top:10px;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.7;color:#333;border:1px solid #e0e0e0}
-        .om{cursor:pointer;transition:.15s}.om-sel{border-color:#667eea!important;background:#f0f2ff!important;box-shadow:0 0 0 3px rgba(102,126,234,.12)}
+        .ta-ans{font-family:'Consolas','SF Mono','Courier New',monospace;background:rgba(255,255,255,.04);padding:12px 16px;border-radius:8px;margin-top:10px;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.7;color:#e2e8f0;border:1px solid rgba(255,255,255,.08)}
+        .om{cursor:pointer;transition:.15s}.om-sel{border-color:#818cf8!important;background:rgba(129,140,248,.15)!important;box-shadow:0 0 0 3px rgba(129,140,248,.2)}
         #klist{display:grid;gap:12px}
-        #exam-q>div,#pq>div{box-shadow:0 8px 24px rgba(31,41,55,.04)}
-        #exam-o>div,#po>div{box-shadow:0 6px 18px rgba(31,41,55,.04);transition:.2s}
-        #exam-a,#pa{border:1px solid transparent;box-shadow:0 8px 24px rgba(31,41,55,.05)}
-        #exam-bank-list>div{box-shadow:0 12px 28px rgba(102,126,234,.18)}
-        .modal{backdrop-filter:blur(4px)}
-        .modal-box{border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.24)}
+        #exam-q>div,#pq>div{box-shadow:0 8px 24px rgba(0,0,0,.15)}
+        #exam-o>div,#po>div{box-shadow:0 6px 18px rgba(0,0,0,.1);transition:.2s}
+        #exam-a,#pa{border:1px solid transparent;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+        #exam-bank-list>div{box-shadow:0 12px 28px rgba(129,140,248,.2)}
+        .modal{backdrop-filter:blur(8px)}
+        .modal-box{background:linear-gradient(145deg,#1e293b 0%,#1a1a2e 100%);border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.08)}
+        .modal-box h2,.modal-box h3{color:#fff}
+        .modal-box p{color:#94a3b8}
+        .q{background:linear-gradient(145deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.02) 100%);border:1px solid rgba(255,255,255,.08);color:#e2e8f0}
+        .qt{color:#e2e8f0}
+        .op{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#e2e8f0}
+        .ol{color:#a78bfa}
+        .msg{color:#94a3b8}
+        .err{color:#f87171}.ok{color:#34d399}
+        .qn{background:linear-gradient(135deg,#818cf8 0%,#c084fc 100%)}
+        .oi{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#e2e8f0;cursor:pointer;transition:.15s;padding:10px 15px;margin-bottom:8px;border-radius:8px}
+        .oi:hover{border-color:#818cf8;background:rgba(129,140,248,.1)}
+        .oi .ol{display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;background:rgba(129,140,248,.2);border-radius:50%;margin-right:8px;font-size:13px;font-weight:700}
+        .spin{border-color:rgba(255,255,255,.1);border-top-color:#818cf8}
+        #auto-msg{background:rgba(52,211,153,.1)!important;border-color:rgba(52,211,153,.3)!important;color:#34d399!important}
         @media (max-width:640px){body{padding:16px 10px}.panel{padding:22px;border-radius:18px}.eh{flex-direction:column;gap:12px;align-items:stretch;text-align:center}.key-acts{justify-content:stretch}.key-acts button{flex:1}#exam-bank-list{flex-direction:column!important}.panel:not(.wide){margin-top:4vh}}
     </style>
 </head>
@@ -129,7 +157,7 @@
     </div>
     <button class="btn btn-p" onclick="unlock()">解锁题库</button>
     <p class="msg err" id="user-err"></p>
-    <div id="auto-msg" style="display:none;margin-top:15px;padding:12px;background:#f6ffed;border:1px solid #b7eb8f;border-radius:8px;color:#52c41a;font-size:13px;">
+    <div id="auto-msg" style="display:none;margin-top:15px;padding:12px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:8px;color:#34d399;font-size:13px;">
         <span class="spin"></span>检测登录状态...
     </div>
 </div>
@@ -138,16 +166,16 @@
     <div class="eh"><h2>试题内容</h2><button class="xbtn" onclick="logout()">退出</button></div>
     <div class="cbank"><strong>当前题库：</strong><span id="bank-name"></span></div>
     <div id="exam-bank-chooser" style="display:none;text-align:center;padding:40px 20px;">
-        <h3 style="color:#333;margin-bottom:20px;">请选择要查看的试题库</h3>
+        <h3 style="color:#e2e8f0;margin-bottom:20px;">请选择要查看的试题库</h3>
         <div id="exam-bank-list" style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;"></div>
     </div>
     <div style="margin-bottom:20px;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#666;font-size:14px;">答题进度</span><span id="exam-ptxt" style="color:#667eea;font-weight:600;">0/0</span></div>
-        <div style="height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;"><div id="exam-pbar" style="height:100%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);width:0%;transition:width .3s;"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#94a3b8;font-size:14px;">答题进度</span><span id="exam-ptxt" style="color:#a78bfa;font-weight:600;">0/0</span></div>
+        <div style="height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;"><div id="exam-pbar" style="height:100%;background:linear-gradient(135deg,#818cf8 0%,#c084fc 100%);width:0%;transition:width .3s;"></div></div>
         <div id="exam-stats" style="display:flex;gap:20px;margin-top:12px;justify-content:center;">
-            <span style="font-size:13px;color:#52c41a;">✓ 正确: <strong id="exam-correct">0</strong></span>
-            <span style="font-size:13px;color:#ff4d4f;">✗ 错误: <strong id="exam-wrong">0</strong></span>
-            <span style="font-size:13px;color:#667eea;">正确率: <strong id="exam-acc">0%</strong></span>
+            <span style="font-size:13px;color:#34d399;">✓ 正确: <strong id="exam-correct">0</strong></span>
+            <span style="font-size:13px;color:#f87171;">✗ 错误: <strong id="exam-wrong">0</strong></span>
+            <span style="font-size:13px;color:#a78bfa;">正确率: <strong id="exam-acc">0%</strong></span>
         </div>
     </div>
     <div id="exam-qarea">
@@ -155,7 +183,7 @@
         <div id="exam-o" style="margin:20px 0;"></div>
         <div id="exam-a" style="display:none;padding:20px;border-radius:12px;margin-bottom:20px;"></div>
         <div id="exam-nav" style="display:none;text-align:center;margin-top:20px;"></div>
-    <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid #e0e0e0;">
+    <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);">
         <button onclick="endExamEarly()" style="padding:10px 30px;background:#ff4d4f;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">结束答题</button>
     </div>
     </div>
@@ -163,7 +191,7 @@
 </div>
 
 <div class="panel wide hidden" id="admin-panel">
-    <div class="eh"><h1 style="color:#667eea;font-size:26px;">管理员后台</h1><span style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;">管理员模式</span></div>
+    <div class="eh"><h1 style="color:#a78bfa;font-size:26px;">管理员后台</h1><span style="background:linear-gradient(135deg,#818cf8 0%,#c084fc 100%);color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;">管理员模式</span></div>
     <div class="sec">
         <h3>用户密钥管理</h3>
         <div class="fg"><label>自定义密钥（留空自动生成）</label><input type="text" id="ckey" placeholder="留空自动生成8位随机密钥"></div>
@@ -171,15 +199,15 @@
         <div class="fg"><label>备注（可选）</label><input type="text" id="kremark" placeholder="如：张三的密钥"></div>
         <div class="fg"><label>绑定试题库（可多选）</label><div id="bank-dd" class="bdd"><div class="bdd-tg" id="bank-dd-tg" onclick="event.stopPropagation();toggleBankDD()"><span id="bank-dd-ph">请选择试题库</span></div><div class="bdd-pn" id="bank-dd-pn"></div></div></div>
         <button class="btn btn-g" onclick="genKey()">生成密钥</button>
-        <div style="margin-top:30px;"><h4 style="margin-bottom:15px;color:#555;">已生成密钥列表</h4><div id="klist"><p style="color:#999;text-align:center;padding:20px;">暂无密钥</p></div></div>
+        <div style="margin-top:30px;"><h4 style="margin-bottom:15px;color:#cbd5e1;">已生成密钥列表</h4><div id="klist"><p style="color:#64748b;text-align:center;padding:20px;">暂无密钥</p></div></div>
     </div>
-    <div class="sec" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;text-align:center;">
+    <div class="sec" style="background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;text-align:center;">
         <h3 style="color:#fff;">题库练习</h3><p style="margin-bottom:20px;opacity:.9;">管理员可在此进行题库练习和测试</p>
-        <button class="btn" onclick="enterPractice()" style="background:#fff;color:#667eea;max-width:200px;margin:0 auto;">进入刷题模式</button>
+        <button class="btn" onclick="enterPractice()" style="background:#fff;color:#818cf8;max-width:200px;margin:0 auto;">进入刷题模式</button>
     </div>
     <div class="sec">
         <h3>错题本 <span id="wrong-book-count" style="font-size:14px;color:#faad14;font-weight:600;"></span></h3>
-        <p style="color:#666;margin-bottom:15px;font-size:14px;">答题结束后，错题会自动保存到错题本中</p>
+        <p style="color:#94a3b8;margin-bottom:15px;font-size:14px;">答题结束后，错题会自动保存到错题本中</p>
         <div id="wrong-book-list" style="margin-bottom:15px;"></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <button class="btn btn-p" onclick="enterWrongBookPractice()" style="max-width:200px;">错题重练</button>
@@ -190,29 +218,29 @@
 </div>
 
 <div class="panel wide hidden" id="practice-page">
-    <div class="eh"><h2 style="color:#667eea;font-size:24px;">题库练习</h2><button class="xbtn" onclick="exitPractice()">返回后台</button></div>
+    <div class="eh"><h2 style="color:#a78bfa;font-size:24px;">题库练习</h2><button class="xbtn" onclick="exitPractice()">返回后台</button></div>
     <div id="psel" style="text-align:center;padding:40px 20px;">
-        <h3 style="color:#333;margin-bottom:20px;">选择题库开始练习</h3>
-        <select id="pbank" style="width:100%;max-width:400px;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:15px;margin-bottom:20px;"><option value="">-- 请选择题库 --</option></select>
+        <h3 style="color:#e2e8f0;margin-bottom:20px;">选择题库开始练习</h3>
+        <select id="pbank" style="width:100%;max-width:400px;padding:12px;border:2px solid rgba(255,255,255,.12);border-radius:8px;font-size:15px;margin-bottom:20px;background:rgba(255,255,255,.06);color:#e2e8f0;"><option value="">-- 请选择题库 --</option></select>
         <button class="btn btn-p" onclick="startPractice()" style="max-width:400px;">开始练习</button>
     </div>
     <div id="parea" style="display:none;">
-        <div style="margin-bottom:20px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#666;font-size:14px;">答题进度</span><span id="ptxt" style="color:#667eea;font-weight:600;">1/10</span></div><div style="height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;"><div id="pbar" style="height:100%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);width:10%;transition:width .3s;"></div></div>
+        <div style="margin-bottom:20px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#94a3b8;font-size:14px;">答题进度</span><span id="ptxt" style="color:#a78bfa;font-weight:600;">1/10</span></div><div style="height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;"><div id="pbar" style="height:100%;background:linear-gradient(135deg,#818cf8 0%,#c084fc 100%);width:10%;transition:width .3s;"></div></div>
         <div id="prac-stats" style="display:flex;gap:20px;margin-top:12px;justify-content:center;">
-            <span style="font-size:13px;color:#52c41a;">✓ 正确: <strong id="prac-correct">0</strong></span>
-            <span style="font-size:13px;color:#ff4d4f;">✗ 错误: <strong id="prac-wrong">0</strong></span>
-            <span style="font-size:13px;color:#667eea;">正确率: <strong id="prac-acc">0%</strong></span>
+            <span style="font-size:13px;color:#34d399;">✓ 正确: <strong id="prac-correct">0</strong></span>
+            <span style="font-size:13px;color:#f87171;">✗ 错误: <strong id="prac-wrong">0</strong></span>
+            <span style="font-size:13px;color:#a78bfa;">正确率: <strong id="prac-acc">0%</strong></span>
         </div>
         </div>
         <div id="pq"></div>
         <div id="po" style="margin:20px 0;"></div>
         <div id="pa" style="display:none;padding:20px;border-radius:12px;margin-bottom:20px;"><div id="pat" style="font-weight:600;font-size:18px;margin-bottom:10px;"></div><div id="pac" style="line-height:1.6;"></div></div>
-        <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid #e0e0e0;">
+        <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);">
             <button onclick="endPracticeEarly()" style="padding:10px 30px;background:#ff4d4f;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">结束练习</button>
         </div>
     </div>
     <div id="pres" style="display:none;text-align:center;padding:40px 20px;">
-        <div id="rem" style="font-size:80px;margin-bottom:20px;"></div><div id="rsc" style="font-size:48px;font-weight:700;margin-bottom:15px;"></div><div id="rdt" style="color:#666;font-size:16px;margin-bottom:30px;"></div>
+        <div id="rem" style="font-size:80px;margin-bottom:20px;"></div><div id="rsc" style="font-size:48px;font-weight:700;margin-bottom:15px;"></div>        <div id="rdt" style="color:#94a3b8;font-size:16px;margin-bottom:30px;"></div>
         <div id="pbtns" style="display:flex;gap:15px;justify-content:center;">
             <button class="btn btn-p" onclick="restartPractice()" style="max-width:200px">重新练习</button>
             <button class="btn btn-s" onclick="changeBank()" style="max-width:200px">切换题库</button>
@@ -220,9 +248,9 @@
     </div>
 </div>
 
-<div class="modal" id="edit-modal"><div class="modal-box"><h3 style="margin-bottom:20px;color:#333;">编辑密钥</h3><input type="hidden" id="ekey"><div class="fg"><label>备注</label><input type="text" id="eremark" placeholder="输入备注"></div><div style="display:flex;gap:10px;"><button class="btn btn-s" onclick="document.getElementById('edit-modal').classList.remove('active')">取消</button><button class="btn btn-p" onclick="saveEdit()">保存</button></div></div></div>
+<div class="modal" id="edit-modal"><div class="modal-box"><h3 style="margin-bottom:20px;color:#fff;">编辑密钥</h3><input type="hidden" id="ekey"><div class="fg"><label>备注</label><input type="text" id="eremark" placeholder="输入备注"></div><div style="display:flex;gap:10px;"><button class="btn btn-s" onclick="document.getElementById('edit-modal').classList.remove('active')">取消</button><button class="btn btn-p" onclick="saveEdit()">保存</button></div></div></div>
 
-<div class="modal" id="login-modal"><div class="modal-box"><h2>管理员验证</h2><p style="color:#999;margin-bottom:25px;font-size:14px;">请输入管理员密码</p><div class="fg" style="text-align:left;"><label>管理员密码</label><input type="password" id="apwd" placeholder="请输入密码" onkeypress="if(event.key==='Enter')checkPwd()"></div><button class="btn btn-p" onclick="checkPwd()">验证进入</button><button class="btn btn-s" onclick="document.getElementById('login-modal').classList.remove('active')">取消</button><p class="msg err" id="aerr"></p></div></div>
+<div class="modal" id="login-modal"><div class="modal-box"><h2>管理员验证</h2><p style="color:#94a3b8;margin-bottom:25px;font-size:14px;">请输入管理员密码</p><div class="fg" style="text-align:left;"><label>管理员密码</label><input type="password" id="apwd" placeholder="请输入密码" onkeypress="if(event.key==='Enter')checkPwd()"></div><button class="btn btn-p" onclick="checkPwd()">验证进入</button><button class="btn btn-s" onclick="document.getElementById('login-modal').classList.remove('active')">取消</button><p class="msg err" id="aerr"></p></div></div>
 
 <script>
 const ADM='HM78Z';
@@ -1118,21 +1146,21 @@ async function genKey(){
 
 function renderKeys(){
     let ks=getKeys(),c=document.getElementById('klist');
-    if(ks.length===0){c.innerHTML='<p style="color:#999;text-align:center;padding:20px;">暂无密钥</p>';return}
+    if(ks.length===0){c.innerHTML='<p style="color:#64748b;text-align:center;padding:20px;">暂无密钥</p>';return}
     let h='';
     ks.forEach((k,i)=>{
-        let rm=k.remark?`<span style="color:#667eea;font-weight:500;">[${k.remark}]</span> `:'';
+        let rm=k.remark?`<span style="color:#a78bfa;font-weight:500;">[${k.remark}]</span> `:'';
         let shortKey=k.key.split('.')[0] || k.key;
         let btags='';
         if(k.banks&&k.banks.length){k.banks.forEach(bid=>{let bn=BANKS[bid];if(bn)btags+=`<span class="btile">${esc(bn.name)}</span>`})}
         h+=`<div class="key-item">
             <div>
-                <div class="key-val" style="cursor:pointer" title="点击复制完整密钥" onclick="copyKey('${k.key.replace(/'/g,"\\'")}')">${rm}${shortKey} <span style="font-size:11px;color:#999;">📋复制</span></div>
+                <div class="key-val" style="cursor:pointer" title="点击复制完整密钥" onclick="copyKey('${k.key.replace(/'/g,"\\'")}')">${rm}${shortKey} <span style="font-size:11px;color:#64748b;">📋复制</span></div>
                 ${btags?`<div style="margin-top:6px;">${btags}</div>`:''}
                 <div class="key-meta">创建: ${k.createdAt}</div>
             </div>
             <div class="key-acts">
-                <button class="btn-xs" style="background:#667eea;color:#fff;" onclick="editKey(${i})">编辑</button>
+                <button class="btn-xs" style="background:linear-gradient(135deg,#818cf8,#a78bfa);color:#fff;" onclick="editKey(${i})">编辑</button>
                 <button class="btn-xs btn-r" onclick="delKey(${i})">删除</button>
             </div></div>`;
     });
@@ -1211,7 +1239,7 @@ function showExam(bid){
         document.getElementById('exam-qarea').style.display='none';
         document.getElementById('exam-res').style.display='none';
         document.getElementById('bank-name').textContent='';
-        let h='';bankIds.forEach(id=>{let b=BANKS[id];if(b)h+=`<div onclick="selectExamBank('${id}')" style="padding:30px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border-radius:12px;cursor:pointer;font-size:18px;font-weight:600;min-width:150px;transition:.3s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(102,126,234,.4)'" onmouseout="this.style.transform='';this.style.boxShadow=''">${esc(b.name)}</div>`});
+        let h='';bankIds.forEach(id=>{let b=BANKS[id];if(b)h+=`<div onclick="selectExamBank('${id}')" style="padding:30px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border-radius:12px;cursor:pointer;font-size:18px;font-weight:600;min-width:150px;transition:.3s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(129,140,248,.4)'" onmouseout="this.style.transform='';this.style.boxShadow=''">${esc(b.name)}</div>`});
         document.getElementById('exam-bank-list').innerHTML=h;
         return;
     }
@@ -1290,7 +1318,7 @@ function renderWrongBook(){
     let listEl=document.getElementById('wrong-book-list');
     if(countEl)countEl.textContent=book.length>0?`(${book.length}题)`:'';
     if(!listEl)return;
-    if(book.length===0){listEl.innerHTML='<p style="color:#999;text-align:center;padding:15px;">暂无错题</p>';return}
+    if(book.length===0){listEl.innerHTML='<p style="color:#64748b;text-align:center;padding:15px;">暂无错题</p>';return}
     let banks={};
     book.forEach((q,i)=>{
         let bn=q.bankName||'未知题库';
@@ -1300,7 +1328,7 @@ function renderWrongBook(){
     });
     let h='';
     Object.entries(banks).forEach(([name,data])=>{
-        h+=`<div style="padding:12px 15px;background:#f8f9fa;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:500;color:#333;">${esc(name)}</span><span style="color:#faad14;font-weight:600;">${data.count}题</span></div>`;
+        h+=`<div style="padding:12px 15px;background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:500;color:#e2e8f0;">${esc(name)}</span><span style="color:#fbbf24;font-weight:600;">${data.count}题</span></div>`;
     });
     listEl.innerHTML=h;
 }
@@ -1337,8 +1365,8 @@ function showQ(){
     document.getElementById('ptxt').textContent=`${cur}/${total}`;
     document.getElementById('pbar').style.width=`${(cur/total)*100}%`;
     let nav='';
-    if(ps.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevQ()" style="padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;color:#666;font-weight:500;">← 上一题</button></div>`;
-    document.getElementById('pq').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${renderQText(q.question)}</div></div>`;
+    if(ps.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevQ()" style="padding:10px 20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;color:#94a3b8;font-weight:500;">← 上一题</button></div>`;
+    document.getElementById('pq').innerHTML=nav+`<div style="padding:25px;background:rgba(255,255,255,.04);border-radius:12px;border:1px solid rgba(255,255,255,.08);"><div style="font-weight:600;color:#e2e8f0;font-size:18px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${renderQText(q.question)}</div></div>`;
     let isAns=ps.answers[ps.currentIndex]!==null;
     if(q.type==='text'){
         let taId='p-ta-'+ps.currentIndex;
@@ -1347,22 +1375,22 @@ function showQ(){
         let o='',lbs=['A','B','C','D','E','F'];
         let selPrev=isAns&&Array.isArray(ps.answers[ps.currentIndex])?ps.answers[ps.currentIndex]:[];
         q.options.forEach((opt,i)=>{
-            let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;transition:.2s;',bdg='';
+            let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:rgba(255,255,255,.04);border-radius:10px;border:2px solid rgba(255,255,255,.08);transition:.2s;',bdg='';
             if(isAns){
                 st+='pointer-events:none;';
                 let isCor=q.answers.indexOf(i)!==-1,was=selPrev.indexOf(i)!==-1;
-                if(isCor&&was){st+='border-color:#52c41a;background:#f6ffed;';bdg=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓</span>`}
-                else if(!isCor&&was){st+='border-color:#ff4d4f;background:#fff2f0;';bdg=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗</span>`}
+                if(isCor&&was){st+='border-color:#34d399;background:rgba(52,211,153,.12);';bdg=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓</span>`}
+                else if(!isCor&&was){st+='border-color:#f87171;background:rgba(248,113,113,.12);';bdg=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗</span>`}
                 else if(isCor&&!was){st+='border-color:#faad14;background:#fffbe6;';bdg=`<span style="color:#faad14;font-weight:600;margin-left:10px;">漏选</span>`}
                 else st+='opacity:0.6;';
             }else{let sc=selPrev.indexOf(i)!==-1?' om-sel':'';st+=`cursor:pointer;${sc}`}
-            o+=`<div class="om${isAns?'':' om'}" data-multi="${i}" ${isAns?'':`onclick="togglePracticeMulti(${i})"`} style="${st}"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
+            o+=`<div class="om${isAns?'':' om'}" data-multi="${i}" ${isAns?'':`onclick="togglePracticeMulti(${i})"`} style="${st}"><span style="font-weight:600;color:#a78bfa;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:rgba(129,140,248,.15);border-radius:50%;">${lbs[i]}</span><span style="color:#e2e8f0;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
         });
         if(!isAns)o+=`<button class="ta-submit" onclick="submitPracticeMulti()">提交答案</button>`;
         document.getElementById('po').innerHTML=o;
     }else{
         let o='',lbs=['A','B','C','D','E','F'];
-        q.options.forEach((opt,i)=>{o+=`<div class="oi" onclick="sel(${i})" style="display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;cursor:pointer;border:2px solid #e0e0e0;" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span></div>`});
+        q.options.forEach((opt,i)=>{o+=`<div class="oi" onclick="sel(${i})" style="display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:rgba(255,255,255,.04);border-radius:10px;cursor:pointer;border:2px solid rgba(255,255,255,.08);" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'"><span style="font-weight:600;color:#a78bfa;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:rgba(129,140,248,.15);border-radius:50%;">${lbs[i]}</span><span style="color:#e2e8f0;font-size:16px;flex:1;">${esc(opt)}</span></div>`});
         document.getElementById('po').innerHTML=o;
     }
     document.getElementById('pa').style.display='none';
@@ -1379,12 +1407,12 @@ function submitPracticeText(){
     showQ();
     updatePracStats();
     let ad=document.getElementById('pa'),at=document.getElementById('pat'),ac=document.getElementById('pac');
-    if(ok){ad.style.background='#f6ffed';ad.style.borderColor='#52c41a';at.textContent='🎉 回答正确！';at.style.color='#52c41a'}else{ad.style.background='#fff2f0';ad.style.borderColor='#ff4d4f';at.textContent='❌ 回答错误';at.style.color='#ff4d4f'}
+    if(ok){ad.style.background='rgba(52,211,153,.1)';ad.style.borderColor='#34d399';at.textContent='🎉 回答正确！';at.style.color='#34d399'}else{ad.style.background='rgba(248,113,113,.1)';ad.style.borderColor='#f87171';at.textContent='❌ 回答错误';at.style.color='#f87171'}
     let txt=`正确答案：<div class="ta-ans">${esc(q.answer)}</div>`;
     if(q.analysis)txt+=`<br><strong>解析：</strong>${q.analysis}`;
     ac.innerHTML=txt;ad.style.display='block';
     if(ok){if(ps.currentIndex<ps.questions.length-1){setTimeout(()=>{ps.currentIndex++;showQ()},500)}else{setTimeout(()=>showResult(),500)}}
-    else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
+    else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
 }
 function togglePracticeMulti(idx){
     let d=document.querySelector(`#po div[data-multi="${idx}"]`);
@@ -1402,26 +1430,26 @@ function submitPracticeMulti(){
     showQ();
     updatePracStats();
     let ad=document.getElementById('pa'),at=document.getElementById('pat'),ac=document.getElementById('pac'),lbs=['A','B','C','D','E','F'];
-    if(ok){ad.style.background='#f6ffed';ad.style.borderColor='#52c41a';at.textContent='🎉 全部正确！';at.style.color='#52c41a'}else{ad.style.background='#fff2f0';ad.style.borderColor='#ff4d4f';at.textContent='❌ 有误';at.style.color='#ff4d4f'}
+    if(ok){ad.style.background='rgba(52,211,153,.1)';ad.style.borderColor='#34d399';at.textContent='🎉 全部正确！';at.style.color='#34d399'}else{ad.style.background='rgba(248,113,113,.1)';ad.style.borderColor='#f87171';at.textContent='❌ 有误';at.style.color='#f87171'}
     let ansShow=(q.answers||[]).map(i=>lbs[i]).filter(Boolean).join('、');
-    let txt=`正确答案：<strong style="color:#52c41a;">${ansShow}</strong>`;
+    let txt=`正确答案：<strong style="color:#34d399;">${ansShow}</strong>`;
     if(q.analysis)txt+=`<br><br><strong>解析：</strong>${q.analysis}`;
     ac.innerHTML=txt;ad.style.display='block';
     if(ok){if(ps.currentIndex<ps.questions.length-1){setTimeout(()=>{ps.currentIndex++;showQ()},500)}else{setTimeout(()=>showResult(),500)}}
-    else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
+    else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
 }
 function sel(idx){
     let q=ps.questions[ps.currentIndex],ok=idx===q.answer;
     ps.answers[ps.currentIndex]=idx;if(ok)ps.correctCount++;
     let os=document.querySelectorAll('.oi'),lbs=['A','B','C','D','E','F'];
-    os.forEach((o,i)=>{o.style.pointerEvents='none';if(i===q.answer){o.style.borderColor='#52c41a';o.style.background='#f6ffed';o.innerHTML+=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓ 正确</span>`}else if(i===idx&&!ok){o.style.borderColor='#ff4d4f';o.style.background='#fff2f0';o.innerHTML+=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗ 错误</span>`}else o.style.opacity='0.6'});
+    os.forEach((o,i)=>{o.style.pointerEvents='none';if(i===q.answer){o.style.borderColor='#34d399';o.style.background='rgba(52,211,153,.12)';o.innerHTML+=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓ 正确</span>`}else if(i===idx&&!ok){o.style.borderColor='#f87171';o.style.background='rgba(248,113,113,.12)';o.innerHTML+=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗ 错误</span>`}else o.style.opacity='0.6'});
     updatePracStats();    let ad=document.getElementById('pa'),at=document.getElementById('pat'),ac=document.getElementById('pac');
-    if(ok){ad.style.background='#f6ffed';ad.style.borderColor='#52c41a';at.textContent='🎉 回答正确！';at.style.color='#52c41a'}else{ad.style.background='#fff2f0';ad.style.borderColor='#ff4d4f';at.textContent='❌ 回答错误';at.style.color='#ff4d4f'}
-    let txt=`正确答案是 <strong style="color:#52c41a;">${lbs[q.answer]}</strong>。<br>`;
+    if(ok){ad.style.background='rgba(52,211,153,.1)';ad.style.borderColor='#34d399';at.textContent='🎉 回答正确！';at.style.color='#34d399'}else{ad.style.background='rgba(248,113,113,.1)';ad.style.borderColor='#f87171';at.textContent='❌ 回答错误';at.style.color='#f87171'}
+    let txt=`正确答案是 <strong style="color:#34d399;">${lbs[q.answer]}</strong>。<br>`;
     if(q.analysis)txt+=`<br><strong>解析：</strong>${q.analysis}`;else txt+=`<br>${esc(q.options[q.answer])}`;
     ac.innerHTML=txt;ad.style.display='block';
     if(ok){if(ps.currentIndex<ps.questions.length-1){setTimeout(()=>{ps.currentIndex++;showQ()},500)}else{setTimeout(()=>showResult(),500)}}
-    else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
+    else{let btn=ps.currentIndex<ps.questions.length-1?'<button onclick="nextQ()" style="padding:12px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showResult()" style="padding:12px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';ac.innerHTML+=`<div style="margin-top:20px;text-align:center;">${btn}</div>`}
 }
 
 function nextQ(){ps.currentIndex++;showQ()}
@@ -1441,7 +1469,7 @@ function showResult(){
         if(wrongList.length>0)saveWrongBook(wrongList);
     }
     document.getElementById('rem').textContent=pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪';
-    let s=document.getElementById('rsc');s.textContent=pct+'%';s.style.color=pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f';
+    let s=document.getElementById('rsc');s.textContent=pct+'%';s.style.color=pct>=80?'#34d399':pct>=60?'#fbbf24':'#f87171';
     document.getElementById('rdt').textContent=`共 ${total} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题`;
     document.getElementById('pbtns').innerHTML=`<button class="btn btn-p" onclick="restartPractice()" style="max-width:200px">重新练习</button>${wrongCount>0?`<button class="btn" onclick="retryWrongPractice()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="changeBank()" style="max-width:200px">切换题库</button>`;
 }
@@ -1493,8 +1521,8 @@ function showExamQ(){
     document.getElementById('exam-ptxt').textContent=`${cur}/${total}`;
     document.getElementById('exam-pbar').style.width=`${(cur/total)*100}%`;
     let nav='';
-    if(es.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevExamQ()" style="padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;color:#666;font-weight:500;">← 上一题</button></div>`;
-    document.getElementById('exam-q').innerHTML=nav+`<div style="padding:25px;background:#f8f9fa;border-radius:12px;border:1px solid #e0e0e0;"><div style="font-weight:600;color:#333;font-size:18px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${renderQText(q.question)}</div></div>`;
+    if(es.currentIndex>0)nav=`<div style="margin-bottom:15px;"><button onclick="prevExamQ()" style="padding:10px 20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;color:#94a3b8;font-weight:500;">← 上一题</button></div>`;
+    document.getElementById('exam-q').innerHTML=nav+`<div style="padding:25px;background:rgba(255,255,255,.04);border-radius:12px;border:1px solid rgba(255,255,255,.08);"><div style="font-weight:600;color:#e2e8f0;font-size:18px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"><span class="qn" style="width:32px;height:32px;font-size:16px;">${cur}</span>${renderQText(q.question)}</div></div>`;
     if(q.type==='text'){
         let taId='exam-ta-'+es.currentIndex;
         document.getElementById('exam-o').innerHTML=`<div class="ta-wrap"><textarea id="${taId}" placeholder="请输入SQL语句..." ${isAns?'disabled':''}>${isAns&&prevAns?prevAns:''}</textarea>${isAns?'':'<button class="ta-submit" onclick="submitExamText()">提交答案</button>'}</div>`;
@@ -1502,12 +1530,12 @@ function showExamQ(){
         let o='';
         let selPrev=isAns&&Array.isArray(prevAns)?prevAns:[];
         q.options.forEach((opt,i)=>{
-            let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;transition:.2s;',bdg='',clk='';
+            let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:rgba(255,255,255,.04);border-radius:10px;border:2px solid rgba(255,255,255,.08);transition:.2s;',bdg='',clk='';
             if(isAns){
                 st+='pointer-events:none;';
                 let isCor=q.answers.indexOf(i)!==-1,was=selPrev.indexOf(i)!==-1;
-                if(isCor&&was){st+='border-color:#52c41a;background:#f6ffed;';bdg=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓</span>`}
-                else if(!isCor&&was){st+='border-color:#ff4d4f;background:#fff2f0;';bdg=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗</span>`}
+                if(isCor&&was){st+='border-color:#34d399;background:rgba(52,211,153,.12);';bdg=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓</span>`}
+                else if(!isCor&&was){st+='border-color:#f87171;background:rgba(248,113,113,.12);';bdg=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗</span>`}
                 else if(isCor&&!was){st+='border-color:#faad14;background:#fffbe6;';bdg=`<span style="color:#faad14;font-weight:600;margin-left:10px;">漏选</span>`}
                 else st+='opacity:0.6;';
             }else{
@@ -1515,7 +1543,7 @@ function showExamQ(){
                 clk=`onclick="toggleExamMulti(${i})"`;
                 st+=`cursor:pointer;${selCls}`;
             }
-            o+=`<div class="om${isAns?'':' om'}" data-multi="${i}" ${clk} style="${st}"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
+            o+=`<div class="om${isAns?'':' om'}" data-multi="${i}" ${clk} style="${st}"><span style="font-weight:600;color:#a78bfa;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:rgba(129,140,248,.15);border-radius:50%;">${lbs[i]}</span><span style="color:#e2e8f0;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
         });
         if(!isAns)o+=`<button class="ta-submit" onclick="submitExamMulti()">提交答案</button>`;
         document.getElementById('exam-o').innerHTML=o;
@@ -1525,12 +1553,12 @@ function showExamQ(){
             let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;',bdg='',clk='';
             if(isAns){
                 st+='pointer-events:none;';
-                if(i===q.answer){st+='border-color:#52c41a;background:#f6ffed;';bdg=`<span style="color:#52c41a;font-weight:600;margin-left:10px;">✓ 正确</span>`}
-                else if(i===prevAns){st+='border-color:#ff4d4f;background:#fff2f0;';bdg=`<span style="color:#ff4d4f;font-weight:600;margin-left:10px;">✗ 错误</span>`}
+                if(i===q.answer){st+='border-color:#34d399;background:rgba(52,211,153,.12);';bdg=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓ 正确</span>`}
+                else if(i===prevAns){st+='border-color:#f87171;background:rgba(248,113,113,.12);';bdg=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗ 错误</span>`}
                 else st+='opacity:0.6;'
             }
-            else{st+='cursor:pointer;';clk=`onclick="selExam(${i})" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e0e0e0'"`}
-            o+=`<div ${clk} style="${st}"><span style="font-weight:600;color:#667eea;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:#f0f2ff;border-radius:50%;">${lbs[i]}</span><span style="color:#333;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
+            else{st+='cursor:pointer;';clk=`onclick="selExam(${i})" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'"`}
+            o+=`<div ${clk} style="${st}"><span style="font-weight:600;color:#a78bfa;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:rgba(129,140,248,.15);border-radius:50%;">${lbs[i]}</span><span style="color:#e2e8f0;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
         });
         document.getElementById('exam-o').innerHTML=o;
     }
@@ -1540,20 +1568,20 @@ function showExamQ(){
         if(q.type==='multi'){
             let ua=Array.isArray(prevAns)?prevAns:[];
             ok=ua.slice().sort().join(',')===(q.answers||[]).slice().sort().join(',');
-            ad.style.background=ok?'#f6ffed':'#fff2f0';ad.style.border=ok?'1px solid #52c41a':'1px solid #ff4d4f';
+            ad.style.background=ok?'rgba(52,211,153,.1)':'rgba(248,113,113,.1)';ad.style.border=ok?'1px solid #34d399':'1px solid #f87171';
             let ansShow=lbs.map((l,i)=>(q.answers||[]).indexOf(i)!==-1?l:'').filter(Boolean).join('、');
-            ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 全部正确！':'❌ 有误'}</div><div style="line-height:1.6;">正确答案：<strong style="color:#52c41a;">${ansShow}</strong>${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
+            ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#34d399':'#f87171'};">${ok?'🎉 全部正确！':'❌ 有误'}</div><div style="line-height:1.6;color:#e2e8f0;">正确答案：<strong style="color:#34d399;">${ansShow}</strong>${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
         }else if(q.type==='text'){
             ok=normalizeSQL(prevAns)===normalizeSQL(q.answer);
-            ad.style.background=ok?'#f6ffed':'#fff2f0';ad.style.border=ok?'1px solid #52c41a':'1px solid #ff4d4f';
-            ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;"><strong>正确答案：</strong><div class="ta-ans">${esc(q.answer)}</div>${q.analysis?`<br><strong>解析：</strong>${q.analysis}`:''}</div>`;
+            ad.style.background=ok?'rgba(52,211,153,.1)':'rgba(248,113,113,.1)';ad.style.border=ok?'1px solid #34d399':'1px solid #f87171';
+            ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#34d399':'#f87171'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;color:#e2e8f0;"><strong>正确答案：</strong><div class="ta-ans">${esc(q.answer)}</div>${q.analysis?`<br><strong>解析：</strong>${q.analysis}`:''}</div>`;
         }else{
             ok=prevAns===q.answer;
-            ad.style.background=ok?'#f6ffed':'#fff2f0';ad.style.border=ok?'1px solid #52c41a':'1px solid #ff4d4f';
-            ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#52c41a':'#ff4d4f'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;">正确答案是 <strong style="color:#52c41a;">${lbs[q.answer]}</strong>。${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
+            ad.style.background=ok?'rgba(52,211,153,.1)':'rgba(248,113,113,.1)';ad.style.border=ok?'1px solid #34d399':'1px solid #f87171';
+            ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#34d399':'#f87171'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;color:#e2e8f0;">正确答案是 <strong style="color:#34d399;">${lbs[q.answer]}</strong>。${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
         }
         ad.style.display='block';
-        nd.innerHTML=es.currentIndex<es.questions.length-1?'<button onclick="nextExamQ()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showExamResult()" style="padding:12px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';
+        nd.innerHTML=es.currentIndex<es.questions.length-1?'<button onclick="nextExamQ()" style="padding:12px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">下一题</button>':'<button onclick="showExamResult()" style="padding:12px 40px;background:linear-gradient(135deg,#818cf8 0%,#a78bfa 50%,#c084fc 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">查看结果</button>';
         nd.style.display='block';
     }else{ad.style.display='none';nd.style.display='none'}
 }
@@ -1623,7 +1651,7 @@ function showExamResult(){
         });
         if(wrongList.length>0)saveWrongBook(wrongList);
     }
-    document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f'};">${pct}%</div><div style="color:#666;font-size:16px;">共 ${total} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题</div><div style="margin-top:30px;display:flex;gap:15px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-p" onclick="restartExam()" style="max-width:200px">重新答题</button>${wrongCount>0?`<button class="btn" onclick="retryWrongExam()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="logout()" style="max-width:200px">返回解锁</button></div>`;
+    document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#34d399':pct>=60?'#fbbf24':'#f87171'};">${pct}%</div><div style="color:#94a3b8;font-size:16px;">共 ${total} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题</div><div style="margin-top:30px;display:flex;gap:15px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-p" onclick="restartExam()" style="max-width:200px">重新答题</button>${wrongCount>0?`<button class="btn" onclick="retryWrongExam()" style="max-width:200px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="logout()" style="max-width:200px">返回解锁</button></div>`;
 }
 function retryWrongExam(){
     let wrong=[];es.questions.forEach((q,i)=>{let a=es.answers[i];if(a===null)return;let ok=q.type==='multi'?(a||[]).slice().sort().join(',')===(q.answers||[]).slice().sort().join(','):q.type==='text'?normalizeSQL(a)===normalizeSQL(q.answer):a===q.answer;if(!ok)wrong.push(q)});
@@ -1660,7 +1688,7 @@ function endExamEarly(){
     document.getElementById('exam-res').style.display='block';
     let pct=Math.round((correct/total)*100);
     let wrongCount=answered-correct;
-    document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f'};">${pct}%</div><div style="color:#666;font-size:16px;margin-bottom:10px;">共 ${total} 题 | 已答 ${answered} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题</div>${wrongCount>0?`<div style="color:#52c41a;font-size:14px;margin-bottom:15px;">✓ 已自动保存 ${wrongCount} 道错题到错题本</div>`:''}<div style="color:#999;font-size:13px;margin-bottom:20px;">（本次提前结束答题）</div><div style="margin-top:30px;display:flex;gap:15px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-p" onclick="restartExam()" style="max-width:200px">重新答题</button>${wrongCount>0?`<button class="btn" onclick="retryWrongExam()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="logout()" style="max-width:200px">返回解锁</button></div>`;
+    document.getElementById('exam-res').innerHTML=`<div style="font-size:80px;margin-bottom:20px;">${pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪'}</div><div style="font-size:48px;font-weight:700;margin-bottom:15px;color:${pct>=80?'#34d399':pct>=60?'#fbbf24':'#f87171'};">${pct}%</div><div style="color:#94a3b8;font-size:16px;margin-bottom:10px;">共 ${total} 题 | 已答 ${answered} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题</div>${wrongCount>0?`<div style="color:#34d399;font-size:14px;margin-bottom:15px;">✓ 已自动保存 ${wrongCount} 道错题到错题本</div>`:''}<div style="color:#64748b;font-size:13px;margin-bottom:20px;">（本次提前结束答题）</div><div style="margin-top:30px;display:flex;gap:15px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-p" onclick="restartExam()" style="max-width:200px">重新答题</button>${wrongCount>0?`<button class="btn" onclick="retryWrongExam()" style="max-width:200px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="logout()" style="max-width:200px">返回解锁</button></div>`;
 }
 
 function endPracticeEarly(){
@@ -1683,8 +1711,8 @@ function endPracticeEarly(){
     let pct=Math.round((correct/total)*100);
     let wrongCount=answered-correct;
     document.getElementById('rem').textContent=pct>=90?'🏆':pct>=80?'🎉':pct>=60?'👍':'💪';
-    let s=document.getElementById('rsc');s.textContent=pct+'%';s.style.color=pct>=80?'#52c41a':pct>=60?'#faad14':'#ff4d4f';
-    document.getElementById('rdt').innerHTML=`共 ${total} 题 | 已答 ${answered} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题${wrongCount>0?`<br><span style="color:#52c41a;font-size:14px;">✓ 已自动保存 ${wrongCount} 道错题到错题本</span>`:''}<br><span style="color:#999;font-size:13px;">（本次提前结束练习）</span>`;
+    let s=document.getElementById('rsc');s.textContent=pct+'%';s.style.color=pct>=80?'#34d399':pct>=60?'#fbbf24':'#f87171';
+    document.getElementById('rdt').innerHTML=`共 ${total} 题 | 已答 ${answered} 题 | 正确 ${correct} 题 | 错误 ${wrongCount} 题${wrongCount>0?`<br><span style="color:#34d399;font-size:14px;">✓ 已自动保存 ${wrongCount} 道错题到错题本</span>`:''}<br><span style="color:#64748b;font-size:13px;">（本次提前结束练习）</span>`;
     document.getElementById('pbtns').innerHTML=`<button class="btn btn-p" onclick="restartPractice()" style="max-width:200px">重新练习</button>${wrongCount>0?`<button class="btn" onclick="retryWrongPractice()" style="max-width:200px;background:#faad14;color:#fff;">错题重练 (${wrongCount}题)</button>`:''}<button class="btn btn-s" onclick="changeBank()" style="max-width:200px">切换题库</button>`;
 }
 
