@@ -142,7 +142,7 @@
         .oi:hover{border-color:#818cf8;background:rgba(129,140,248,.1)}
         .oi .ol{display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;background:rgba(129,140,248,.2);border-radius:50%;margin-right:8px;font-size:13px;font-weight:700}
         .spin{border-color:rgba(255,255,255,.1);border-top-color:#818cf8}
-        #auto-msg{background:rgba(52,211,153,.1)!important;border-color:rgba(52,211,153,.3)!important;color:#34d399!important}
+        #auto-msg{background:rgba(52,211,153,.06)!important;border-color:rgba(52,211,153,.3)!important;color:#34d399!important}
         @media (max-width:640px){body{padding:16px 10px}.panel{padding:22px;border-radius:18px}.eh{flex-direction:column;gap:12px;align-items:stretch;text-align:center}.key-acts{justify-content:stretch}.key-acts button{flex:1}#exam-bank-list{flex-direction:column!important}.panel:not(.wide){margin-top:4vh}}
     </style>
 </head>
@@ -157,7 +157,7 @@
     </div>
     <button class="btn btn-p" onclick="unlock()">解锁题库</button>
     <p class="msg err" id="user-err"></p>
-    <div id="auto-msg" style="display:none;margin-top:15px;padding:12px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:8px;color:#34d399;font-size:13px;">
+    <div id="auto-msg" style="display:none;margin-top:15px;padding:12px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.3);border-radius:8px;color:#34d399;font-size:13px;">
         <span class="spin"></span>检测登录状态...
     </div>
 </div>
@@ -1379,9 +1379,9 @@ function showQ(){
             if(isAns){
                 st+='pointer-events:none;';
                 let isCor=q.answers.indexOf(i)!==-1,was=selPrev.indexOf(i)!==-1;
-                if(isCor&&was){st+='border-color:#34d399;background:rgba(52,211,153,.12);';bdg=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓</span>`}
-                else if(!isCor&&was){st+='border-color:#f87171;background:rgba(248,113,113,.12);';bdg=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗</span>`}
-                else if(isCor&&!was){st+='border-color:#faad14;background:#fffbe6;';bdg=`<span style="color:#faad14;font-weight:600;margin-left:10px;">漏选</span>`}
+                if(isCor&&was){st+='border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.06);';bdg=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓</span>`}
+                else if(!isCor&&was){st+='border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.06);';bdg=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗</span>`}
+                else if(isCor&&!was){st+='border-color:rgba(250,173,20,.5);background:rgba(250,173,20,.06);';bdg=`<span style="color:#faad14;font-weight:600;margin-left:10px;">漏选</span>`}
                 else st+='opacity:0.6;';
             }else{let sc=selPrev.indexOf(i)!==-1?' om-sel':'';st+=`cursor:pointer;${sc}`}
             o+=`<div class="om${isAns?'':' om'}" data-multi="${i}" ${isAns?'':`onclick="togglePracticeMulti(${i})"`} style="${st}"><span style="font-weight:600;color:#a78bfa;margin-right:12px;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:rgba(129,140,248,.15);border-radius:50%;">${lbs[i]}</span><span style="color:#e2e8f0;font-size:16px;flex:1;">${esc(opt)}</span>${bdg}</div>`;
@@ -1407,7 +1407,7 @@ function submitPracticeText(){
     showQ();
     updatePracStats();
     let ad=document.getElementById('pa'),at=document.getElementById('pat'),ac=document.getElementById('pac');
-    if(ok){ad.style.background='rgba(52,211,153,.1)';ad.style.borderColor='#34d399';at.textContent='🎉 回答正确！';at.style.color='#34d399'}else{ad.style.background='rgba(248,113,113,.1)';ad.style.borderColor='#f87171';at.textContent='❌ 回答错误';at.style.color='#f87171'}
+    if(ok){ad.style.background='rgba(52,211,153,.06)';ad.style.borderColor='rgba(52,211,153,.4)';at.textContent='🎉 回答正确！';at.style.color='#34d399'}else{ad.style.background='rgba(248,113,113,.06)';ad.style.borderColor='rgba(248,113,113,.4)';at.textContent='❌ 回答错误';at.style.color='#f87171'}
     let txt=`正确答案：<div class="ta-ans">${esc(q.answer)}</div>`;
     if(q.analysis)txt+=`<br><strong>解析：</strong>${q.analysis}`;
     ac.innerHTML=txt;ad.style.display='block';
@@ -1430,7 +1430,7 @@ function submitPracticeMulti(){
     showQ();
     updatePracStats();
     let ad=document.getElementById('pa'),at=document.getElementById('pat'),ac=document.getElementById('pac'),lbs=['A','B','C','D','E','F'];
-    if(ok){ad.style.background='rgba(52,211,153,.1)';ad.style.borderColor='#34d399';at.textContent='🎉 全部正确！';at.style.color='#34d399'}else{ad.style.background='rgba(248,113,113,.1)';ad.style.borderColor='#f87171';at.textContent='❌ 有误';at.style.color='#f87171'}
+    if(ok){ad.style.background='rgba(52,211,153,.06)';ad.style.borderColor='rgba(52,211,153,.4)';at.textContent='🎉 全部正确！';at.style.color='#34d399'}else{ad.style.background='rgba(248,113,113,.06)';ad.style.borderColor='rgba(248,113,113,.4)';at.textContent='❌ 有误';at.style.color='#f87171'}
     let ansShow=(q.answers||[]).map(i=>lbs[i]).filter(Boolean).join('、');
     let txt=`正确答案：<strong style="color:#34d399;">${ansShow}</strong>`;
     if(q.analysis)txt+=`<br><br><strong>解析：</strong>${q.analysis}`;
@@ -1442,9 +1442,9 @@ function sel(idx){
     let q=ps.questions[ps.currentIndex],ok=idx===q.answer;
     ps.answers[ps.currentIndex]=idx;if(ok)ps.correctCount++;
     let os=document.querySelectorAll('.oi'),lbs=['A','B','C','D','E','F'];
-    os.forEach((o,i)=>{o.style.pointerEvents='none';if(i===q.answer){o.style.borderColor='#34d399';o.style.background='rgba(52,211,153,.12)';o.innerHTML+=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓ 正确</span>`}else if(i===idx&&!ok){o.style.borderColor='#f87171';o.style.background='rgba(248,113,113,.12)';o.innerHTML+=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗ 错误</span>`}else o.style.opacity='0.6'});
+    os.forEach((o,i)=>{o.style.pointerEvents='none';if(i===q.answer){o.style.borderColor='rgba(52,211,153,.5)';o.style.background='rgba(52,211,153,.06)';o.innerHTML+=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓ 正确</span>`}else if(i===idx&&!ok){o.style.borderColor='rgba(248,113,113,.5)';o.style.background='rgba(248,113,113,.06)';o.innerHTML+=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗ 错误</span>`}else o.style.opacity='0.6'});
     updatePracStats();    let ad=document.getElementById('pa'),at=document.getElementById('pat'),ac=document.getElementById('pac');
-    if(ok){ad.style.background='rgba(52,211,153,.1)';ad.style.borderColor='#34d399';at.textContent='🎉 回答正确！';at.style.color='#34d399'}else{ad.style.background='rgba(248,113,113,.1)';ad.style.borderColor='#f87171';at.textContent='❌ 回答错误';at.style.color='#f87171'}
+    if(ok){ad.style.background='rgba(52,211,153,.06)';ad.style.borderColor='rgba(52,211,153,.4)';at.textContent='🎉 回答正确！';at.style.color='#34d399'}else{ad.style.background='rgba(248,113,113,.06)';ad.style.borderColor='rgba(248,113,113,.4)';at.textContent='❌ 回答错误';at.style.color='#f87171'}
     let txt=`正确答案是 <strong style="color:#34d399;">${lbs[q.answer]}</strong>。<br>`;
     if(q.analysis)txt+=`<br><strong>解析：</strong>${q.analysis}`;else txt+=`<br>${esc(q.options[q.answer])}`;
     ac.innerHTML=txt;ad.style.display='block';
@@ -1534,9 +1534,9 @@ function showExamQ(){
             if(isAns){
                 st+='pointer-events:none;';
                 let isCor=q.answers.indexOf(i)!==-1,was=selPrev.indexOf(i)!==-1;
-                if(isCor&&was){st+='border-color:#34d399;background:rgba(52,211,153,.12);';bdg=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓</span>`}
-                else if(!isCor&&was){st+='border-color:#f87171;background:rgba(248,113,113,.12);';bdg=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗</span>`}
-                else if(isCor&&!was){st+='border-color:#faad14;background:#fffbe6;';bdg=`<span style="color:#faad14;font-weight:600;margin-left:10px;">漏选</span>`}
+                if(isCor&&was){st+='border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.06);';bdg=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓</span>`}
+                else if(!isCor&&was){st+='border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.06);';bdg=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗</span>`}
+                else if(isCor&&!was){st+='border-color:rgba(250,173,20,.5);background:rgba(250,173,20,.06);';bdg=`<span style="color:#faad14;font-weight:600;margin-left:10px;">漏选</span>`}
                 else st+='opacity:0.6;';
             }else{
                 let selCls=selPrev.indexOf(i)!==-1?' om-sel':'';
@@ -1550,11 +1550,11 @@ function showExamQ(){
     }else{
         let o='';
         q.options.forEach((opt,i)=>{
-            let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:#fff;border-radius:10px;border:2px solid #e0e0e0;',bdg='',clk='';
+            let st='display:flex;align-items:center;padding:15px 20px;margin-bottom:12px;background:rgba(255,255,255,.04);border-radius:10px;border:2px solid rgba(255,255,255,.08);',bdg='',clk='';
             if(isAns){
                 st+='pointer-events:none;';
-                if(i===q.answer){st+='border-color:#34d399;background:rgba(52,211,153,.12);';bdg=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓ 正确</span>`}
-                else if(i===prevAns){st+='border-color:#f87171;background:rgba(248,113,113,.12);';bdg=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗ 错误</span>`}
+                if(i===q.answer){st+='border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.06);';bdg=`<span style="color:#34d399;font-weight:600;margin-left:10px;">✓ 正确</span>`}
+                else if(i===prevAns){st+='border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.06);';bdg=`<span style="color:#f87171;font-weight:600;margin-left:10px;">✗ 错误</span>`}
                 else st+='opacity:0.6;'
             }
             else{st+='cursor:pointer;';clk=`onclick="selExam(${i})" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'"`}
@@ -1568,16 +1568,16 @@ function showExamQ(){
         if(q.type==='multi'){
             let ua=Array.isArray(prevAns)?prevAns:[];
             ok=ua.slice().sort().join(',')===(q.answers||[]).slice().sort().join(',');
-            ad.style.background=ok?'rgba(52,211,153,.1)':'rgba(248,113,113,.1)';ad.style.border=ok?'1px solid #34d399':'1px solid #f87171';
+            ad.style.background=ok?'rgba(52,211,153,.06)':'rgba(248,113,113,.06)';ad.style.border=ok?'1px solid rgba(52,211,153,.4)':'1px solid rgba(248,113,113,.4)';
             let ansShow=lbs.map((l,i)=>(q.answers||[]).indexOf(i)!==-1?l:'').filter(Boolean).join('、');
             ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#34d399':'#f87171'};">${ok?'🎉 全部正确！':'❌ 有误'}</div><div style="line-height:1.6;color:#e2e8f0;">正确答案：<strong style="color:#34d399;">${ansShow}</strong>${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
         }else if(q.type==='text'){
             ok=normalizeSQL(prevAns)===normalizeSQL(q.answer);
-            ad.style.background=ok?'rgba(52,211,153,.1)':'rgba(248,113,113,.1)';ad.style.border=ok?'1px solid #34d399':'1px solid #f87171';
+            ad.style.background=ok?'rgba(52,211,153,.06)':'rgba(248,113,113,.06)';ad.style.border=ok?'1px solid rgba(52,211,153,.4)':'1px solid rgba(248,113,113,.4)';
             ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#34d399':'#f87171'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;color:#e2e8f0;"><strong>正确答案：</strong><div class="ta-ans">${esc(q.answer)}</div>${q.analysis?`<br><strong>解析：</strong>${q.analysis}`:''}</div>`;
         }else{
             ok=prevAns===q.answer;
-            ad.style.background=ok?'rgba(52,211,153,.1)':'rgba(248,113,113,.1)';ad.style.border=ok?'1px solid #34d399':'1px solid #f87171';
+            ad.style.background=ok?'rgba(52,211,153,.06)':'rgba(248,113,113,.06)';ad.style.border=ok?'1px solid rgba(52,211,153,.4)':'1px solid rgba(248,113,113,.4)';
             ad.innerHTML=`<div style="font-weight:600;font-size:18px;margin-bottom:10px;color:${ok?'#34d399':'#f87171'};">${ok?'🎉 回答正确！':'❌ 回答错误'}</div><div style="line-height:1.6;color:#e2e8f0;">正确答案是 <strong style="color:#34d399;">${lbs[q.answer]}</strong>。${q.analysis?`<br><br><strong>解析：</strong>${q.analysis}`:''}</div>`;
         }
         ad.style.display='block';
